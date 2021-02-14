@@ -58,6 +58,8 @@ npm install --save mdx-bundler
 ## Usage
 
 ```typescript
+import {bundleMDX} from 'mdx-bundler'
+
 const mdxSource = `
 ---
 title: Example Post
@@ -74,7 +76,7 @@ Here's a **neat** demo:
 <Demo />
 `.trim()
 
-const result = await compileMDX(mdxSource, {
+const result = await bundleMDX(mdxSource, {
   files: {
     './demo.tsx': `
 import * as React from 'react'
@@ -177,8 +179,9 @@ compile on demand.
 
 ## Other Solutions
 
-I'm not aware of any, if you are please [make a pull request][prs] and add it
-here!
+There's [next-mdx-remote](https://github.com/hashicorp/next-mdx-remote) but it's
+more of an mdx-compiler than a bundler (can't bundle your mdx for dependencies).
+Also it's focused on Next.js whereas this is meta-framework agnostic.
 
 ## Issues
 
