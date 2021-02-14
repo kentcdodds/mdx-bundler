@@ -1,0 +1,27 @@
+{
+  "projectName": "mdx-bundler",
+  "projectOwner": "kentcdodds",
+  "imageSize": 100,
+  "commit": false,
+  "contributorsPerLine": 7,
+  "repoHost": "https://github.com",
+  "repoType": "github",
+  "skipCi": false,
+  "files": [
+    "README.md"
+  ],
+  "contributors": [
+    {
+      "login": "kentcdodds",
+      "name": "Kent C. Dodds",
+      "avatar_url": "https://avatars.githubusercontent.com/u/1500684?v=3",
+      "profile": "https://kentcdodds.com",
+      "contributions": [
+        "code",
+        "doc",
+        "infra",
+        "test"
+      ]
+    }
+  ]
+}
