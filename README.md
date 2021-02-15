@@ -146,7 +146,7 @@ standard browserlist configuration.
 You can customize the rollup configuration used with the rollup options:
 
 ```typescript
-const result = await compileMDX(mdxSource, {
+const result = await bundleMDX(mdxSource, {
   files: {
     /* ... */
   },
