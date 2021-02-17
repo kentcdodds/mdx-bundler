@@ -25,7 +25,7 @@ async function bundleMDX(
       getInputOptions?: (options: RollupOptions) => RollupOptions
       getOutputOptions?: (options: OutputOptions) => OutputOptions
     }
-  },
+  } = {},
 ) {
   // extract the frontmatter
   const {data: frontmatter, content: mdx} = matter(mdxSource)

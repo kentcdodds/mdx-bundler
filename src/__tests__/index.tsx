@@ -172,3 +172,7 @@ import Demo from './demo'
     `"Could not resolve './blah-blah' from 'demo.tsx'"`,
   )
 })
+
+test('files is optional', async () => {
+  await expect(bundleMDX('hello')).resolves.toBeTruthy()
+})
