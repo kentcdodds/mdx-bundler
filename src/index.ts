@@ -4,6 +4,9 @@ import {babel as rollupBabel} from '@rollup/plugin-babel'
 import commonjs from '@rollup/plugin-commonjs'
 import json from '@rollup/plugin-json'
 import {nodeResolve} from '@rollup/plugin-node-resolve'
+import babelPresetReact from '@babel/preset-react'
+import babelPresetEnv from '@babel/preset-env'
+import babelPresetTypeScript from '@babel/preset-typescript'
 import matter from 'gray-matter'
 import type {OutputOptions, RollupOptions} from 'rollup'
 import {rollup} from 'rollup'
@@ -85,9 +88,9 @@ async function bundleMDX(
         exclude: /node_modules/,
         extensions: ['.js', '.ts', '.tsx', '.md', '.mdx', '.jsx', '.json'],
         presets: [
-          ['@babel/preset-react', {pragma: 'mdx'}],
-          '@babel/preset-env',
-          ['@babel/preset-typescript', {allExtensions: true, isTSX: true}],
+          [babelPresetReact, {pragma: 'mdx'}],
+          babelPresetEnv,
+          [babelPresetTypeScript, {allExtensions: true, isTSX: true}],
         ],
         sourceMaps: false,
       }),
