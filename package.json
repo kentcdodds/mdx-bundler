@@ -21,7 +21,8 @@
   "homepage": "https://github.com/kentcdodds/mdx-bundler#readme",
   "files": [
     "dist",
-    "client.js"
+    "client.js",
+    "client.d.ts"
   ],
   "scripts": {
     "build": "kcd-scripts build",
@@ -69,6 +70,7 @@
   "eslintIgnore": [
     "node_modules",
     "coverage",
-    "dist"
+    "dist",
+    "*.d.ts"
   ]
 }
