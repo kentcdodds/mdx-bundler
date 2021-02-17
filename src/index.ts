@@ -12,14 +12,14 @@ import {terser} from 'rollup-plugin-terser'
 async function bundleMDX(
   mdxSource: string,
   {
-    files,
+    files = {},
     remarkPlugins = [],
     rollup: {
       getInputOptions = (options: RollupOptions) => options,
       getOutputOptions = (options: OutputOptions) => options,
     } = {},
   }: {
-    files: Record<string, string>
+    files?: Record<string, string>
     remarkPlugins?: Array<unknown>
     rollup?: {
       getInputOptions?: (options: RollupOptions) => RollupOptions
