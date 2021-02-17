@@ -101,7 +101,9 @@ import {MDXProvider} from '@mdx-js/react'
 import {getMDXComponent} from 'mdx-bundler/client'
 
 function Post({code, frontmatter}) {
-  const Component = getMDXComponent(code)
+  // it's generally a good idea to memoize this function call to
+  // avoid re-creating the component every render.
+  const Component = React.useMemo(() => getMDXComponent(code), [code])
   return (
     <MDXProvider>
       <header>
@@ -134,6 +136,14 @@ Ultimately, this gets rendered (basically):
 </main>
 ```
 
+## Files
+
+The `files` config is an object of all the files you're bundling. The key is the
+path to the file (relative to the MDX source) and the value is the string of the
+file source code. You could get these from the filesystem or from a remote
+database. If your MDX doesn't reference other files (or only imports things from
+`node_modules`), then you can omit this entirely.
+
 ## Compilation target
 
 We use rollup to bundle your MDX and its dependencies and babel to compile
@@ -165,9 +175,65 @@ rollup. For example, if your MDX file uses the d3 library and your app exposes
 `window.d3` you could configure rollup to externalize that and replace all
 references with the global `d3` to avoid double-bundling d3. When you call
 `getMDXComponent`, you'll pass `d3` as a second argument:
-`getMDXComponent(code, {d3: window.d3})`
+`getMDXComponent(code, {d3: window.d3})`. Here's an example:
 
-Check the tests for an example.
+```tsx
+// server-side or build-time code that runs in Node:
+import {bundleMDX} from 'mdx-bundler'
+
+const mdxSource = `
+# This is the title
+
+import leftPad from 'left-pad'
+
+<div>{leftPad("Neat demo!", 12, '!')}</div>
+`.trim()
+
+const result = await bundleMDX(mdxSource, {
+  // NOTE: this is *only* necessary if you want to share deps between your MDX
+  // file bundle and the host app. Otherwise, all deps will just be bundled.
+  // So it'll work either way, this is just an optimization to avoid sending
+  // multiple copies of the same library to your users.
+  rollup: {
+    getInputOptions(options) {
+      // Tell rollup that `left-pad` should *not* be bundled.
+      // By default `options.external` is: ['react', 'react-dom']
+      // so we'll add 'left-pad' to tell rollup to not bundle it with our MDX code
+      options.external = [...(options.external as Array<string>), 'left-pad']
+      return options
+    },
+    getOutputOptions(options) {
+      // Tell rollup that it should replace the left-pad import with a global variable.
+      // By default `options.globals` is: {react: 'React', 'react-dom': 'ReactDOM'}
+      // so we'll add 'left-pad': 'myLeftPad' to tell it what the global variable name is
+      options.globals = {...options.globals, 'left-pad': 'myLeftPad'}
+      return options
+    },
+  },
+})
+```
+
+```tsx
+// server-rendered and/or client-side code that can run in the browser or Node:
+import * as React from 'react'
+import leftPad from 'left-pad'
+import {MDXProvider} from '@mdx-js/react'
+import {getMDXComponent} from 'mdx-bundler/client'
+
+function MDXPage({code}: {code: string}) {
+  const Component = React.useMemo(
+    () => getMDXComponent(result.code, {myLeftPad: leftPad}),
+    [result.code, leftPad],
+  )
+  return (
+    <main>
+      <MDXProvider>
+        <Component />
+      </MDXProvider>
+    </main>
+  )
+}
+```
 
 ## Inspiration
 
