@@ -33,6 +33,9 @@
     "validate": "kcd-scripts validate"
   },
   "dependencies": {
+    "@babel/preset-env": "^7.12.16",
+    "@babel/preset-react": "^7.12.13",
+    "@babel/preset-typescript": "^7.12.16",
     "@babel/runtime": "^7.12.13",
     "@mdx-js/mdx": "^1.6.22",
     "@mdx-js/react": "^1.6.22",
