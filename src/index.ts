@@ -1,16 +1,8 @@
 import path from 'path'
 import {createCompiler} from '@mdx-js/mdx'
-import {babel as rollupBabel} from '@rollup/plugin-babel'
-import commonjs from '@rollup/plugin-commonjs'
-import json from '@rollup/plugin-json'
-import {nodeResolve} from '@rollup/plugin-node-resolve'
-import babelPresetReact from '@babel/preset-react'
-import babelPresetEnv from '@babel/preset-env'
-import babelPresetTypeScript from '@babel/preset-typescript'
 import matter from 'gray-matter'
 import type {OutputOptions, RollupOptions} from 'rollup'
-import {rollup} from 'rollup'
-import {terser} from 'rollup-plugin-terser'
+import {build, Plugin} from 'esbuild'
 
 async function bundleMDX(
   mdxSource: string,
@@ -47,71 +39,41 @@ async function bundleMDX(
   for (const [filepath, fileCode] of Object.entries(files)) {
     absoluteFiles[path.join(dir, filepath)] = fileCode
   }
-  const inMemoryModulePlugin = {
-    name: 'in-memory-module',
-    resolveId(importee: string, importer?: string) {
-      if (!importer || importee === entryPath) return importee
-      if (!importee[0].startsWith('.')) return null
 
-      const resolved = path.resolve(path.dirname(importer), importee)
+  const inMemoryPlugin: Plugin = {
+    name: 'inMemory',
+    setup(build){
+      build.onResolve({filter: /__mdx_bundler_fake_dir__/}, (args) => {
+        if(absoluteFiles[args.path]){
+          return {
+            path: args.path,
+            namespace: 'mdx-bundler',
+            pluginData: {
+              contents: absoluteFiles[args.path]
+            }
+          }
+        }
 
-      if (resolved in absoluteFiles) return resolved
-      for (const ext of ['.js', '.tsx', '.jsx', '.ts']) {
-        const resolvedWithExt = `${resolved}${ext}`
-        if (resolvedWithExt in absoluteFiles) return resolvedWithExt
-      }
-      throw new Error(
-        `Could not resolve '${importee}' from ${
-          importer === entryPath
-            ? 'the entry MDX file'
-            : `'${importer.replace(`${dir}/`, '')}'`
-        }`,
-      )
-    },
-    load(id: string) {
-      if (absoluteFiles[id]) return absoluteFiles[id]
-      return null
-    },
+        throw new Error(`Could not resolve ${args.path}`)
+      })
+
+      build.onLoad({filter: /.*/, namespace: 'mdx-bundler'}, (args) => {
+        return {
+          contents: args.pluginData.contents,
+          loader: 'js'
+        }
+      })
+    }
   }
 
-  const inputOptions = getInputOptions({
-    external: ['react', 'react-dom'],
-    input: entryPath,
-    plugins: [
-      inMemoryModulePlugin,
-      nodeResolve(),
-      commonjs({include: 'node_modules/**', sourceMap: false}),
-      json(),
-      rollupBabel({
-        babelHelpers: 'inline',
-        configFile: false,
-        exclude: /node_modules/,
-        extensions: ['.js', '.ts', '.tsx', '.md', '.mdx', '.jsx', '.json'],
-        presets: [
-          [babelPresetReact, {pragma: 'mdx'}],
-          babelPresetEnv,
-          [babelPresetTypeScript, {allExtensions: true, isTSX: true}],
-        ],
-        sourceMaps: false,
-      }),
-      terser(),
-    ],
+  const bundle = await build({
+    entryPoints: [entryPath],
+    write: false,
+    plugins: [inMemoryPlugin]
   })
-
-  const outputOptions = getOutputOptions({
-    name: 'Component',
-    format: 'iife',
-    globals: {
-      react: 'React',
-      'react-dom': 'ReactDOM',
-    },
-  })
-
-  const bundle = await rollup(inputOptions)
-  const result = await bundle.generate(outputOptions)
 
   return {
-    code: `${result.output[0].code};return Component;`,
+    code: bundle.outputFiles[0],
     frontmatter,
   }
 }

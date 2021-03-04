@@ -169,7 +169,7 @@ import Demo from './demo'
   }).catch(e => e)) as Error
 
   expect(error.message).toMatchInlineSnapshot(
-    `"Could not resolve './blah-blah' from 'demo.tsx'"`,
+    `"Could not resolve './blah-blah' from '<PROJECT_ROOT>/__mdx_bundler_fake_dir__/demo.tsx'"`,
   )
 })
 
