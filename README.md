@@ -34,6 +34,7 @@ single string of the bundled code.
 
 - [Installation](#installation)
 - [Usage](#usage)
+- [Files](#files)
 - [Compilation target](#compilation-target)
 - [Rollup options](#rollup-options)
 - [Inspiration](#inspiration)
@@ -146,23 +147,23 @@ database. If your MDX doesn't reference other files (or only imports things from
 
 ## Compilation target
 
-We use rollup to bundle your MDX and its dependencies and babel to compile
-things. We're using `@babel/preset-env` and you can configure this using the
-standard browserlist configuration.
+We use [esbuild](https://esbuild.github.io/) to bundle your MDX and its
+dependencies and babel to compile things. We're using `@babel/preset-env` and
+you can configure this using the standard browserlist configuration.
 [learn more](https://babeljs.io/docs/en/babel-preset-env#browserslist-integration).
 
 ## Rollup options
 
-You can customize the rollup configuration used with the rollup options:
+You can customize the esbuild configuration used with the esbuild option:
 
 ```typescript
 const result = await bundleMDX(mdxSource, {
   files: {
     /* ... */
   },
-  rollup: {
-    getInputOptions,
-    getOutputOptions,
+  esbuild: options => {
+    // Modify options object.
+    return options
   },
 })
 ```
@@ -170,12 +171,12 @@ const result = await bundleMDX(mdxSource, {
 Each of these is a function that receives the default options and should return
 the options you want used.
 
-This should allow you to customize the `external` and `global` configuration for
-rollup. For example, if your MDX file uses the d3 library and your app exposes
-`window.d3` you could configure rollup to externalize that and replace all
-references with the global `d3` to avoid double-bundling d3. When you call
-`getMDXComponent`, you'll pass `d3` as a second argument:
-`getMDXComponent(code, {d3: window.d3})`. Here's an example:
+This should allow you to customize the `external` configuration for esbuild. For
+example, if your MDX file uses the d3 library and your app exposes `window.d3`
+you could configure esbuild to externalize that and replace all references with
+the global `d3` to avoid double-bundling d3. When you call `getMDXComponent`,
+you'll pass `d3` as a second argument: `getMDXComponent(code, {d3: window.d3})`.
+Here's an example:
 
 ```tsx
 // server-side or build-time code that runs in Node:
@@ -194,21 +195,10 @@ const result = await bundleMDX(mdxSource, {
   // file bundle and the host app. Otherwise, all deps will just be bundled.
   // So it'll work either way, this is just an optimization to avoid sending
   // multiple copies of the same library to your users.
-  rollup: {
-    getInputOptions(options) {
-      // Tell rollup that `left-pad` should *not* be bundled.
-      // By default `options.external` is: ['react', 'react-dom']
-      // so we'll add 'left-pad' to tell rollup to not bundle it with our MDX code
-      options.external = [...(options.external as Array<string>), 'left-pad']
-      return options
-    },
-    getOutputOptions(options) {
-      // Tell rollup that it should replace the left-pad import with a global variable.
-      // By default `options.globals` is: {react: 'React', 'react-dom': 'ReactDOM'}
-      // so we'll add 'left-pad': 'myLeftPad' to tell it what the global variable name is
-      options.globals = {...options.globals, 'left-pad': 'myLeftPad'}
-      return options
-    },
+  esbuild: option => {
+    // Add your external library to the existing list of external libaries.
+    options.external = [...(options.external as Array<string>), 'left-pad']
+    return options
   },
 })
 ```
