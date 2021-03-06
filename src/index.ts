@@ -52,8 +52,15 @@ async function bundleMDX(
           if (fullModulePath in absoluteFiles) return {path: fullModulePath}
         }
 
-        // Pass off resolution to esbuild
-        return {}
+        console.dir(args.importer)
+
+        throw new Error(
+          `Could not resolve ${args.path} in ${
+            args.importer === entryPath
+              ? 'the entry MDX file.'
+              : args.importer.replace(dir, '.')
+          }`,
+        )
       })
 
       build.onLoad({filter: /__mdx_bundler_fake_dir__/}, args => {

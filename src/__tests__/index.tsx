@@ -154,7 +154,7 @@ import Demo from './demo'
 
   expect(error.message).toMatchInlineSnapshot(`
     "Build failed with 1 error:
-    __mdx_bundler_fake_dir__/index.mdx.jsx:1:17: error: Could not resolve \\"./demo\\""
+    src/index.ts:57:14: error: [inMemory] Could not resolve ./demo in the entry MDX file."
   `)
 })
 
@@ -173,7 +173,7 @@ import Demo from './demo'
 
   expect(error.message).toMatchInlineSnapshot(`
     "Build failed with 1 error:
-    __mdx_bundler_fake_dir__/demo.tsx:1:7: error: Could not resolve \\"./blah-blah\\""
+    src/index.ts:57:14: error: [inMemory] Could not resolve ./blah-blah in ./demo.tsx"
   `)
 })
 
