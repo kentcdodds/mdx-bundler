@@ -1,25 +1,22 @@
 import path from 'path'
+import {StringDecoder} from 'string_decoder'
 import {createCompiler} from '@mdx-js/mdx'
 import matter from 'gray-matter'
-import type {OutputOptions, RollupOptions} from 'rollup'
-import {build, Plugin} from 'esbuild'
+import {build as bundle, Plugin, BuildOptions} from 'esbuild'
+import nodeResolve from '@esbuild-plugins/node-resolve'
+
+type ESBuildOptions = BuildOptions & {write: false}
 
 async function bundleMDX(
   mdxSource: string,
   {
     files = {},
     remarkPlugins = [],
-    rollup: {
-      getInputOptions = (options: RollupOptions) => options,
-      getOutputOptions = (options: OutputOptions) => options,
-    } = {},
+    esbuild = (options: ESBuildOptions) => options,
   }: {
     files?: Record<string, string>
     remarkPlugins?: Array<unknown>
-    rollup?: {
-      getInputOptions?: (options: RollupOptions) => RollupOptions
-      getOutputOptions?: (options: OutputOptions) => OutputOptions
-    }
+    esbuild?: (options: ESBuildOptions) => ESBuildOptions
   } = {},
 ) {
   // extract the frontmatter
@@ -32,7 +29,7 @@ async function bundleMDX(
   }).process(mdx)) as {contents: string}
 
   const dir = path.join(process.cwd(), `__mdx_bundler_fake_dir__`)
-  const entryPath = path.join(dir, './index.mdx.js')
+  const entryPath = path.join(dir, './index.mdx.jsx')
   const absoluteFiles: Record<string, string> = {
     [entryPath]: entryCode,
   }
@@ -42,38 +39,55 @@ async function bundleMDX(
 
   const inMemoryPlugin: Plugin = {
     name: 'inMemory',
-    setup(build){
-      build.onResolve({filter: /__mdx_bundler_fake_dir__/}, (args) => {
-        if(absoluteFiles[args.path]){
-          return {
-            path: args.path,
-            namespace: 'mdx-bundler',
-            pluginData: {
-              contents: absoluteFiles[args.path]
-            }
-          }
+    setup(build) {
+      build.onResolve({filter: /.*/}, args => {
+        if (args.path === entryPath) return {path: args.path}
+
+        const modulePath = path.resolve(path.dirname(args.importer), args.path)
+
+        if (modulePath in absoluteFiles) return {path: modulePath}
+
+        for (const ext of ['.js', '.ts', '.jsx', '.tsx']) {
+          const fullModulePath = `${modulePath}${ext}`
+          if (fullModulePath in absoluteFiles) return {path: fullModulePath}
         }
 
-        throw new Error(`Could not resolve ${args.path}`)
+        // Pass off resolution to esbuild
+        return {}
       })
 
-      build.onLoad({filter: /.*/, namespace: 'mdx-bundler'}, (args) => {
+      build.onLoad({filter: /__mdx_bundler_fake_dir__/}, args => {
         return {
-          contents: args.pluginData.contents,
-          loader: 'js'
+          contents: absoluteFiles[args.path],
+          loader: 'jsx',
         }
       })
-    }
+    },
   }
 
-  const bundle = await build({
+  const buildOptions = esbuild({
     entryPoints: [entryPath],
     write: false,
-    plugins: [inMemoryPlugin]
+    plugins: [
+      nodeResolve({
+        extensions: ['.js', '.ts', '.jsx', '.tsx'],
+      }),
+      inMemoryPlugin,
+    ],
+    bundle: true,
+    external: ['react', 'react-dom'],
+    format: 'iife',
+    globalName: 'Component',
   })
 
+  const bundled = await bundle(buildOptions)
+
+  const decoder = new StringDecoder('utf8')
+
+  const code = decoder.write(Buffer.from(bundled.outputFiles[0].contents))
+
   return {
-    code: bundle.outputFiles[0],
+    code: `${code};return Component.default;`,
     frontmatter,
   }
 }

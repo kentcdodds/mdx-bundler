@@ -49,15 +49,9 @@ import * as React from 'react'
 export default ({children}) => <div className="sub-dir">{children}</div>
     `.trim(),
     },
-    rollup: {
-      getInputOptions(options) {
-        options.external = [...(options.external as Array<string>), 'left-pad']
-        return options
-      },
-      getOutputOptions(options) {
-        options.globals = {...options.globals, 'left-pad': 'myLeftPad'}
-        return options
-      },
+    esbuild: options => {
+      options.external = [...(options.external as Array<string>), 'left-pad']
+      return options
     },
   })
 
@@ -66,7 +60,9 @@ export default ({children}) => <div className="sub-dir">{children}</div>
     description: string
     published: string
   }
+
   const Component = getMDXComponent(result.code, {myLeftPad: leftPad})
+
   const {container} = render(
     <MDXProvider>
       <header>
@@ -89,24 +85,30 @@ export default ({children}) => <div className="sub-dir">{children}</div>
         </p>
       </header>
       <main>
-        <h1>
-          This is the title
-        </h1>
-        <p>
-          Here's a 
-          <strong>
-            neat
-          </strong>
-           demo:
-        </p>
-        <div>
-          !!Neat demo!
-          <div
-            class="sub-dir"
-          >
-            Sub dir!
+        <wrapper
+          mdxtype="MDXLayout"
+        >
+          <h1>
+            This is the title
+          </h1>
+          <p>
+            Here's a 
+            <strong
+              parentname="p"
+            >
+              neat
+            </strong>
+             demo:
+          </p>
+          <div>
+            !!Neat demo!
+            <div
+              class="sub-dir"
+            >
+              Sub dir!
+            </div>
           </div>
-        </div>
+        </wrapper>
       </main>
     </div>
   `)
@@ -150,9 +152,10 @@ import Demo from './demo'
     files: {},
   }).catch(e => e)) as Error
 
-  expect(error.message).toMatchInlineSnapshot(
-    `"Could not resolve './demo' from the entry MDX file"`,
-  )
+  expect(error.message).toMatchInlineSnapshot(`
+    "Build failed with 1 error:
+    __mdx_bundler_fake_dir__/index.mdx.jsx:1:17: error: Could not resolve \\"./demo\\""
+  `)
 })
 
 test('gives a handy error when importing a module that cannot be found', async () => {
@@ -168,9 +171,10 @@ import Demo from './demo'
     },
   }).catch(e => e)) as Error
 
-  expect(error.message).toMatchInlineSnapshot(
-    `"Could not resolve './blah-blah' from '<PROJECT_ROOT>/__mdx_bundler_fake_dir__/demo.tsx'"`,
-  )
+  expect(error.message).toMatchInlineSnapshot(`
+    "Build failed with 1 error:
+    __mdx_bundler_fake_dir__/demo.tsx:1:7: error: Could not resolve \\"./blah-blah\\""
+  `)
 })
 
 test('files is optional', async () => {
