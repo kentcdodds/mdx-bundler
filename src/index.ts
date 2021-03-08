@@ -4,10 +4,8 @@ import {createCompiler} from '@mdx-js/mdx'
 import matter from 'gray-matter'
 import {build as bundle, Plugin, BuildOptions} from 'esbuild'
 import nodeResolve from '@esbuild-plugins/node-resolve'
-import {
-  globalExternals,
-  ModuleInfo,
-} from '@fal-works/esbuild-plugin-global-externals'
+import {globalExternals} from '@fal-works/esbuild-plugin-global-externals'
+import type {ModuleInfo} from '@fal-works/esbuild-plugin-global-externals'
 
 type ESBuildOptions = BuildOptions & {write: false}
 
