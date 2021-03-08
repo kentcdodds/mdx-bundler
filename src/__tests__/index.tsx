@@ -49,10 +49,7 @@ import * as React from 'react'
 export default ({children}) => <div className="sub-dir">{children}</div>
     `.trim(),
     },
-    esbuild: options => {
-      options.external = [...(options.external as Array<string>), 'left-pad']
-      return options
-    },
+    globals: {'left-pad': 'myLeftPad'},
   })
 
   const frontmatter = result.frontmatter as {
@@ -61,7 +58,13 @@ export default ({children}) => <div className="sub-dir">{children}</div>
     published: string
   }
 
-  const Component = getMDXComponent(result.code, {myLeftPad: leftPad})
+  // This creates a custom left pad which uses a different filler character to the one supplied.
+  // If it is not substituted the original will be used and we will get "!" instead of "$"
+  const myLeftPad = (string: string, length: number) => {
+    return leftPad(string, length, '$')
+  }
+
+  const Component = getMDXComponent(result.code, {myLeftPad})
 
   const {container} = render(
     <MDXProvider>
@@ -101,7 +104,7 @@ export default ({children}) => <div className="sub-dir">{children}</div>
              demo:
           </p>
           <div>
-            !!Neat demo!
+            $$Neat demo!
             <div
               class="sub-dir"
             >
@@ -154,7 +157,7 @@ import Demo from './demo'
 
   expect(error.message).toMatchInlineSnapshot(`
     "Build failed with 1 error:
-    src/index.ts:57:14: error: [inMemory] Could not resolve ./demo in the entry MDX file."
+    __mdx_bundler_fake_dir__/index.mdx.jsx:1:17: error: [inMemory] Could not resolve \\"./demo\\" in the entry MDX file."
   `)
 })
 
@@ -173,7 +176,7 @@ import Demo from './demo'
 
   expect(error.message).toMatchInlineSnapshot(`
     "Build failed with 1 error:
-    src/index.ts:57:14: error: [inMemory] Could not resolve ./blah-blah in ./demo.tsx"
+    __mdx_bundler_fake_dir__/demo.tsx:1:7: error: [inMemory] Could not resolve \\"./blah-blah\\" in \\"./demo.tsx\\""
   `)
 })
 

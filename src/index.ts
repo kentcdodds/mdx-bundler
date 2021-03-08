@@ -4,6 +4,10 @@ import {createCompiler} from '@mdx-js/mdx'
 import matter from 'gray-matter'
 import {build as bundle, Plugin, BuildOptions} from 'esbuild'
 import nodeResolve from '@esbuild-plugins/node-resolve'
+import {
+  globalExternals,
+  ModuleInfo,
+} from '@fal-works/esbuild-plugin-global-externals'
 
 type ESBuildOptions = BuildOptions & {write: false}
 
@@ -12,11 +16,13 @@ async function bundleMDX(
   {
     files = {},
     remarkPlugins = [],
-    esbuild = (options: ESBuildOptions) => options,
+    esbuildOptions = (options: ESBuildOptions) => options,
+    globals = {},
   }: {
     files?: Record<string, string>
     remarkPlugins?: Array<unknown>
-    esbuild?: (options: ESBuildOptions) => ESBuildOptions
+    esbuildOptions?: (options: ESBuildOptions) => ESBuildOptions
+    globals?: Record<string, string | ModuleInfo>
   } = {},
 ) {
   // extract the frontmatter
@@ -52,15 +58,18 @@ async function bundleMDX(
           if (fullModulePath in absoluteFiles) return {path: fullModulePath}
         }
 
-        console.dir(args.importer)
-
-        throw new Error(
-          `Could not resolve ${args.path} in ${
-            args.importer === entryPath
-              ? 'the entry MDX file.'
-              : args.importer.replace(dir, '.')
-          }`,
-        )
+        return {
+          errors: [
+            {
+              text: `Could not resolve "${args.path}" in ${
+                args.importer === entryPath
+                  ? 'the entry MDX file.'
+                  : `"${args.importer.replace(dir, '.')}"`
+              }`,
+              location: null,
+            },
+          ],
+        }
       })
 
       build.onLoad({filter: /__mdx_bundler_fake_dir__/}, args => {
@@ -72,10 +81,11 @@ async function bundleMDX(
     },
   }
 
-  const buildOptions = esbuild({
+  const buildOptions = esbuildOptions({
     entryPoints: [entryPath],
     write: false,
     plugins: [
+      globalExternals(globals),
       nodeResolve({
         extensions: ['.js', '.ts', '.jsx', '.tsx'],
       }),
@@ -85,6 +95,7 @@ async function bundleMDX(
     external: ['react', 'react-dom'],
     format: 'iife',
     globalName: 'Component',
+    minify: true,
   })
 
   const bundled = await bundle(buildOptions)
