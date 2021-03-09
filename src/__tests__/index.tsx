@@ -31,12 +31,14 @@ Here's a **neat** demo:
 import * as React from 'react'
 import leftPad from 'left-pad'
 import SubDir from './sub/dir.tsx'
+import data from './data.json'
 
 function Demo() {
   return (
     <div>
       {leftPad("Neat demo!", 12, '!')}
       <SubDir>Sub dir!</SubDir>
+      <p>JSON: {data.package}</p>
     </div>
   )
 }
@@ -48,6 +50,11 @@ import * as React from 'react'
 
 export default ({children}) => <div className="sub-dir">{children}</div>
     `.trim(),
+      './data.json': `
+        {
+          "package": "mdx-bundler"
+        }
+      `.trim(),
     },
     globals: {'left-pad': 'myLeftPad'},
   })
@@ -110,6 +117,10 @@ export default ({children}) => <div className="sub-dir">{children}</div>
             >
               Sub dir!
             </div>
+            <p>
+              JSON: 
+              mdx-bundler
+            </p>
           </div>
         </wrapper>
       </main>

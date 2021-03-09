@@ -44,14 +44,14 @@ async function bundleMDX(
   const inMemoryPlugin: Plugin = {
     name: 'inMemory',
     setup(build) {
-      build.onResolve({filter: /.*/}, args => {
-        if (args.path === entryPath) return {path: args.path}
+      build.onResolve({filter: /.*/}, ({path: filePath, importer}) => {
+        if (filePath === entryPath) return {path: filePath}
 
-        const modulePath = path.resolve(path.dirname(args.importer), args.path)
+        const modulePath = path.resolve(path.dirname(importer), filePath)
 
         if (modulePath in absoluteFiles) return {path: modulePath}
 
-        for (const ext of ['.js', '.ts', '.jsx', '.tsx']) {
+        for (const ext of ['.js', '.ts', '.jsx', '.tsx', '.json']) {
           const fullModulePath = `${modulePath}${ext}`
           if (fullModulePath in absoluteFiles) return {path: fullModulePath}
         }
@@ -59,10 +59,10 @@ async function bundleMDX(
         return {
           errors: [
             {
-              text: `Could not resolve "${args.path}" in ${
-                args.importer === entryPath
+              text: `Could not resolve "${filePath}" in ${
+                importer === entryPath
                   ? 'the entry MDX file.'
-                  : `"${args.importer.replace(dir, '.')}"`
+                  : `"${importer.replace(dir, '.')}"`
               }`,
               location: null,
             },
@@ -70,10 +70,21 @@ async function bundleMDX(
         }
       })
 
-      build.onLoad({filter: /__mdx_bundler_fake_dir__/}, args => {
-        return {
-          contents: absoluteFiles[args.path],
-          loader: 'jsx',
+      build.onLoad({filter: /__mdx_bundler_fake_dir__/}, ({path: filePath}) => {
+        const fileType = path.extname(filePath)
+        const contents = absoluteFiles[filePath]
+
+        switch (fileType) {
+          case '.json':
+            return {
+              contents,
+              loader: 'json',
+            }
+          default:
+            return {
+              contents,
+              loader: 'jsx',
+            }
         }
       })
     },
