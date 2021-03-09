@@ -48,7 +48,6 @@
     "@types/react": "^17.0.3",
     "@types/react-dom": "^17.0.1",
     "builtin-modules": "^3.2.0",
-    "cross-env": "^7.0.3",
     "dotenv-cli": "^4.0.0",
     "jest-environment-jsdom": "^26.6.2",
     "kcd-scripts": "^8.0.2",
