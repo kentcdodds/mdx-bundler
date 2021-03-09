@@ -6,7 +6,7 @@ import {bundleMDX} from '..'
 import {getMDXComponent} from '../client'
 
 // compiling and bundling is slow...
-jest.setTimeout(20000)
+//jest.setTimeout(20000)
 
 test('smoke test', async () => {
   const mdxSource = `

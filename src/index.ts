@@ -99,14 +99,23 @@ async function bundleMDX(
     entryPoints: [entryPath],
     write: false,
     plugins: [
-      globalExternals(globals),
+      globalExternals({
+        ...globals,
+        react: {
+          varName: 'React',
+          type: 'cjs',
+        },
+        'react-dom': {
+          varName: 'ReactDOM',
+          type: 'cjs',
+        },
+      }),
       nodeResolve({
         extensions: ['.js', '.ts', '.jsx', '.tsx'],
       }),
       inMemoryPlugin,
     ],
     bundle: true,
-    external: ['react', 'react-dom'],
     format: 'iife',
     globalName: 'Component',
     minify: true,
