@@ -5,9 +5,6 @@ import leftPad from 'left-pad'
 import {bundleMDX} from '..'
 import {getMDXComponent} from '../client'
 
-// compiling and bundling is slow...
-//jest.setTimeout(20000)
-
 test('smoke test', async () => {
   const mdxSource = `
 ---
@@ -206,12 +203,20 @@ test('uses the typescript loader where needed', async () => {
     files: {
       './demo.tsx': `
         import * as React from 'react'
+        import {left} from './left'
 
         const Demo: React.FC = () => { 
-          return <p>Typescript!</p>
+          return <p>{left("Typescript")}</p>
         }
 
         export default Demo
+      `.trim(),
+      './left.ts': `
+        import leftPad from 'left-pad'
+
+        export const left = (s: string): string => {
+          return leftPad(s, 12, '!')
+        }
       `.trim(),
     },
   })
@@ -230,7 +235,7 @@ test('uses the typescript loader where needed', async () => {
         mdxtype="MDXLayout"
       >
         <p>
-          Typescript!
+          !!Typescript
         </p>
       </wrapper>
     </div>

@@ -80,6 +80,7 @@ async function bundleMDX(
               contents,
               loader: 'json',
             }
+          case '.ts':
           case '.tsx':
             return {
               contents,
