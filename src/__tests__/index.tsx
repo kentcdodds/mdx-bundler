@@ -194,3 +194,45 @@ import Demo from './demo'
 test('files is optional', async () => {
   await expect(bundleMDX('hello')).resolves.toBeTruthy()
 })
+
+test('uses the typescript loader where needed', async () => {
+  const mdxSource = `
+  import Demo from './demo'
+
+  <Demo />
+  `.trim()
+
+  const {code} = await bundleMDX(mdxSource, {
+    files: {
+      './demo.tsx': `
+        import * as React from 'react'
+
+        const Demo: React.FC = () => { 
+          return <p>Typescript!</p>
+        }
+
+        export default Demo
+      `.trim(),
+    },
+  })
+
+  const Component = getMDXComponent(code)
+
+  const {container} = render(
+    <MDXProvider>
+      <Component />
+    </MDXProvider>,
+  )
+
+  expect(container).toMatchInlineSnapshot(`
+    <div>
+      <wrapper
+        mdxtype="MDXLayout"
+      >
+        <p>
+          Typescript!
+        </p>
+      </wrapper>
+    </div>
+  `)
+})
