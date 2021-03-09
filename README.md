@@ -36,7 +36,8 @@ single string of the bundled code.
 - [Usage](#usage)
 - [Files](#files)
 - [Compilation target](#compilation-target)
-- [Rollup options](#rollup-options)
+- [Globals](#globals)
+- [esbuild options](#esbuild-options)
 - [Inspiration](#inspiration)
 - [Other Solutions](#other-solutions)
 - [Issues](#issues)
@@ -148,34 +149,17 @@ database. If your MDX doesn't reference other files (or only imports things from
 ## Compilation target
 
 We use [esbuild](https://esbuild.github.io/) to bundle your MDX and its
-dependencies and babel to compile things. We're using `@babel/preset-env` and
-you can configure this using the standard browserlist configuration.
-[learn more](https://babeljs.io/docs/en/babel-preset-env#browserslist-integration).
+dependencies. esbuild handles compiling
 
-## Rollup options
+## Globals
 
-You can customize the esbuild configuration used with the esbuild option:
+`bundleMDX` takes a `globals` option which tells esbuild that a given module is
+externally available. For example, if your MDX file uses the d3 library and your
+app exposes `window.d3` you could configure esbuild to externalize that and
+replace all references with the global `d3` to avoid double-bundling d3. When
+you call `getMDXComponent`, you'll pass `d3` as a second argument:
+`getMDXComponent(code, {d3: window.d3})`.
 
-```typescript
-const result = await bundleMDX(mdxSource, {
-  files: {
-    /* ... */
-  },
-  esbuild: options => {
-    // Modify options object.
-    return options
-  },
-})
-```
-
-Each of these is a function that receives the default options and should return
-the options you want used.
-
-This should allow you to customize the `external` configuration for esbuild. For
-example, if your MDX file uses the d3 library and your app exposes `window.d3`
-you could configure esbuild to externalize that and replace all references with
-the global `d3` to avoid double-bundling d3. When you call `getMDXComponent`,
-you'll pass `d3` as a second argument: `getMDXComponent(code, {d3: window.d3})`.
 Here's an example:
 
 ```tsx
@@ -195,11 +179,7 @@ const result = await bundleMDX(mdxSource, {
   // file bundle and the host app. Otherwise, all deps will just be bundled.
   // So it'll work either way, this is just an optimization to avoid sending
   // multiple copies of the same library to your users.
-  esbuild: option => {
-    // Add your external library to the existing list of external libaries.
-    options.external = [...(options.external as Array<string>), 'left-pad']
-    return options
-  },
+  globals: {'left-pad': 'myLeftPad'},
 })
 ```
 
@@ -224,6 +204,36 @@ function MDXPage({code}: {code: string}) {
   )
 }
 ```
+
+## esbuild options
+
+You can customize any of esbuild options with the option `esbuildOptions`. This
+takes a function which is passed the default esbuild options and expects an
+options object to be returned.
+
+```typescript
+// server-side or build-time code that runs in Node:
+import {bundleMDX} from 'mdx-bundler'
+
+const mdxSource = `
+# This is the title
+
+import leftPad from 'left-pad'
+
+<div>{leftPad("Neat demo!", 12, '!')}</div>
+`.trim()
+
+const result = await bundleMDX(mdxSource, {
+  esbuildOptions: options => {
+    options.minify = false
+
+    return options
+  },
+})
+```
+
+More information on the available options can be found in the
+[esbuild documentation](https://esbuild.github.io/api/#build-api).
 
 ## Inspiration
 
