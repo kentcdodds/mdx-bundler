@@ -149,7 +149,8 @@ database. If your MDX doesn't reference other files (or only imports things from
 ## Compilation target
 
 We use [esbuild](https://esbuild.github.io/) to bundle your MDX and its
-dependencies. esbuild handles compiling
+dependencies. esbuild handles compiling through its build api. You can customize
+the [options](#esbuild-options) used to build the bundle.
 
 ## Globals
 
@@ -234,6 +235,10 @@ const result = await bundleMDX(mdxSource, {
 
 More information on the available options can be found in the
 [esbuild documentation](https://esbuild.github.io/api/#build-api).
+
+With [target](https://esbuild.github.io/api/#target) you can set the output
+target of the build. The default target is `esnext` and esbuild supports quite a
+few targets like `chrome58`, `es2020`, and `edge16`.
 
 ## Inspiration
 
