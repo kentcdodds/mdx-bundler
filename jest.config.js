@@ -1,12 +1,10 @@
-// eslint-disable-next-line import/extensions
-const configs = require('kcd-scripts/config.js')
+const configs = require('kcd-scripts/config')
 
 const esModules = [
   'xdm',
   'unist-util-position-from-estree',
   'estree-walker',
   'periscopic',
-  'remark-frontmatter',
   'remark-mdx-frontmatter',
   'js-yaml',
 ].join('|')

@@ -1,3 +1,6 @@
+// because jest + TS + native es modules don't like each other, we have to keep
+// native es modules disabled and compile esm to cjs for the packages that are esm
+// total bummer...
 const path = require('path')
 const {transformSync} = require('esbuild')
 
