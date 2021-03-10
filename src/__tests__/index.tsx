@@ -12,9 +12,9 @@ published: 2021-02-13
 description: This is some meta-data
 ---
 
-import Demo from './demo'
-
 # This is the title
+
+import Demo from './demo'
 
 Here's a **neat** demo:
 
@@ -87,12 +87,12 @@ export default ({children}) => <div className="sub-dir">{children}</div>
         </p>
       </header>
       <main>
-        import Demo from './demo'
-        
-
         <h1>
           This is the title
         </h1>
+        
+
+        import Demo from './demo'
         
 
         <p>
