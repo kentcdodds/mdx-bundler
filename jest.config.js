@@ -1,4 +1,5 @@
-const configs = require('kcd-scripts/config')
+// eslint-disable-next-line import/extensions
+const configs = require('kcd-scripts/config.js')
 
 const esModules = [
   'xdm',

@@ -268,3 +268,29 @@ return leftPad(s, 12, '!')
     </div>
   `)
 })
+
+test('can specify "node_modules" in the files', async () => {
+  const mdxSource = `
+import LeftPad from 'left-pad-js'
+
+<LeftPad padding={4} string="^">Hi</LeftPad>
+  `.trim()
+
+  const {code} = await bundleMDX(mdxSource, {
+    files: {
+      'left-pad-js': `export default () => <div>this is left pad</div>`,
+    },
+  })
+
+  const Component = getMDXComponent(code)
+
+  const {container} = render(<Component />)
+
+  expect(container).toMatchInlineSnapshot(`
+    <div>
+      <div>
+        this is left pad
+      </div>
+    </div>
+  `)
+})

@@ -10,20 +10,99 @@ import type {Plugin, BuildOptions, Loader} from 'esbuild'
 import nodeResolve from '@esbuild-plugins/node-resolve'
 import {globalExternals} from '@fal-works/esbuild-plugin-global-externals'
 import type {ModuleInfo} from '@fal-works/esbuild-plugin-global-externals'
+import {PluggableList} from 'xdm/lib/core'
 
 type ESBuildOptions = BuildOptions & {write: false}
+
+type BundleMDXOptions = {
+  /**
+   * The dependencies of the MDX code to be bundled
+   *
+   * @example
+   * ```
+   * bundleMDX(mdxString, {
+   *   files: {
+   *     './components.tsx': `
+   *       import * as React from 'react'
+   *
+   *      type CounterProps = {initialCount: number, step: number}
+   *
+   *       function Counter({initialCount = 0, step = 1}: CounterProps) {
+   *         const [count, setCount] = React.useState(initialCount)
+   *         const increment = () => setCount(c => c + step)
+   *         return <button onClick={increment}>{count}</button>
+   *       }
+   *     `
+   *   },
+   * })
+   * ```
+   */
+  files?: Record<string, string>
+  /**
+   * The remark plugins you want applied when compiling the MDX
+   *
+   * NOTE: Specifying this will override the default value for frontmatter support
+   * so if you want to keep that, you'll need to include remark-frontmatter
+   * and remark-mdx-frontmatter yourself
+   */
+  remarkPlugins?: PluggableList
+  /**
+   * This allows you to modify the built-in esbuild configuration. This can be
+   * especially helpful for specifying the compilation target.
+   *
+   * @example
+   * ```
+   * bundleMDX(mdxString, {
+   *   esbuildOptions(options) {
+   *     options.target = [
+   *       'es2020',
+   *       'chrome58',
+   *       'firefox57',
+   *       'safari11',
+   *       'edge16',
+   *       'node12',
+   *     ]
+   *     return options
+   *   }
+   * })
+   * ```
+   */
+  esbuildOptions?: (options: ESBuildOptions) => ESBuildOptions
+  /**
+   * Any variables you want treated as global variables in the bundling.
+   *
+   * NOTE: These do not have to be technically global as you will be providing
+   * their values when you use getMDXComponent, but as far as esbuild is concerned
+   * it will treat these values as global variables so they will not be included
+   * in the bundle.
+   *
+   * @example
+   * ```
+   * bundlMDX(mdxString, {
+   *   globals: {'left-pad': 'myLeftPad'},
+   * })
+   *
+   * // then later
+   *
+   * import leftPad from 'left-pad'
+   *
+   * const Component = getMDXComponent(result.code, {myLeftPad: leftPad})
+   * ```
+   */
+  globals?: Record<string, string | ModuleInfo>
+}
 
 async function bundleMDX(
   mdxSource: string,
   {
     files = {},
     esbuildOptions = (options: ESBuildOptions) => options,
+    remarkPlugins = [
+      remarkFrontmatter,
+      [remarkMdxFrontmatter, {name: 'frontmatter'}],
+    ],
     globals = {},
-  }: {
-    files?: Record<string, string>
-    esbuildOptions?: (options: ESBuildOptions) => ESBuildOptions
-    globals?: Record<string, string | ModuleInfo>
-  } = {},
+  }: BundleMDXOptions = {},
 ) {
   // extract the frontmatter
   const {data: frontmatter} = matter(mdxSource)
@@ -69,19 +148,15 @@ async function bundleMDX(
       build.onLoad(
         {filter: /__mdx_bundler_fake_dir__/},
         async ({path: filePath}) => {
-          const fileType = path.extname(filePath).slice(1)
+          // the || .js allows people to exclude a file extension
+          const fileType = (path.extname(filePath) || '.jsx').slice(1)
           const contents = absoluteFiles[filePath]
 
           switch (fileType) {
             case 'mdx': {
               const vfile = await compileMDX(
                 {path: filePath, contents},
-                {
-                  remarkPlugins: [
-                    remarkFrontmatter,
-                    [remarkMdxFrontmatter, {name: 'frontmatter'}],
-                  ],
-                },
+                {jsx: false, remarkPlugins},
               )
               return {contents: vfile.contents.toString(), loader: 'jsx'}
             }

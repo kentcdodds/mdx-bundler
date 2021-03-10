@@ -1,1 +1,1 @@
-module.exports = require('./dist/client')
+export * from './dist/client.js'
