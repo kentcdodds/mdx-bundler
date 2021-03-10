@@ -2,8 +2,11 @@ import path from 'path'
 import {StringDecoder} from 'string_decoder'
 import {compile as compileMDX} from 'xdm'
 import xdm from 'xdm/esbuild.js'
+import remarkFrontmatter from 'remark-frontmatter'
+import {remarkMdxFrontmatter} from 'remark-mdx-frontmatter'
 import matter from 'gray-matter'
-import {build as bundle, Plugin, BuildOptions} from 'esbuild'
+import {build as bundle} from 'esbuild'
+import type {Plugin, BuildOptions, Loader} from 'esbuild'
 import nodeResolve from '@esbuild-plugins/node-resolve'
 import {globalExternals} from '@fal-works/esbuild-plugin-global-externals'
 import type {ModuleInfo} from '@fal-works/esbuild-plugin-global-externals'
@@ -23,12 +26,12 @@ async function bundleMDX(
   } = {},
 ) {
   // extract the frontmatter
-  const {data: frontmatter, content: entryCode} = matter(mdxSource)
+  const {data: frontmatter} = matter(mdxSource)
 
   const dir = path.join(process.cwd(), `__mdx_bundler_fake_dir__`)
   const entryPath = path.join(dir, './index.mdx')
 
-  const absoluteFiles: Record<string, string> = {[entryPath]: entryCode}
+  const absoluteFiles: Record<string, string> = {[entryPath]: mdxSource}
 
   for (const [filepath, fileCode] of Object.entries(files)) {
     absoluteFiles[path.join(dir, filepath)] = fileCode
@@ -66,24 +69,24 @@ async function bundleMDX(
       build.onLoad(
         {filter: /__mdx_bundler_fake_dir__/},
         async ({path: filePath}) => {
-          const fileType = path.extname(filePath)
+          const fileType = path.extname(filePath).slice(1)
           const contents = absoluteFiles[filePath]
 
           switch (fileType) {
-            case '.json':
-              return {contents, loader: 'json'}
-            case '.ts':
-            case '.tsx':
-              return {contents, loader: 'tsx'}
-            case '.jsx':
-            case '.js':
-              return {contents, loader: 'jsx'}
-            case '.mdx': {
-              const vfile = await compileMDX({path: filePath, contents})
+            case 'mdx': {
+              const vfile = await compileMDX(
+                {path: filePath, contents},
+                {
+                  remarkPlugins: [
+                    remarkFrontmatter,
+                    [remarkMdxFrontmatter, {name: 'frontmatter'}],
+                  ],
+                },
+              )
               return {contents: vfile.contents.toString(), loader: 'jsx'}
             }
             default:
-              throw new Error(`Unsupported file type: ${filePath}`)
+              return {contents, loader: fileType as Loader}
           }
         },
       )

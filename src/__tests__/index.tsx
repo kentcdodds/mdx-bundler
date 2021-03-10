@@ -28,6 +28,9 @@ import * as React from 'react'
 import leftPad from 'left-pad'
 import SubDir from './sub/dir.tsx'
 import data from './data.json'
+import jsInfo from './js-info.js'
+import JsxComp from './jsx-comp.jsx'
+import MdxComp from './mdx-comp.mdx'
 
 function Demo() {
   return (
@@ -35,17 +38,29 @@ function Demo() {
       {leftPad("Neat demo!", 12, '!')}
       <SubDir>Sub dir!</SubDir>
       <p>JSON: {data.package}</p>
+      <div>{jsInfo}</div>
+      <JsxComp />
+      <MdxComp />
     </div>
   )
 }
 
 export default Demo
-    `.trim(),
+      `.trim(),
       './sub/dir.tsx': `
 import * as React from 'react'
 
 export default ({children}) => <div className="sub-dir">{children}</div>
-    `.trim(),
+      `.trim(),
+      './js-info.js': 'export default "this is js info"',
+      './jsx-comp.jsx': 'export default () => <div>jsx comp</div>',
+      './mdx-comp.mdx': `
+---
+title: This is a frontmatter title
+---
+
+# Frontmatter title: {frontmatter.title}
+      `.trim(),
       './data.json': `{"package": "mdx-bundler"}`,
     },
     globals: {'left-pad': 'myLeftPad'},
@@ -114,6 +129,16 @@ export default ({children}) => <div className="sub-dir">{children}</div>
             JSON: 
             mdx-bundler
           </p>
+          <div>
+            this is js info
+          </div>
+          <div>
+            jsx comp
+          </div>
+          <h1>
+            Frontmatter title: 
+            This is a frontmatter title
+          </h1>
         </div>
       </main>
     </div>
@@ -176,6 +201,25 @@ import Demo from './demo'
   expect(error.message).toMatchInlineSnapshot(`
     "Build failed with 1 error:
     __mdx_bundler_fake_dir__/demo.tsx:1:7: error: [inMemory] Could not resolve \\"./blah-blah\\" in \\"./demo.tsx\\""
+  `)
+})
+
+test('gives a handy error when a file of an unsupported type is provided', async () => {
+  const mdxSource = `
+import Demo from './demo.blah'
+
+<Demo />
+  `.trim()
+
+  const error = (await bundleMDX(mdxSource, {
+    files: {
+      './demo.blah': `what even is this?`,
+    },
+  }).catch(e => e)) as Error
+
+  expect(error.message).toMatchInlineSnapshot(`
+    "Build failed with 1 error:
+    __mdx_bundler_fake_dir__/index.mdx:3:17: error: [JavaScript plugins] Invalid loader: \\"blah\\" (valid: js, jsx, ts, tsx, css, json, text, base64, dataurl, file, binary)"
   `)
 })
 

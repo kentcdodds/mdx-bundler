@@ -39,6 +39,8 @@
     "@fal-works/esbuild-plugin-global-externals": "^2.1.1",
     "esbuild": "0.9.0",
     "gray-matter": "^4.0.2",
+    "remark-frontmatter": "^3.0.0",
+    "remark-mdx-frontmatter": "^1.0.0",
     "xdm": "^1.5.0"
   },
   "devDependencies": {
@@ -48,6 +50,7 @@
     "@types/react-dom": "^17.0.2",
     "builtin-modules": "^3.2.0",
     "dotenv-cli": "^4.0.0",
+    "esbuild-jest": "^0.5.0",
     "jest-environment-jsdom": "^26.6.2",
     "jest-module-field-resolver": "0.0.1",
     "kcd-scripts": "^8.1.0",

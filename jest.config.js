@@ -1,17 +1,20 @@
-const {jest: jestConfig} = require('kcd-scripts/config')
+const configs = require('kcd-scripts/config')
 
 const esModules = [
   'xdm',
   'unist-util-position-from-estree',
   'estree-walker',
   'periscopic',
+  'remark-frontmatter',
+  'remark-mdx-frontmatter',
+  'js-yaml',
 ].join('|')
 
-module.exports = Object.assign(jestConfig, {
-  // Required to allow esbuild to run under jest
-  testEnvironment: './jest.environment.js',
-  // ESModules are here and Jest isn't ready...
+module.exports = Object.assign(configs.jest, {
+  testEnvironment: './tests/jest.environment.js',
   transformIgnorePatterns: [`/node_modules/(?!${esModules}).+/`],
-  moduleFileExtensions: [...jestConfig.moduleFileExtensions, 'cjs'],
+  transform: {
+    '^.+\\.(js|ts|jsx|tsx|cjs|mjs)$': './tests/transform.js',
+  },
   resolver: 'jest-module-field-resolver',
 })
