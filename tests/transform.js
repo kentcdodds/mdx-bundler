@@ -9,10 +9,11 @@ const extnameToLoader = {
 module.exports = {
   process(src, filename) {
     const ext = path.extname(filename).slice(1)
-    return transformSync(src, {
-      loader: extnameToLoader[ext] ?? ext,
+    const result = transformSync(src, {
+      loader: extnameToLoader[ext] || ext,
       sourcemap: true,
       format: 'cjs',
     })
+    return result
   },
 }
