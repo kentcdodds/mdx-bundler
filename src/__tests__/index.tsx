@@ -1,6 +1,5 @@
 import * as React from 'react'
 import {render} from '@testing-library/react'
-import {MDXProvider} from '@mdx-js/react'
 import leftPad from 'left-pad'
 import {bundleMDX} from '..'
 import {getMDXComponent} from '../client'
@@ -13,9 +12,9 @@ published: 2021-02-13
 description: This is some meta-data
 ---
 
-# This is the title
-
 import Demo from './demo'
+
+# This is the title
 
 Here's a **neat** demo:
 
@@ -71,7 +70,7 @@ export default ({children}) => <div className="sub-dir">{children}</div>
   const Component = getMDXComponent(result.code, {myLeftPad})
 
   const {container} = render(
-    <MDXProvider>
+    <>
       <header>
         <h1>{frontmatter.title}</h1>
         <p>{frontmatter.description}</p>
@@ -79,7 +78,7 @@ export default ({children}) => <div className="sub-dir">{children}</div>
       <main>
         <Component />
       </main>
-    </MDXProvider>,
+    </>,
   )
   expect(container).toMatchInlineSnapshot(`
     <div>
@@ -145,11 +144,7 @@ export default () => leftPad("Neat demo!", 12, '!')
   // this test ensures that *not* passing leftPad as a global here
   // will work because I didn't externalize the left-pad module
   const Component = getMDXComponent(result.code)
-  render(
-    <MDXProvider>
-      <Component />
-    </MDXProvider>,
-  )
+  render(<Component />)
 })
 
 test('gives a handy error when the entry imports a module that cannot be found', async () => {
@@ -157,7 +152,7 @@ test('gives a handy error when the entry imports a module that cannot be found',
 import Demo from './demo'
 
 <Demo />
-`.trim()
+  `.trim()
 
   const error = (await bundleMDX(mdxSource, {
     files: {},
@@ -223,11 +218,7 @@ test('uses the typescript loader where needed', async () => {
 
   const Component = getMDXComponent(code)
 
-  const {container} = render(
-    <MDXProvider>
-      <Component />
-    </MDXProvider>,
-  )
+  const {container} = render(<Component />)
 
   expect(container).toMatchInlineSnapshot(`
     <div>
