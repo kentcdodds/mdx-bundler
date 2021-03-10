@@ -46,7 +46,7 @@ import * as React from 'react'
 
 export default ({children}) => <div className="sub-dir">{children}</div>
     `.trim(),
-      './data.json': `"package": "mdx-bundler"}`,
+      './data.json': `{"package": "mdx-bundler"}`,
     },
     globals: {'left-pad': 'myLeftPad'},
   })
@@ -92,7 +92,6 @@ export default ({children}) => <div className="sub-dir">{children}</div>
         </h1>
         
 
-        import Demo from './demo'
         
 
         <p>
@@ -104,7 +103,18 @@ export default ({children}) => <div className="sub-dir">{children}</div>
         </p>
         
 
-        <div />
+        <div>
+          $$Neat demo!
+          <div
+            class="sub-dir"
+          >
+            Sub dir!
+          </div>
+          <p>
+            JSON: 
+            mdx-bundler
+          </p>
+        </div>
       </main>
     </div>
   `)
@@ -144,7 +154,10 @@ import Demo from './demo'
     files: {},
   }).catch(e => e)) as Error
 
-  expect(error.message).toMatchInlineSnapshot(`undefined`)
+  expect(error.message).toMatchInlineSnapshot(`
+    "Build failed with 1 error:
+    __mdx_bundler_fake_dir__/index.mdx:3:17: error: [inMemory] Could not resolve \\"./demo\\" in the entry MDX file."
+  `)
 })
 
 test('gives a handy error when importing a module that cannot be found', async () => {
@@ -160,7 +173,10 @@ import Demo from './demo'
     },
   }).catch(e => e)) as Error
 
-  expect(error.message).toMatchInlineSnapshot(`undefined`)
+  expect(error.message).toMatchInlineSnapshot(`
+    "Build failed with 1 error:
+    __mdx_bundler_fake_dir__/demo.tsx:1:7: error: [inMemory] Could not resolve \\"./blah-blah\\" in \\"./demo.tsx\\""
+  `)
 })
 
 test('files is optional', async () => {
@@ -202,10 +218,9 @@ return leftPad(s, 12, '!')
 
   expect(container).toMatchInlineSnapshot(`
     <div>
-      import Demo from './demo'
-      
-
-      <div />
+      <p>
+        !!Typescript
+      </p>
     </div>
   `)
 })
