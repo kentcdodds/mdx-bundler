@@ -46,11 +46,7 @@ import * as React from 'react'
 
 export default ({children}) => <div className="sub-dir">{children}</div>
     `.trim(),
-      './data.json': `
-        {
-          "package": "mdx-bundler"
-        }
-      `.trim(),
+      './data.json': `"package": "mdx-bundler"}`,
     },
     globals: {'left-pad': 'myLeftPad'},
   })
@@ -91,34 +87,24 @@ export default ({children}) => <div className="sub-dir">{children}</div>
         </p>
       </header>
       <main>
-        <wrapper
-          mdxtype="MDXLayout"
-        >
-          <h1>
-            This is the title
-          </h1>
-          <p>
-            Here's a 
-            <strong
-              parentname="p"
-            >
-              neat
-            </strong>
-             demo:
-          </p>
-          <div>
-            $$Neat demo!
-            <div
-              class="sub-dir"
-            >
-              Sub dir!
-            </div>
-            <p>
-              JSON: 
-              mdx-bundler
-            </p>
-          </div>
-        </wrapper>
+        import Demo from './demo'
+        
+
+        <h1>
+          This is the title
+        </h1>
+        
+
+        <p>
+          Here's a 
+          <strong>
+            neat
+          </strong>
+           demo:
+        </p>
+        
+
+        <div />
       </main>
     </div>
   `)
@@ -129,7 +115,7 @@ test('bundles 3rd party deps', async () => {
 import Demo from './demo'
 
 <Demo />
-`.trim()
+  `.trim()
 
   const result = await bundleMDX(mdxSource, {
     files: {
@@ -158,10 +144,7 @@ import Demo from './demo'
     files: {},
   }).catch(e => e)) as Error
 
-  expect(error.message).toMatchInlineSnapshot(`
-    "Build failed with 1 error:
-    __mdx_bundler_fake_dir__/index.mdx.jsx:1:17: error: [inMemory] Could not resolve \\"./demo\\" in the entry MDX file."
-  `)
+  expect(error.message).toMatchInlineSnapshot(`undefined`)
 })
 
 test('gives a handy error when importing a module that cannot be found', async () => {
@@ -169,7 +152,7 @@ test('gives a handy error when importing a module that cannot be found', async (
 import Demo from './demo'
 
 <Demo />
-`.trim()
+  `.trim()
 
   const error = (await bundleMDX(mdxSource, {
     files: {
@@ -177,10 +160,7 @@ import Demo from './demo'
     },
   }).catch(e => e)) as Error
 
-  expect(error.message).toMatchInlineSnapshot(`
-    "Build failed with 1 error:
-    __mdx_bundler_fake_dir__/demo.tsx:1:7: error: [inMemory] Could not resolve \\"./blah-blah\\" in \\"./demo.tsx\\""
-  `)
+  expect(error.message).toMatchInlineSnapshot(`undefined`)
 })
 
 test('files is optional', async () => {
@@ -189,29 +169,29 @@ test('files is optional', async () => {
 
 test('uses the typescript loader where needed', async () => {
   const mdxSource = `
-  import Demo from './demo'
+import Demo from './demo'
 
-  <Demo />
+<Demo />
   `.trim()
 
   const {code} = await bundleMDX(mdxSource, {
     files: {
       './demo.tsx': `
-        import * as React from 'react'
-        import {left} from './left'
+import * as React from 'react'
+import {left} from './left'
 
-        const Demo: React.FC = () => { 
-          return <p>{left("Typescript")}</p>
-        }
+const Demo: React.FC = () => { 
+return <p>{left("Typescript")}</p>
+}
 
-        export default Demo
+export default Demo
       `.trim(),
       './left.ts': `
-        import leftPad from 'left-pad'
+import leftPad from 'left-pad'
 
-        export const left = (s: string): string => {
-          return leftPad(s, 12, '!')
-        }
+export const left = (s: string): string => {
+return leftPad(s, 12, '!')
+}
       `.trim(),
     },
   })
@@ -222,13 +202,10 @@ test('uses the typescript loader where needed', async () => {
 
   expect(container).toMatchInlineSnapshot(`
     <div>
-      <wrapper
-        mdxtype="MDXLayout"
-      >
-        <p>
-          !!Typescript
-        </p>
-      </wrapper>
+      import Demo from './demo'
+      
+
+      <div />
     </div>
   `)
 })

@@ -1,6 +1,7 @@
 import path from 'path'
 import {StringDecoder} from 'string_decoder'
 import {compile as compileMDX} from 'xdm'
+import xdm from 'xdm/esbuild.js'
 import matter from 'gray-matter'
 import {build as bundle, Plugin, BuildOptions} from 'esbuild'
 import nodeResolve from '@esbuild-plugins/node-resolve'
@@ -22,27 +23,13 @@ async function bundleMDX(
   } = {},
 ) {
   // extract the frontmatter
-  const {data: frontmatter, content: mdxString} = matter(mdxSource)
+  const {data: frontmatter, content: entryCode} = matter(mdxSource)
 
   const dir = path.join(process.cwd(), `__mdx_bundler_fake_dir__`)
-  const mdxPath = path.join(dir, './index.mdx')
-  const entryPath = `${mdxPath}.jsx`
+  const entryPath = path.join(dir, './index.mdx')
 
-  const vfile = await compileMDX({
-    path: mdxPath,
-    contents: mdxString,
-  })
+  const absoluteFiles: Record<string, string> = {[entryPath]: entryCode}
 
-  const entryCode = vfile.contents.toString().trim()
-
-  // FIXME: remove this
-  if (entryCode.includes('import')) {
-    throw new Error('still not working jack')
-  }
-
-  const absoluteFiles: Record<string, string> = {
-    [entryPath]: entryCode,
-  }
   for (const [filepath, fileCode] of Object.entries(files)) {
     absoluteFiles[path.join(dir, filepath)] = fileCode
   }
@@ -57,7 +44,7 @@ async function bundleMDX(
 
         if (modulePath in absoluteFiles) return {path: modulePath}
 
-        for (const ext of ['.js', '.ts', '.jsx', '.tsx', '.json']) {
+        for (const ext of ['.js', '.ts', '.jsx', '.tsx', '.json', '.mdx']) {
           const fullModulePath = `${modulePath}${ext}`
           if (fullModulePath in absoluteFiles) return {path: fullModulePath}
         }
@@ -76,29 +63,30 @@ async function bundleMDX(
         }
       })
 
-      build.onLoad({filter: /__mdx_bundler_fake_dir__/}, ({path: filePath}) => {
-        const fileType = path.extname(filePath)
-        const contents = absoluteFiles[filePath]
+      build.onLoad(
+        {filter: /__mdx_bundler_fake_dir__/},
+        async ({path: filePath}) => {
+          const fileType = path.extname(filePath)
+          const contents = absoluteFiles[filePath]
 
-        switch (fileType) {
-          case '.json':
-            return {
-              contents,
-              loader: 'json',
+          switch (fileType) {
+            case '.json':
+              return {contents, loader: 'json'}
+            case '.ts':
+            case '.tsx':
+              return {contents, loader: 'tsx'}
+            case '.jsx':
+            case '.js':
+              return {contents, loader: 'jsx'}
+            case '.mdx': {
+              const vfile = await compileMDX({path: filePath, contents})
+              return {contents: vfile.contents.toString(), loader: 'jsx'}
             }
-          case '.ts':
-          case '.tsx':
-            return {
-              contents,
-              loader: 'tsx',
-            }
-          default:
-            return {
-              contents,
-              loader: 'jsx',
-            }
-        }
-      })
+            default:
+              throw new Error(`Unsupported file type: ${filePath}`)
+          }
+        },
+      )
     },
   }
 
@@ -120,10 +108,9 @@ async function bundleMDX(
           type: 'cjs',
         },
       }),
-      nodeResolve({
-        extensions: ['.js', '.ts', '.jsx', '.tsx'],
-      }),
+      nodeResolve({extensions: ['.js', '.ts', '.jsx', '.tsx']}),
       inMemoryPlugin,
+      xdm(),
     ],
     bundle: true,
     format: 'iife',
