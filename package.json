@@ -2,14 +2,13 @@
   "name": "mdx-bundler",
   "version": "0.0.0-semantically-released",
   "description": "Compile and bundle your MDX files and their dependencies. FAST.",
-  "main": "dist/index.mjs",
-  "types": "dist/index.mjs.d.ts",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
   "keywords": [
     "mdx",
     "bundler",
     "mdx-bundler",
-    "esbuild",
-    "xdm"
+    "esbuild"
   ],
   "author": "Kent C. Dodds <me@kentcdodds.com> (https://kentcdodds.com)",
   "license": "MIT",
@@ -27,12 +26,11 @@
   "homepage": "https://github.com/kentcdodds/mdx-bundler#readme",
   "files": [
     "dist",
-    "client.mjs",
-    "client.mjs.d.ts"
+    "client.js",
+    "client.d.ts"
   ],
   "scripts": {
     "build": "kcd-scripts build",
-    "postbuild": "node ./other/post-build.mjs",
     "lint": "kcd-scripts lint",
     "setup": "npm install && npm run validate -s",
     "test": "kcd-scripts test",
@@ -44,11 +42,12 @@
     "@babel/runtime": "^7.13.10",
     "@esbuild-plugins/node-resolve": "0.0.14",
     "@fal-works/esbuild-plugin-global-externals": "^2.1.1",
+    "@mdx-js/mdx": "^1.6.22",
+    "@mdx-js/react": "^1.6.22",
     "esbuild": "0.9.0",
     "gray-matter": "^4.0.2",
     "remark-frontmatter": "^3.0.0",
-    "remark-mdx-frontmatter": "^1.0.0",
-    "xdm": "^1.5.0"
+    "remark-mdx-frontmatter": "^1.0.0"
   },
   "devDependencies": {
     "@testing-library/react": "^11.2.5",

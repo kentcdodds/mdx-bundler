@@ -1,16 +1,13 @@
 import path from 'path'
 import {StringDecoder} from 'string_decoder'
-import {compile as compileMDX} from 'xdm'
-import xdm from 'xdm/esbuild.js'
+import {createCompiler} from '@mdx-js/mdx'
 import remarkFrontmatter from 'remark-frontmatter'
-import {remarkMdxFrontmatter} from 'remark-mdx-frontmatter'
 import matter from 'gray-matter'
-import esbuild from 'esbuild'
+import * as esbuild from 'esbuild'
 import type {Plugin, BuildOptions, Loader} from 'esbuild'
 import nodeResolve from '@esbuild-plugins/node-resolve'
 import {globalExternals} from '@fal-works/esbuild-plugin-global-externals'
 import type {ModuleInfo} from '@fal-works/esbuild-plugin-global-externals'
-import {PluggableList} from 'xdm/lib/core'
 
 type ESBuildOptions = BuildOptions & {write: false}
 
@@ -41,11 +38,10 @@ type BundleMDXOptions = {
   /**
    * The remark plugins you want applied when compiling the MDX
    *
-   * NOTE: Specifying this will override the default value for frontmatter support
-   * so if you want to keep that, you'll need to include remark-frontmatter
-   * and remark-mdx-frontmatter yourself
+   * NOTE: Specifying this will override the default value for stripping
+   * frontmatter remark-frontmatter
    */
-  remarkPlugins?: PluggableList
+  remarkPlugins?: Array<unknown>
   /**
    * This allows you to modify the built-in esbuild configuration. This can be
    * especially helpful for specifying the compilation target.
@@ -97,10 +93,7 @@ async function bundleMDX(
   {
     files = {},
     esbuildOptions = (options: ESBuildOptions) => options,
-    remarkPlugins = [
-      remarkFrontmatter,
-      [remarkMdxFrontmatter, {name: 'frontmatter'}],
-    ],
+    remarkPlugins = [remarkFrontmatter],
     globals = {},
   }: BundleMDXOptions = {},
 ) {
@@ -154,11 +147,12 @@ async function bundleMDX(
 
           switch (fileType) {
             case 'mdx': {
-              const vfile = await compileMDX(
-                {path: filePath, contents},
-                {jsx: false, remarkPlugins},
-              )
-              return {contents: vfile.contents.toString(), loader: 'jsx'}
+              // I do not want to take the time to type mdx...
+              // eslint-disable-next-line
+              const result = (await createCompiler({
+                remarkPlugins,
+              }).process(contents)) as {contents: string}
+              return {contents: result.contents, loader: 'jsx'}
             }
             default:
               return {contents, loader: fileType as Loader}
@@ -188,12 +182,12 @@ async function bundleMDX(
       }),
       nodeResolve({extensions: ['.js', '.ts', '.jsx', '.tsx']}),
       inMemoryPlugin,
-      xdm(),
     ],
     bundle: true,
     format: 'iife',
     globalName: 'Component',
-    minify: true,
+    minify: false,
+    jsxFactory: 'mdx',
   })
 
   const bundled = await esbuild.build(buildOptions)
