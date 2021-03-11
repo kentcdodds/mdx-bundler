@@ -103,14 +103,6 @@ Frontmatter is ignored
         </p>
       </header>
       <main>
-        <hr />
-        <p>
-          title: Example Post
-    published: 2021-02-13
-        </p>
-        <h2>
-          description: This is some meta-data
-        </h2>
         <h1>
           This is the title
         </h1>
@@ -138,10 +130,6 @@ Frontmatter is ignored
           <div>
             jsx comp
           </div>
-          <hr />
-          <h2>
-            title: This is frontmatter
-          </h2>
           <p>
             Frontmatter is ignored
           </p>
