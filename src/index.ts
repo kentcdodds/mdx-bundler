@@ -5,7 +5,7 @@ import xdm from 'xdm/esbuild.js'
 import remarkFrontmatter from 'remark-frontmatter'
 import {remarkMdxFrontmatter} from 'remark-mdx-frontmatter'
 import matter from 'gray-matter'
-import {build as bundle} from 'esbuild'
+import esbuild from 'esbuild'
 import type {Plugin, BuildOptions, Loader} from 'esbuild'
 import nodeResolve from '@esbuild-plugins/node-resolve'
 import {globalExternals} from '@fal-works/esbuild-plugin-global-externals'
@@ -196,7 +196,7 @@ async function bundleMDX(
     minify: true,
   })
 
-  const bundled = await bundle(buildOptions)
+  const bundled = await esbuild.build(buildOptions)
 
   const decoder = new StringDecoder('utf8')
 

@@ -2,8 +2,8 @@
   "name": "mdx-bundler",
   "version": "0.0.0-semantically-released",
   "description": "Compile and bundle your MDX files and their dependencies. FAST.",
-  "main": "dist/index.js",
-  "types": "dist/index.d.ts",
+  "main": "dist/index.mjs",
+  "types": "dist/index.mjs.d.ts",
   "keywords": [
     "mdx",
     "bundler",
@@ -27,11 +27,12 @@
   "homepage": "https://github.com/kentcdodds/mdx-bundler#readme",
   "files": [
     "dist",
-    "client.js",
-    "client.d.ts"
+    "client.mjs",
+    "client.mjs.d.ts"
   ],
   "scripts": {
     "build": "kcd-scripts build",
+    "postbuild": "node ./other/post-build.mjs",
     "lint": "kcd-scripts lint",
     "setup": "npm install && npm run validate -s",
     "test": "kcd-scripts test",
@@ -54,6 +55,7 @@
     "@types/jest": "^26.0.20",
     "@types/react": "^17.0.3",
     "@types/react-dom": "^17.0.2",
+    "glob": "^7.1.6",
     "jest-environment-jsdom": "^26.6.2",
     "jest-module-field-resolver": "0.0.1",
     "kcd-scripts": "^8.1.0",
