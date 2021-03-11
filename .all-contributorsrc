@@ -43,6 +43,16 @@
         "ideas",
         "review"
       ]
+    },
+    {
+      "login": "wooorm",
+      "name": "Titus",
+      "avatar_url": "https://avatars.githubusercontent.com/u/944406?v=4",
+      "profile": "http://wooorm.com",
+      "contributions": [
+        "ideas",
+        "review"
+      ]
     }
   ]
 }
