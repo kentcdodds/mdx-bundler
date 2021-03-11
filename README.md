@@ -102,6 +102,7 @@ From there, you send the `code` to your client, and then:
 
 ```jsx
 import * as React from 'react'
+import {MDXProvider} from '@mdx-js/react'
 import {getMDXComponent} from 'mdx-bundler/client'
 
 function Post({code, frontmatter}) {
@@ -109,7 +110,7 @@ function Post({code, frontmatter}) {
   // avoid re-creating the component every render.
   const Component = React.useMemo(() => getMDXComponent(code), [code])
   return (
-    <>
+    <MDXProvider>
       <header>
         <h1>{frontmatter.title}</h1>
         <p>{frontmatter.description}</p>
@@ -117,7 +118,7 @@ function Post({code, frontmatter}) {
       <main>
         <Component />
       </main>
-    </>
+    </MDXProvider>
   )
 }
 ```
@@ -236,6 +237,7 @@ const result = await bundleMDX(mdxSource, {
 ```tsx
 // server-rendered and/or client-side code that can run in the browser or Node:
 import * as React from 'react'
+import {MDXProvider} from '@mdx-js/react'
 import leftPad from 'left-pad'
 import {getMDXComponent} from 'mdx-bundler/client'
 
@@ -245,9 +247,11 @@ function MDXPage({code}: {code: string}) {
     [result.code, leftPad],
   )
   return (
-    <main>
-      <Component />
-    </main>
+    <MDXProvider>
+      <main>
+        <Component />
+      </main>
+    </MDXProvider>
   )
 }
 ```
