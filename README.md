@@ -1,7 +1,7 @@
 <div align="center">
 <h1>mdx-bundler 🦤</h1>
 
-<p>Give me MDX/TSX strings and I'll give you back a string of JS you can eval.</p>
+<p>Compile and bundle your MDX files and their dependencies. FAST.</p>
 </div>
 
 ---
@@ -24,8 +24,14 @@ get a bundled version of these files to eval in the browser.
 
 ## This solution
 
-Give your MDX and JS strings to this function, and it will give you back a
-single string of the bundled code.
+This is an async function that will compile and bundle your MDX files and their
+dependencies. It uses [esbuild](https://esbuild.github.io/), so it's VERY fast
+and supports TypeScript files (for the dependencies of your MDX files).
+
+Your source files could be local, in a remote github repo, in a CMS, or wherever
+else and it doesn't matter. All `mdx-bundler` cares about is that you pass it
+all the files and source code necessary and it will take care of bundling
+everything for you.
 
 ## Table of Contents
 
@@ -34,8 +40,7 @@ single string of the bundled code.
 
 - [Installation](#installation)
 - [Usage](#usage)
-- [Compilation target](#compilation-target)
-- [Rollup options](#rollup-options)
+  - [Options](#options)
 - [Inspiration](#inspiration)
 - [Other Solutions](#other-solutions)
 - [Issues](#issues)
@@ -136,7 +141,9 @@ Ultimately, this gets rendered (basically):
 </main>
 ```
 
-## Files
+### Options
+
+#### files
 
 The `files` config is an object of all the files you're bundling. The key is the
 path to the file (relative to the MDX source) and the value is the string of the
@@ -144,38 +151,67 @@ file source code. You could get these from the filesystem or from a remote
 database. If your MDX doesn't reference other files (or only imports things from
 `node_modules`), then you can omit this entirely.
 
-## Compilation target
+#### remarkPlugins
 
-We use rollup to bundle your MDX and its dependencies and babel to compile
-things. We're using `@babel/preset-env` and you can configure this using the
-standard browserlist configuration.
-[learn more](https://babeljs.io/docs/en/babel-preset-env#browserslist-integration).
+If you need to customize anything about the MDX compilation you can use remark
+plugins.
 
-## Rollup options
+NOTE: Specifying this will override the default value for frontmatter support so
+if you want to keep that, you'll need to include `remark-frontmatter` yourself.
 
-You can customize the rollup configuration used with the rollup options:
+#### esbuildOptions
+
+You can customize any of esbuild options with the option `esbuildOptions`. This
+takes a function which is passed the default esbuild options and expects an
+options object to be returned.
 
 ```typescript
+// server-side or build-time code that runs in Node:
+import {bundleMDX} from 'mdx-bundler'
+
+const mdxSource = `
+# This is the title
+
+import leftPad from 'left-pad'
+
+<div>{leftPad("Neat demo!", 12, '!')}</div>
+`.trim()
+
 const result = await bundleMDX(mdxSource, {
-  files: {
-    /* ... */
-  },
-  rollup: {
-    getInputOptions,
-    getOutputOptions,
+  esbuildOptions: options => {
+    options.minify = false
+    options.target = [
+      'es2020',
+      'chrome58',
+      'firefox57',
+      'safari11',
+      'edge16',
+      'node12',
+    ]
+
+    return options
   },
 })
 ```
 
-Each of these is a function that receives the default options and should return
-the options you want used.
+More information on the available options can be found in the
+[esbuild documentation](https://esbuild.github.io/api/#build-api).
 
-This should allow you to customize the `external` and `global` configuration for
-rollup. For example, if your MDX file uses the d3 library and your app exposes
-`window.d3` you could configure rollup to externalize that and replace all
-references with the global `d3` to avoid double-bundling d3. When you call
-`getMDXComponent`, you'll pass `d3` as a second argument:
-`getMDXComponent(code, {d3: window.d3})`. Here's an example:
+It's recommended to use this feature to configure the `target` to your desired
+output, otherwise, esbuild defaults to `esnext` which is to say that it doesn't
+compile any standardized features so it's possible users of older browsers will
+experience errors.
+
+#### globals
+
+This tells esbuild that a given module is externally available. For example, if
+your MDX file uses the d3 library and you're already using the d3 library in
+your app then you'll end up shipping `d3` to the user twice (once for your app
+and once for this MDX component). This is wasteful and you'd be better off just
+telling esbuild to _not_ bundle `d3` and you can pass it to the component
+yourself when you call `getMDXComponent`.
+
+Here's an example:
 
 ```tsx
 // server-side or build-time code that runs in Node:
@@ -194,30 +230,15 @@ const result = await bundleMDX(mdxSource, {
   // file bundle and the host app. Otherwise, all deps will just be bundled.
   // So it'll work either way, this is just an optimization to avoid sending
   // multiple copies of the same library to your users.
-  rollup: {
-    getInputOptions(options) {
-      // Tell rollup that `left-pad` should *not* be bundled.
-      // By default `options.external` is: ['react', 'react-dom']
-      // so we'll add 'left-pad' to tell rollup to not bundle it with our MDX code
-      options.external = [...(options.external as Array<string>), 'left-pad']
-      return options
-    },
-    getOutputOptions(options) {
-      // Tell rollup that it should replace the left-pad import with a global variable.
-      // By default `options.globals` is: {react: 'React', 'react-dom': 'ReactDOM'}
-      // so we'll add 'left-pad': 'myLeftPad' to tell it what the global variable name is
-      options.globals = {...options.globals, 'left-pad': 'myLeftPad'}
-      return options
-    },
-  },
+  globals: {'left-pad': 'myLeftPad'},
 })
 ```
 
 ```tsx
 // server-rendered and/or client-side code that can run in the browser or Node:
 import * as React from 'react'
-import leftPad from 'left-pad'
 import {MDXProvider} from '@mdx-js/react'
+import leftPad from 'left-pad'
 import {getMDXComponent} from 'mdx-bundler/client'
 
 function MDXPage({code}: {code: string}) {
@@ -226,11 +247,11 @@ function MDXPage({code}: {code: string}) {
     [result.code, leftPad],
   )
   return (
-    <main>
-      <MDXProvider>
+    <MDXProvider>
+      <main>
         <Component />
-      </MDXProvider>
-    </main>
+      </main>
+    </MDXProvider>
   )
 }
 ```

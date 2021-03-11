@@ -5,9 +5,6 @@ import leftPad from 'left-pad'
 import {bundleMDX} from '..'
 import {getMDXComponent} from '../client'
 
-// compiling and bundling is slow...
-jest.setTimeout(20000)
-
 test('smoke test', async () => {
   const mdxSource = `
 ---
@@ -31,34 +28,43 @@ Here's a **neat** demo:
 import * as React from 'react'
 import leftPad from 'left-pad'
 import SubDir from './sub/dir.tsx'
+import data from './data.json'
+import jsInfo from './js-info.js'
+import JsxComp from './jsx-comp.jsx'
+import MdxComp from './mdx-comp.mdx'
 
 function Demo() {
   return (
     <div>
       {leftPad("Neat demo!", 12, '!')}
       <SubDir>Sub dir!</SubDir>
+      <p>JSON: {data.package}</p>
+      <div>{jsInfo}</div>
+      <JsxComp />
+      <MdxComp />
     </div>
   )
 }
 
 export default Demo
-    `.trim(),
+      `.trim(),
       './sub/dir.tsx': `
 import * as React from 'react'
 
 export default ({children}) => <div className="sub-dir">{children}</div>
-    `.trim(),
+      `.trim(),
+      './js-info.js': 'export default "this is js info"',
+      './jsx-comp.jsx': 'export default () => <div>jsx comp</div>',
+      './mdx-comp.mdx': `
+---
+title: This is frontmatter
+---
+
+Frontmatter is ignored
+      `.trim(),
+      './data.json': `{"package": "mdx-bundler"}`,
     },
-    rollup: {
-      getInputOptions(options) {
-        options.external = [...(options.external as Array<string>), 'left-pad']
-        return options
-      },
-      getOutputOptions(options) {
-        options.globals = {...options.globals, 'left-pad': 'myLeftPad'}
-        return options
-      },
-    },
+    globals: {'left-pad': 'myLeftPad'},
   })
 
   const frontmatter = result.frontmatter as {
@@ -66,7 +72,15 @@ export default ({children}) => <div className="sub-dir">{children}</div>
     description: string
     published: string
   }
-  const Component = getMDXComponent(result.code, {myLeftPad: leftPad})
+
+  // This creates a custom left pad which uses a different filler character to the one supplied.
+  // If it is not substituted the original will be used and we will get "!" instead of "$"
+  const myLeftPad = (string: string, length: number) => {
+    return leftPad(string, length, '$')
+  }
+
+  const Component = getMDXComponent(result.code, {myLeftPad})
+
   const {container} = render(
     <MDXProvider>
       <header>
@@ -100,12 +114,25 @@ export default ({children}) => <div className="sub-dir">{children}</div>
            demo:
         </p>
         <div>
-          !!Neat demo!
+          $$Neat demo!
           <div
             class="sub-dir"
           >
             Sub dir!
           </div>
+          <p>
+            JSON: 
+            mdx-bundler
+          </p>
+          <div>
+            this is js info
+          </div>
+          <div>
+            jsx comp
+          </div>
+          <p>
+            Frontmatter is ignored
+          </p>
         </div>
       </main>
     </div>
@@ -117,7 +144,7 @@ test('bundles 3rd party deps', async () => {
 import Demo from './demo'
 
 <Demo />
-`.trim()
+  `.trim()
 
   const result = await bundleMDX(mdxSource, {
     files: {
@@ -144,15 +171,16 @@ test('gives a handy error when the entry imports a module that cannot be found',
 import Demo from './demo'
 
 <Demo />
-`.trim()
+  `.trim()
 
   const error = (await bundleMDX(mdxSource, {
     files: {},
   }).catch(e => e)) as Error
 
-  expect(error.message).toMatchInlineSnapshot(
-    `"Could not resolve './demo' from the entry MDX file"`,
-  )
+  expect(error.message).toMatchInlineSnapshot(`
+    "Build failed with 1 error:
+    __mdx_bundler_fake_dir__/index.mdx:1:17: error: [inMemory] Could not resolve \\"./demo\\" in the entry MDX file."
+  `)
 })
 
 test('gives a handy error when importing a module that cannot be found', async () => {
@@ -160,7 +188,7 @@ test('gives a handy error when importing a module that cannot be found', async (
 import Demo from './demo'
 
 <Demo />
-`.trim()
+  `.trim()
 
   const error = (await bundleMDX(mdxSource, {
     files: {
@@ -168,11 +196,107 @@ import Demo from './demo'
     },
   }).catch(e => e)) as Error
 
-  expect(error.message).toMatchInlineSnapshot(
-    `"Could not resolve './blah-blah' from 'demo.tsx'"`,
-  )
+  expect(error.message).toMatchInlineSnapshot(`
+    "Build failed with 1 error:
+    __mdx_bundler_fake_dir__/demo.tsx:1:7: error: [inMemory] Could not resolve \\"./blah-blah\\" in \\"./demo.tsx\\""
+  `)
+})
+
+test('gives a handy error when a file of an unsupported type is provided', async () => {
+  const mdxSource = `
+import Demo from './demo.blah'
+
+<Demo />
+  `.trim()
+
+  const error = (await bundleMDX(mdxSource, {
+    files: {
+      './demo.blah': `what even is this?`,
+    },
+  }).catch(e => e)) as Error
+
+  expect(error.message).toMatchInlineSnapshot(`
+    "Build failed with 1 error:
+    __mdx_bundler_fake_dir__/index.mdx:1:17: error: [JavaScript plugins] Invalid loader: \\"blah\\" (valid: js, jsx, ts, tsx, css, json, text, base64, dataurl, file, binary)"
+  `)
 })
 
 test('files is optional', async () => {
   await expect(bundleMDX('hello')).resolves.toBeTruthy()
+})
+
+test('uses the typescript loader where needed', async () => {
+  const mdxSource = `
+import Demo from './demo'
+
+<Demo />
+  `.trim()
+
+  const {code} = await bundleMDX(mdxSource, {
+    files: {
+      './demo.tsx': `
+import * as React from 'react'
+import {left} from './left'
+
+const Demo: React.FC = () => { 
+return <p>{left("Typescript")}</p>
+}
+
+export default Demo
+      `.trim(),
+      './left.ts': `
+import leftPad from 'left-pad'
+
+export const left = (s: string): string => {
+return leftPad(s, 12, '!')
+}
+      `.trim(),
+    },
+  })
+
+  const Component = getMDXComponent(code)
+
+  const {container} = render(
+    <MDXProvider>
+      <Component />
+    </MDXProvider>,
+  )
+
+  expect(container).toMatchInlineSnapshot(`
+    <div>
+      <p>
+        !!Typescript
+      </p>
+    </div>
+  `)
+})
+
+test('can specify "node_modules" in the files', async () => {
+  const mdxSource = `
+import LeftPad from 'left-pad-js'
+
+<LeftPad padding={4} string="^">Hi</LeftPad>
+  `.trim()
+
+  const {code} = await bundleMDX(mdxSource, {
+    files: {
+      'left-pad-js': `export default () => <div>this is left pad</div>`,
+    },
+  })
+
+  const Component = getMDXComponent(code)
+
+  const {container} = render(
+    <MDXProvider>
+      <Component />
+    </MDXProvider>,
+  )
+
+  expect(container).toMatchInlineSnapshot(`
+    <div>
+      <div>
+        this is left pad
+      </div>
+    </div>
+  `)
 })
