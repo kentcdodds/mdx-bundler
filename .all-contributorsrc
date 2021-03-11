@@ -31,6 +31,18 @@
       "contributions": [
         "bug"
       ]
+    },
+    {
+      "login": "Arcath",
+      "name": "Adam Laycock",
+      "avatar_url": "https://avatars.githubusercontent.com/u/19609?v=4",
+      "profile": "https://arcath.net",
+      "contributions": [
+        "code",
+        "test",
+        "ideas",
+        "review"
+      ]
     }
   ]
 }
