@@ -8,7 +8,7 @@ import type {Plugin, BuildOptions, Loader} from 'esbuild'
 import nodeResolve from '@esbuild-plugins/node-resolve'
 import {globalExternals} from '@fal-works/esbuild-plugin-global-externals'
 import type {ModuleInfo} from '@fal-works/esbuild-plugin-global-externals'
-import type {PluggableList} from 'xdm/lib/core'
+import type {VFileCompatible, CompileOptions} from 'xdm/lib/compile'
 
 type ESBuildOptions = BuildOptions & {write: false}
 
@@ -37,13 +37,32 @@ type BundleMDXOptions = {
    */
   files?: Record<string, string>
   /**
-   * The remark plugins you want applied when compiling the MDX
+   * This allows you to modify the built-in xdm configuration (passed to xdm.compile).
+   * This can be helpful for specifying your own remarkPlugins/rehypePlugins.
    *
-   * NOTE: Specifying this will override the default value for frontmatter support
-   * so if you want to keep that, you'll need to include remark-frontmatter
-   * and remark-mdx-frontmatter yourself
+   * @param vfileCompatible the path and contents of the mdx file being compiled
+   * @param options the default options which you are expected to modify and return
+   * @returns the options to be passed to xdm.compile
+   *
+   * @example
+   * ```
+   * bundleMDX(mdxString, {
+   *   xdmOptions(input, options) {
+   *     // this is the recommended way to add custom remark/rehype plugins:
+   *     // The syntax might look weird, but it protects you in case we add/remove
+   *     // plugins in the future.
+   *     options.remarkPlugins = [...(options.remarkPlugins ?? []), myRemarkPlugin]
+   *     options.rehypePlugins = [...(options.rehypePlugins ?? []), myRehypePlugin]
+   *
+   *     return options
+   *   }
+   * })
+   * ```
    */
-  remarkPlugins?: PluggableList
+  xdmOptions?: (
+    vfileCompatible: VFileCompatible,
+    options: CompileOptions,
+  ) => CompileOptions
   /**
    * This allows you to modify the built-in esbuild configuration. This can be
    * especially helpful for specifying the compilation target.
@@ -94,16 +113,15 @@ async function bundleMDX(
   mdxSource: string,
   {
     files = {},
+    xdmOptions = (vfileCompatible: VFileCompatible, options: CompileOptions) =>
+      options,
     esbuildOptions = (options: ESBuildOptions) => options,
-    remarkPlugins = [
-      remarkFrontmatter,
-      [remarkMdxFrontmatter, {name: 'frontmatter'}],
-    ],
     globals = {},
   }: BundleMDXOptions = {},
 ) {
+  // xdm is a native ESM, and we're running in a CJS context. This is the
+  // only way to import ESM within CJS
   const {compile: compileMDX} = await import('xdm')
-  const {default: xdmESBuild} = await import('xdm/esbuild.js')
   // extract the frontmatter
   const {data: frontmatter} = matter(mdxSource)
 
@@ -154,9 +172,19 @@ async function bundleMDX(
 
           switch (fileType) {
             case 'mdx': {
+              const vFileCompatible: VFileCompatible = {
+                path: filePath,
+                contents,
+              }
               const vfile = await compileMDX(
-                {path: filePath, contents},
-                {jsx: false, remarkPlugins},
+                vFileCompatible,
+                xdmOptions(vFileCompatible, {
+                  jsx: true,
+                  remarkPlugins: [
+                    remarkFrontmatter,
+                    [remarkMdxFrontmatter, {name: 'frontmatter'}],
+                  ],
+                }),
               )
               return {contents: vfile.contents.toString(), loader: 'jsx'}
             }
@@ -188,7 +216,6 @@ async function bundleMDX(
       }),
       nodeResolve({extensions: ['.js', '.ts', '.jsx', '.tsx']}),
       inMemoryPlugin,
-      xdmESBuild(),
     ],
     bundle: true,
     format: 'iife',

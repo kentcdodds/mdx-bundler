@@ -154,14 +154,25 @@ file source code. You could get these from the filesystem or from a remote
 database. If your MDX doesn't reference other files (or only imports things from
 `node_modules`), then you can omit this entirely.
 
-#### remarkPlugins
+#### xdmOptions
 
-If you need to customize anything about the MDX compilation with `xdm` you can
-use remark plugins.
+This allows you to modify the built-in xdm configuration (passed to
+xdm.compile). This can be helpful for specifying your own
+remarkPlugins/rehypePlugins.
 
-NOTE: Specifying this will override the default value for frontmatter support so
-if you want to keep that, you'll need to include `remark-frontmatter` and
-`remark-mdx-frontmatter` yourself.
+```ts
+bundleMDX(mdxString, {
+  xdmOptions(input, options) {
+    // this is the recommended way to add custom remark/rehype plugins:
+    // The syntax might look weird, but it protects you in case we add/remove
+    // plugins in the future.
+    options.remarkPlugins = [...(options.remarkPlugins ?? []), myRemarkPlugin]
+    options.rehypePlugins = [...(options.rehypePlugins ?? []), myRehypePlugin]
+
+    return options
+  },
+})
+```
 
 #### esbuildOptions
 
@@ -170,19 +181,8 @@ takes a function which is passed the default esbuild options and expects an
 options object to be returned.
 
 ```typescript
-// server-side or build-time code that runs in Node:
-import {bundleMDX} from 'mdx-bundler'
-
-const mdxSource = `
-# This is the title
-
-import leftPad from 'left-pad'
-
-<div>{leftPad("Neat demo!", 12, '!')}</div>
-`.trim()
-
-const result = await bundleMDX(mdxSource, {
-  esbuildOptions: options => {
+bundleMDX(mdxSource, {
+  esbuildOptions(options) {
     options.minify = false
     options.target = [
       'es2020',

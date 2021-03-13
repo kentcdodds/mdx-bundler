@@ -105,6 +105,10 @@ title: This is frontmatter
         <h1>
           This is the title
         </h1>
+        
+
+        
+
         <p>
           Here's a 
           <strong>
@@ -112,6 +116,8 @@ title: This is frontmatter
           </strong>
            demo:
         </p>
+        
+
         <div>
           $$Neat demo!
           <div
@@ -129,9 +135,10 @@ title: This is frontmatter
           <div>
             jsx comp
           </div>
-          <p>
-            Frontmatter is ignored
-          </p>
+          <h1>
+            Frontmatter title: 
+            This is frontmatter
+          </h1>
         </div>
       </main>
     </div>
@@ -174,7 +181,7 @@ import Demo from './demo'
 
   expect(error.message).toMatchInlineSnapshot(`
     "Build failed with 1 error:
-    __mdx_bundler_fake_dir__/index.mdx:1:17: error: [inMemory] Could not resolve \\"./demo\\" in the entry MDX file."
+    __mdx_bundler_fake_dir__/index.mdx:2:17: error: [inMemory] Could not resolve \\"./demo\\" in the entry MDX file."
   `)
 })
 
@@ -212,7 +219,7 @@ import Demo from './demo.blah'
 
   expect(error.message).toMatchInlineSnapshot(`
     "Build failed with 1 error:
-    __mdx_bundler_fake_dir__/index.mdx:1:17: error: [JavaScript plugins] Invalid loader: \\"blah\\" (valid: js, jsx, ts, tsx, css, json, text, base64, dataurl, file, binary)"
+    __mdx_bundler_fake_dir__/index.mdx:2:17: error: [JavaScript plugins] Invalid loader: \\"blah\\" (valid: js, jsx, ts, tsx, css, json, text, base64, dataurl, file, binary)"
   `)
 })
 

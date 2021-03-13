@@ -8,7 +8,8 @@
     "mdx",
     "bundler",
     "mdx-bundler",
-    "esbuild"
+    "esbuild",
+    "xdm"
   ],
   "author": "Kent C. Dodds <me@kentcdodds.com> (https://kentcdodds.com)",
   "license": "MIT",
@@ -42,8 +43,6 @@
     "@babel/runtime": "^7.13.10",
     "@esbuild-plugins/node-resolve": "0.0.14",
     "@fal-works/esbuild-plugin-global-externals": "^2.1.1",
-    "@mdx-js/mdx": "^1.6.22",
-    "@mdx-js/react": "^1.6.22",
     "esbuild": "0.9.0",
     "gray-matter": "^4.0.2",
     "remark-frontmatter": "^3.0.0",
