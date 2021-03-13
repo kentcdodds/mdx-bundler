@@ -121,7 +121,10 @@ async function bundleMDX(
 ) {
   // xdm is a native ESM, and we're running in a CJS context. This is the
   // only way to import ESM within CJS
-  const {compile: compileMDX} = await import('xdm')
+  const [{compile: compileMDX}, {default: xdmESBuild}] = await Promise.all([
+    await import('xdm'),
+    await import('xdm/esbuild.js'),
+  ])
   // extract the frontmatter
   const {data: frontmatter} = matter(mdxSource)
 
@@ -216,6 +219,14 @@ async function bundleMDX(
       }),
       nodeResolve({extensions: ['.js', '.ts', '.jsx', '.tsx']}),
       inMemoryPlugin,
+      // NOTE: the only time the xdm esbuild plugin will be used
+      // is if it's not processed by our inMemory plugin which will
+      // only happen for mdx files imported from node_modules.
+      // This is an edge case, but it's easy enough to support so we do.
+      // If someone wants to customize *this* particular xdm compilation,
+      // they'll need to use the esbuildOptions function to swap this
+      // for their own configured version of this plugin.
+      xdmESBuild(),
     ],
     bundle: true,
     format: 'iife',
