@@ -1,13 +1,14 @@
 import path from 'path'
 import {StringDecoder} from 'string_decoder'
-import {createCompiler} from '@mdx-js/mdx'
 import remarkFrontmatter from 'remark-frontmatter'
+import {remarkMdxFrontmatter} from 'remark-mdx-frontmatter'
 import matter from 'gray-matter'
 import * as esbuild from 'esbuild'
 import type {Plugin, BuildOptions, Loader} from 'esbuild'
 import nodeResolve from '@esbuild-plugins/node-resolve'
 import {globalExternals} from '@fal-works/esbuild-plugin-global-externals'
 import type {ModuleInfo} from '@fal-works/esbuild-plugin-global-externals'
+import type {VFileCompatible, CompileOptions} from 'xdm/lib/compile'
 
 type ESBuildOptions = BuildOptions & {write: false}
 
@@ -36,12 +37,32 @@ type BundleMDXOptions = {
    */
   files?: Record<string, string>
   /**
-   * The remark plugins you want applied when compiling the MDX
+   * This allows you to modify the built-in xdm configuration (passed to xdm.compile).
+   * This can be helpful for specifying your own remarkPlugins/rehypePlugins.
    *
-   * NOTE: Specifying this will override the default value for stripping
-   * frontmatter remark-frontmatter
+   * @param vfileCompatible the path and contents of the mdx file being compiled
+   * @param options the default options which you are expected to modify and return
+   * @returns the options to be passed to xdm.compile
+   *
+   * @example
+   * ```
+   * bundleMDX(mdxString, {
+   *   xdmOptions(input, options) {
+   *     // this is the recommended way to add custom remark/rehype plugins:
+   *     // The syntax might look weird, but it protects you in case we add/remove
+   *     // plugins in the future.
+   *     options.remarkPlugins = [...(options.remarkPlugins ?? []), myRemarkPlugin]
+   *     options.rehypePlugins = [...(options.rehypePlugins ?? []), myRehypePlugin]
+   *
+   *     return options
+   *   }
+   * })
+   * ```
    */
-  remarkPlugins?: Array<unknown>
+  xdmOptions?: (
+    vfileCompatible: VFileCompatible,
+    options: CompileOptions,
+  ) => CompileOptions
   /**
    * This allows you to modify the built-in esbuild configuration. This can be
    * especially helpful for specifying the compilation target.
@@ -92,11 +113,15 @@ async function bundleMDX(
   mdxSource: string,
   {
     files = {},
+    xdmOptions = (vfileCompatible: VFileCompatible, options: CompileOptions) =>
+      options,
     esbuildOptions = (options: ESBuildOptions) => options,
-    remarkPlugins = [remarkFrontmatter],
     globals = {},
   }: BundleMDXOptions = {},
 ) {
+  // xdm is a native ESM, and we're running in a CJS context. This is the
+  // only way to import ESM within CJS
+  const {compile: compileMDX} = await import('xdm')
   // extract the frontmatter
   const {data: frontmatter} = matter(mdxSource)
 
@@ -147,12 +172,21 @@ async function bundleMDX(
 
           switch (fileType) {
             case 'mdx': {
-              // I do not want to take the time to type mdx...
-              // eslint-disable-next-line
-              const result = (await createCompiler({
-                remarkPlugins,
-              }).process(contents)) as {contents: string}
-              return {contents: result.contents, loader: 'jsx'}
+              const vFileCompatible: VFileCompatible = {
+                path: filePath,
+                contents,
+              }
+              const vfile = await compileMDX(
+                vFileCompatible,
+                xdmOptions(vFileCompatible, {
+                  jsx: true,
+                  remarkPlugins: [
+                    remarkFrontmatter,
+                    [remarkMdxFrontmatter, {name: 'frontmatter'}],
+                  ],
+                }),
+              )
+              return {contents: vfile.toString(), loader: 'jsx'}
             }
             default:
               return {contents, loader: fileType as Loader}
@@ -186,8 +220,7 @@ async function bundleMDX(
     bundle: true,
     format: 'iife',
     globalName: 'Component',
-    minify: false,
-    jsxFactory: 'mdx',
+    minify: true,
   })
 
   const bundled = await esbuild.build(buildOptions)

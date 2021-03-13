@@ -1,6 +1,5 @@
 import * as React from 'react'
 import {render} from '@testing-library/react'
-import {MDXProvider} from '@mdx-js/react'
 import leftPad from 'left-pad'
 import {bundleMDX} from '..'
 import {getMDXComponent} from '../client'
@@ -60,7 +59,7 @@ export default ({children}) => <div className="sub-dir">{children}</div>
 title: This is frontmatter
 ---
 
-Frontmatter is ignored
+# Frontmatter title: {frontmatter.title}
       `.trim(),
       './data.json': `{"package": "mdx-bundler"}`,
     },
@@ -82,7 +81,7 @@ Frontmatter is ignored
   const Component = getMDXComponent(result.code, {myLeftPad})
 
   const {container} = render(
-    <MDXProvider>
+    <>
       <header>
         <h1>{frontmatter.title}</h1>
         <p>{frontmatter.description}</p>
@@ -90,7 +89,7 @@ Frontmatter is ignored
       <main>
         <Component />
       </main>
-    </MDXProvider>,
+    </>,
   )
   expect(container).toMatchInlineSnapshot(`
     <div>
@@ -106,6 +105,10 @@ Frontmatter is ignored
         <h1>
           This is the title
         </h1>
+        
+
+        
+
         <p>
           Here's a 
           <strong>
@@ -113,6 +116,8 @@ Frontmatter is ignored
           </strong>
            demo:
         </p>
+        
+
         <div>
           $$Neat demo!
           <div
@@ -130,9 +135,10 @@ Frontmatter is ignored
           <div>
             jsx comp
           </div>
-          <p>
-            Frontmatter is ignored
-          </p>
+          <h1>
+            Frontmatter title: 
+            This is frontmatter
+          </h1>
         </div>
       </main>
     </div>
@@ -159,11 +165,7 @@ export default () => leftPad("Neat demo!", 12, '!')
   // this test ensures that *not* passing leftPad as a global here
   // will work because I didn't externalize the left-pad module
   const Component = getMDXComponent(result.code)
-  render(
-    <MDXProvider>
-      <Component />
-    </MDXProvider>,
-  )
+  render(<Component />)
 })
 
 test('gives a handy error when the entry imports a module that cannot be found', async () => {
@@ -179,7 +181,7 @@ import Demo from './demo'
 
   expect(error.message).toMatchInlineSnapshot(`
     "Build failed with 1 error:
-    __mdx_bundler_fake_dir__/index.mdx:1:17: error: [inMemory] Could not resolve \\"./demo\\" in the entry MDX file."
+    __mdx_bundler_fake_dir__/index.mdx:2:17: error: [inMemory] Could not resolve \\"./demo\\" in the entry MDX file."
   `)
 })
 
@@ -217,7 +219,7 @@ import Demo from './demo.blah'
 
   expect(error.message).toMatchInlineSnapshot(`
     "Build failed with 1 error:
-    __mdx_bundler_fake_dir__/index.mdx:1:17: error: [JavaScript plugins] Invalid loader: \\"blah\\" (valid: js, jsx, ts, tsx, css, json, text, base64, dataurl, file, binary)"
+    __mdx_bundler_fake_dir__/index.mdx:2:17: error: [JavaScript plugins] Invalid loader: \\"blah\\" (valid: js, jsx, ts, tsx, css, json, text, base64, dataurl, file, binary)"
   `)
 })
 
@@ -256,11 +258,7 @@ return leftPad(s, 12, '!')
 
   const Component = getMDXComponent(code)
 
-  const {container} = render(
-    <MDXProvider>
-      <Component />
-    </MDXProvider>,
-  )
+  const {container} = render(<Component />)
 
   expect(container).toMatchInlineSnapshot(`
     <div>
@@ -286,11 +284,7 @@ import LeftPad from 'left-pad-js'
 
   const Component = getMDXComponent(code)
 
-  const {container} = render(
-    <MDXProvider>
-      <Component />
-    </MDXProvider>,
-  )
+  const {container} = render(<Component />)
 
   expect(container).toMatchInlineSnapshot(`
     <div>
