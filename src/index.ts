@@ -43,6 +43,10 @@ type BundleMDXOptions = {
    */
   remarkPlugins?: Array<unknown>
   /**
+   * The rehype plugins you want applied when compiling the MDX
+   */
+  rehypePlugins?: Array<unknown>
+  /**
    * This allows you to modify the built-in esbuild configuration. This can be
    * especially helpful for specifying the compilation target.
    *
@@ -94,6 +98,7 @@ async function bundleMDX(
     files = {},
     esbuildOptions = (options: ESBuildOptions) => options,
     remarkPlugins = [remarkFrontmatter],
+    rehypePlugins = [],
     globals = {},
   }: BundleMDXOptions = {},
 ) {
@@ -151,6 +156,7 @@ async function bundleMDX(
               // eslint-disable-next-line
               const result = (await createCompiler({
                 remarkPlugins,
+                rehypePlugins,
               }).process(contents)) as {contents: string}
               return {contents: result.contents, loader: 'jsx'}
             }

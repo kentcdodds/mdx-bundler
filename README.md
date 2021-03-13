@@ -151,13 +151,14 @@ file source code. You could get these from the filesystem or from a remote
 database. If your MDX doesn't reference other files (or only imports things from
 `node_modules`), then you can omit this entirely.
 
-#### remarkPlugins
+#### remarkPlugins, rehypePlugins
 
 If you need to customize anything about the MDX compilation you can use remark
-plugins.
+and rehype plugins.
 
-NOTE: Specifying this will override the default value for frontmatter support so
-if you want to keep that, you'll need to include `remark-frontmatter` yourself.
+NOTE: Specifying `remarkPlugins` will override the default value for frontmatter
+support so if you want to keep that, you'll need to include `remark-frontmatter`
+within the `remarkPlugins` array yourself.
 
 #### esbuildOptions
 
