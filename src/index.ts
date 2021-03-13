@@ -186,7 +186,7 @@ async function bundleMDX(
                   ],
                 }),
               )
-              return {contents: vfile.contents.toString(), loader: 'jsx'}
+              return {contents: vfile.toString(), loader: 'jsx'}
             }
             default:
               return {contents, loader: fileType as Loader}
