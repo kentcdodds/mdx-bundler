@@ -26,7 +26,10 @@ get a bundled version of these files to eval in the browser.
 
 This is an async function that will compile and bundle your MDX files and their
 dependencies. It uses [esbuild](https://esbuild.github.io/), so it's VERY fast
-and supports TypeScript files (for the dependencies of your MDX files).
+and supports TypeScript files (for the dependencies of your MDX files). It also
+uses [xdm](https://github.com/wooorm/xdm) which is a more modern and powerful
+MDX compiler with fewer bugs and more features (and no extra runtime
+requirements).
 
 Your source files could be local, in a remote github repo, in a CMS, or wherever
 else and it doesn't matter. All `mdx-bundler` cares about is that you pass it
@@ -153,11 +156,12 @@ database. If your MDX doesn't reference other files (or only imports things from
 
 #### remarkPlugins
 
-If you need to customize anything about the MDX compilation you can use remark
-plugins.
+If you need to customize anything about the MDX compilation with `xdm` you can
+use remark plugins.
 
 NOTE: Specifying this will override the default value for frontmatter support so
-if you want to keep that, you'll need to include `remark-frontmatter` yourself.
+if you want to keep that, you'll need to include `remark-frontmatter` and
+`remark-mdx-frontmatter` yourself.
 
 #### esbuildOptions
 
