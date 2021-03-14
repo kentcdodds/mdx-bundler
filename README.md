@@ -44,6 +44,7 @@ everything for you.
 - [Installation](#installation)
 - [Usage](#usage)
   - [Options](#options)
+  - [Component Substitution](#component-substitution)
 - [Inspiration](#inspiration)
 - [Other Solutions](#other-solutions)
 - [Issues](#issues)
@@ -251,6 +252,36 @@ function MDXPage({code}: {code: string}) {
   return (
     <main>
       <Component />
+    </main>
+  )
+}
+```
+
+### Component Substitution
+
+MDX Bundler passes on
+[XDM's ability to substitute components](https://github.com/wooorm/xdm#mdx-content)
+through the `components` prop on the component returned by `getMDXComponent`.
+
+Here's an example that removes _p_ tags from around images.
+
+```tsx
+import * as React from 'react'
+
+const Paragraph: React.FC = props => {
+  if (typeof props.children !== 'string' && props.children.type === 'img') {
+    return <>{props.children}</>
+  }
+
+  return <p {...props} />
+}
+
+function MDXPage({code}: {code: string}) {
+  const Component = React.useMemo(() => getMDXComponent(code), [code])
+
+  return (
+    <main>
+      <Component components={{p: Paragraph}} />
     </main>
   )
 }
