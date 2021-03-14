@@ -3,7 +3,9 @@ import * as React from 'react'
 function getMDXComponent(
   code: string,
   globals?: Record<string, unknown>,
-): React.FunctionComponent {
+): React.FunctionComponent<{
+  components?: Record<string, React.FunctionComponent | React.Component>
+}> {
   const scope = {React, ...globals}
   // eslint-disable-next-line
   const fn = new Function(...Object.keys(scope), code)
