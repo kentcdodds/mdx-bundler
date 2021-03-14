@@ -263,13 +263,17 @@ MDX Bundler passes on
 [XDM's ability to substitute components](https://github.com/wooorm/xdm#mdx-content)
 through the `components` prop on the component returned by `getMDXComponent`.
 
-Here's an example replacing `<b>` with `<strong>`:
+Here's an example that removes _p_ tags from around images.
 
 ```tsx
 import * as React from 'react'
 
-const Strong: React.FC = props => {
-  return <strong {...props} />
+const Paragraph: React.FC = props => {
+  if (typeof props.children !== 'string' && props.children.type === 'img') {
+    return <>{props.children}</>
+  }
+
+  return <p {...props} />
 }
 
 function MDXPage({code}: {code: string}) {
@@ -277,7 +281,7 @@ function MDXPage({code}: {code: string}) {
 
   return (
     <main>
-      <Component components={{b: Strong}} />
+      <Component components={{p: Paragraph}} />
     </main>
   )
 }
