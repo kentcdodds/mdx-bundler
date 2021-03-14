@@ -80,6 +80,10 @@ title: This is frontmatter
 
   const Component = getMDXComponent(result.code, {myLeftPad})
 
+  const SpanBold: React.FC = props => {
+    return <span {...props} />
+  }
+
   const {container} = render(
     <>
       <header>
@@ -87,7 +91,7 @@ title: This is frontmatter
         <p>{frontmatter.description}</p>
       </header>
       <main>
-        <Component />
+        <Component components={{strong: SpanBold}} />
       </main>
     </>,
   )
@@ -111,9 +115,9 @@ title: This is frontmatter
 
         <p>
           Here's a 
-          <strong>
+          <span>
             neat
-          </strong>
+          </span>
            demo:
         </p>
         

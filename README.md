@@ -44,6 +44,7 @@ everything for you.
 - [Installation](#installation)
 - [Usage](#usage)
   - [Options](#options)
+  - [Component Substitution](#component-substitution)
 - [Inspiration](#inspiration)
 - [Other Solutions](#other-solutions)
 - [Issues](#issues)
@@ -251,6 +252,32 @@ function MDXPage({code}: {code: string}) {
   return (
     <main>
       <Component />
+    </main>
+  )
+}
+```
+
+### Component Substitution
+
+MDX Bundler passes on
+[XDM's ability to substitute components](https://github.com/wooorm/xdm#mdx-content)
+through the `components` prop on the component returned by `getMDXComponent`.
+
+Here's an example replacing `<b>` with `<strong>`:
+
+```tsx
+import * as React from 'react'
+
+const Strong: React.FC = props => {
+  return <strong {...props} />
+}
+
+function MDXPage({code}: {code: string}) {
+  const Component = React.useMemo(() => getMDXComponent(code), [code])
+
+  return (
+    <main>
+      <Component components={{b: Strong}} />
     </main>
   )
 }
