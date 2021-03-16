@@ -36,6 +36,88 @@ else and it doesn't matter. All `mdx-bundler` cares about is that you pass it
 all the files and source code necessary and it will take care of bundling
 everything for you.
 
+### FAQ:
+
+<details>
+  <summary>
+
+"How is this different from
+[`next-mdx-remote`](https://github.com/hashicorp/next-mdx-remote)?"
+
+  </summary>
+
+This actually bundles dependencies of your MDX files. For example, this won't
+work with `next-mdx-remote`, but it will with `mdx-bundler`:
+
+```md
+---
+title: Example Post
+published: 2021-02-13
+description: This is some description
+---
+
+# Wahoo
+
+import Demo from './demo'
+
+Here's a **neat** demo:
+
+<Demo />
+```
+
+`next-mdx-remote` chokes on that import because it's not a bundler, it's just a
+compiler. `mdx-bundler` is an MDX compiler and bundler. That's the difference.
+
+</details>
+
+<details>
+  <summary>
+
+"How is this different from the mdx plugins for webpack or rollup?"
+
+  </summary>
+
+Those tools are intended to be run "at build time" and then you deploy the built
+version of your files. This means if you have some content in MDX and want to
+make a typo change, you have to rebuild and redeploy the whole site. This also
+means that every MDX page you add to your site will increase your build-times,
+so it doesn't scale all that well.
+
+`mdx-bundler` can definitely be used at build-time, but it's more powerfully
+used as a runtime bundler. A common use case is to have a route for your MDX
+content and when that request comes in, you load the MDX content and hand that
+off to `mdx-bundler` for bundling. This means that `mdx-bundler` is infinitely
+scalable. Your build won't be any longer regardless of how much MDX content you
+have. Also, `mdx-bundler` is quite fast, but to make this on-demand bundling
+even faster, you can use appropriate cache headers to avoid unnecessary
+re-bundling.
+
+Webpack/rollup/etc also require that all your MDX files are on the local
+filesystem to work. If you want to store your MDX content in a separate repo or
+CMS, you're kinda out of luck or have to do some build-time gymnastics to get
+the files in place for the build.
+
+With `mdx-bundler`, it doesn't matter where your MDX content comes from, you can
+bundle files from anywhere, you're just responsible for getting the content into
+memory and then you hand that off to `mdx-bundler` for bundling.
+
+</details>
+
+<details>
+  <summary>
+
+"Does this work with Remix/Gatsby/Next/CRA/etc?"
+
+  </summary>
+
+Totally. It works with any of those tools. Depending on whether your
+meta-framework supports server-side rendering, you'll implement it differently.
+You might decide to go with a built-time approach (for Gatsby/CRA), but as
+mentioned, the true power of `mdx-bundler` comes in the form of on-demand
+bundling. So it's best suited for SSR frameworks like Remix/Next.
+
+</details>
+
 ## Table of Contents
 
 <!-- START doctoc generated TOC please keep comment here to allow auto update -->
