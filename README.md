@@ -39,7 +39,11 @@ everything for you.
 ### FAQ:
 
 <details>
-  <summary>"What's so cool about MDX?"</summary>
+  <summary>
+    <strong>
+      "What's so cool about MDX?"
+    </strong>
+  </summary>
 
 [MDX](https://mdxjs.com/) enables you to combine terse markdown syntax for your
 content with the power of React components. For content-heavy sites, writing the
@@ -61,7 +65,11 @@ of both worlds.
 </details>
 
 <details>
-  <summary>"How is this different from <a href="https://github.com/hashicorp/next-mdx-remote"><code>next-mdx-remote</code></a>?"</summary>
+  <summary>
+    <strong>
+      "How is this different from <a href="https://github.com/hashicorp/next-mdx-remote"><code>next-mdx-remote</code></a>?"
+    </strong>
+  </summary>
 
 `mdx-bundler` actually bundles dependencies of your MDX files. For example, this
 won't work with `next-mdx-remote`, but it will with `mdx-bundler`:
@@ -88,7 +96,11 @@ compiler. `mdx-bundler` is an MDX compiler and bundler. That's the difference.
 </details>
 
 <details>
-  <summary>"How is this different from the mdx plugins for webpack or rollup?"</summary>
+  <summary>
+    <strong>
+      "How is this different from the mdx plugins for webpack or rollup?"
+    </strong>
+  </summary>
 
 Those tools are intended to be run "at build time" and then you deploy the built
 version of your files. This means if you have some content in MDX and want to
@@ -117,13 +129,39 @@ memory and then you hand that off to `mdx-bundler` for bundling.
 </details>
 
 <details>
-  <summary>"Does this work with Remix/Gatsby/Next/CRA/etc?"</summary>
+  <summary>
+    <strong>
+      "Does this work with Remix/Gatsby/Next/CRA/etc?"
+    </strong>
+  </summary>
 
 Totally. It works with any of those tools. Depending on whether your
 meta-framework supports server-side rendering, you'll implement it differently.
 You might decide to go with a built-time approach (for Gatsby/CRA), but as
 mentioned, the true power of `mdx-bundler` comes in the form of on-demand
 bundling. So it's best suited for SSR frameworks like Remix/Next.
+
+</details>
+
+<details>
+  <summary>
+    <strong>
+      "Why the dodo bird emoji? 🦤"
+    </strong>
+  </summary>
+
+Why not?
+
+</details>
+
+<details>
+  <summary>
+    <strong>
+      "Why does this use XDM instead of @mdx-js?"
+    </strong>
+  </summary>
+
+It has more features, fewer bugs, and no runtime!
 
 </details>
 
