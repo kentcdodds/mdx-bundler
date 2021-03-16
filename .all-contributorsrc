@@ -56,6 +56,16 @@
         "review",
         "code"
       ]
+    },
+    {
+      "login": "ChristianMurphy",
+      "name": "Christian Murphy",
+      "avatar_url": "https://avatars.githubusercontent.com/u/3107513?v=4",
+      "profile": "https://github.com/ChristianMurphy",
+      "contributions": [
+        "ideas"
+      ]
     }
-  ]
+  ],
+  "commitConvention": "none"
 }
