@@ -41,8 +41,8 @@ everything for you.
 <details>
   <summary>"How is this different from <a href="https://github.com/hashicorp/next-mdx-remote"><code>next-mdx-remote</code></a>?"</summary>
 
-This actually bundles dependencies of your MDX files. For example, this won't
-work with `next-mdx-remote`, but it will with `mdx-bundler`:
+`mdx-bundler` actually bundles dependencies of your MDX files. For example, this
+won't work with `next-mdx-remote`, but it will with `mdx-bundler`:
 
 ```md
 ---
