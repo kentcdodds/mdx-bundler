@@ -39,12 +39,7 @@ everything for you.
 ### FAQ:
 
 <details>
-  <summary>
-
-"How is this different from
-[`next-mdx-remote`](https://github.com/hashicorp/next-mdx-remote)?"
-
-  </summary>
+  <summary>"How is this different from <a href="https://github.com/hashicorp/next-mdx-remote"><code>next-mdx-remote</code></a>?"</summary>
 
 This actually bundles dependencies of your MDX files. For example, this won't
 work with `next-mdx-remote`, but it will with `mdx-bundler`:
@@ -71,11 +66,7 @@ compiler. `mdx-bundler` is an MDX compiler and bundler. That's the difference.
 </details>
 
 <details>
-  <summary>
-
-"How is this different from the mdx plugins for webpack or rollup?"
-
-  </summary>
+  <summary>"How is this different from the mdx plugins for webpack or rollup?"</summary>
 
 Those tools are intended to be run "at build time" and then you deploy the built
 version of your files. This means if you have some content in MDX and want to
@@ -104,11 +95,7 @@ memory and then you hand that off to `mdx-bundler` for bundling.
 </details>
 
 <details>
-  <summary>
-
-"Does this work with Remix/Gatsby/Next/CRA/etc?"
-
-  </summary>
+  <summary>"Does this work with Remix/Gatsby/Next/CRA/etc?"</summary>
 
 Totally. It works with any of those tools. Depending on whether your
 meta-framework supports server-side rendering, you'll implement it differently.
