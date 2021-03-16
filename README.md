@@ -39,6 +39,28 @@ everything for you.
 ### FAQ:
 
 <details>
+  <summary>"What's so cool about MDX?"</summary>
+
+[MDX](https://mdxjs.com/) enables you to combine terse markdown syntax for your
+content with the power of React components. For content-heavy sites, writing the
+content with straight-up HTML can be annoyingly verbose. Often people solve this
+using a WSYWIG editor, but too often those fall short in mapping the writer's
+intent to HTML. Many people prefer using markdown to express their content
+source and have that parsed into HTML to be rendered.
+
+The problem with using Markdown for your content is if you want to have some
+interactivity embedded into your content, you're pretty limited. You either need
+to insert an element that JavaScript targets (which is annoyingly indirect), or
+you can use an `iframe` or something.
+
+As previously stated, [MDX](https://mdxjs.com/) enables you to combine terse
+markdown syntax for your content with the power of React components. So you can
+import a React component and render it within the markdown itself. It's the best
+of both worlds.
+
+</details>
+
+<details>
   <summary>"How is this different from <a href="https://github.com/hashicorp/next-mdx-remote"><code>next-mdx-remote</code></a>?"</summary>
 
 `mdx-bundler` actually bundles dependencies of your MDX files. For example, this
