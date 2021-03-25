@@ -41,25 +41,25 @@
   },
   "dependencies": {
     "@babel/runtime": "^7.13.10",
-    "@esbuild-plugins/node-resolve": "0.0.14",
+    "@esbuild-plugins/node-resolve": "0.0.15",
     "@fal-works/esbuild-plugin-global-externals": "^2.1.1",
-    "esbuild": "0.9.0",
+    "esbuild": "^0.10.0",
     "gray-matter": "^4.0.2",
     "remark-frontmatter": "^3.0.0",
     "remark-mdx-frontmatter": "^1.0.0",
-    "xdm": "^1.5.1"
+    "xdm": "^1.6.0"
   },
   "devDependencies": {
     "@testing-library/react": "^11.2.5",
     "@types/jest": "^26.0.20",
     "@types/react": "^17.0.3",
-    "@types/react-dom": "^17.0.2",
+    "@types/react-dom": "^17.0.3",
     "jest-environment-jsdom": "^26.6.2",
     "jest-module-field-resolver": "0.0.1",
     "kcd-scripts": "^8.1.0",
     "left-pad": "^1.3.0",
-    "react": "^17.0.1",
-    "react-dom": "^17.0.1",
+    "react": "^17.0.2",
+    "react-dom": "^17.0.2",
     "typescript": "^4.2.3"
   },
   "eslintConfig": {

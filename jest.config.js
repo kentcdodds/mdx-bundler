@@ -7,6 +7,7 @@ const esModules = [
   'periscopic',
   'remark-mdx-frontmatter',
   'js-yaml',
+  'estree-util-is-identifier-name',
 ].join('|')
 
 module.exports = Object.assign(configs.jest, {
