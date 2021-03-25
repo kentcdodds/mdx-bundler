@@ -174,6 +174,7 @@ It has more features, fewer bugs, and no runtime!
 - [Usage](#usage)
   - [Options](#options)
   - [Component Substitution](#component-substitution)
+  - [Known Issues](#known-issues)
 - [Inspiration](#inspiration)
 - [Other Solutions](#other-solutions)
 - [Issues](#issues)
@@ -415,6 +416,41 @@ function MDXPage({code}: {code: string}) {
   )
 }
 ```
+
+### Known Issues
+
+#### Next.JS esbuild ENOENT
+
+esbuild relies on `__dirname` to work out where is executable is, Next.JS and
+Webpack can sometimes break this and esbuild needs to be told manually where to
+look.
+
+Adding the following code before your `bundleMDX` will point esbuild directly at
+the correct executable for your platform.
+
+```js
+import path from 'path'
+
+if (process.platform === 'win32') {
+  process.env.ESBUILD_BINARY_PATH = path.join(
+    process.cwd(),
+    'node_modules',
+    'esbuild',
+    'esbuild.exe',
+  )
+} else {
+  process.env.ESBUILD_BINARY_PATH = path.join(
+    process.cwd(),
+    'node_modules',
+    'esbuild',
+    'bin',
+    'esbuild',
+  )
+}
+```
+
+More information on this issue can be found
+[in this article](https://www.arcath.net/2021/03/mdx-bundler#esbuild-executable).
 
 ## Inspiration
 
