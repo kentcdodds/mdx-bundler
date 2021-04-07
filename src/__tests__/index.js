@@ -66,87 +66,32 @@ title: This is frontmatter
     globals: {'left-pad': 'myLeftPad'},
   })
 
-  const frontmatter = result.frontmatter as {
-    title: string
-    description: string
-    published: string
-  }
+  const frontmatter =
+    /** @type { title: string, description: string, published: string } */ result.frontmatter
 
-  // This creates a custom left pad which uses a different filler character to the one supplied.
-  // If it is not substituted the original will be used and we will get "!" instead of "$"
-  const myLeftPad = (string: string, length: number) => {
+  /**
+   * This creates a custom left pad which uses a different filler character to the one supplied.
+   * If it is not substituted the original will be used and we will get "!" instead of "$"
+   *
+   * @param {string} string
+   * @param {number} length
+   * @returns {string}
+   */
+  const myLeftPad = (string, length) => {
     return leftPad(string, length, '$')
   }
 
   const Component = getMDXComponent(result.code, {myLeftPad})
 
-  const SpanBold: React.FC = props => {
-    return <span {...props} />
-  }
+  /** @param {React.HTMLAttributes<HTMLSpanElement>} props */
+  const SpanBold = props => React.createElement('span', props)
+
+  expect(frontmatter).toMatchInlineSnapshot()
 
   const {container} = render(
-    <>
-      <header>
-        <h1>{frontmatter.title}</h1>
-        <p>{frontmatter.description}</p>
-      </header>
-      <main>
-        <Component components={{strong: SpanBold}} />
-      </main>
-    </>,
+    React.createElement(Component, {components: {strong: SpanBold}}),
   )
-  expect(container).toMatchInlineSnapshot(`
-    <div>
-      <header>
-        <h1>
-          Example Post
-        </h1>
-        <p>
-          This is some meta-data
-        </p>
-      </header>
-      <main>
-        <h1>
-          This is the title
-        </h1>
-        
-
-        
-
-        <p>
-          Here's a 
-          <span>
-            neat
-          </span>
-           demo:
-        </p>
-        
-
-        <div>
-          $$Neat demo!
-          <div
-            class="sub-dir"
-          >
-            Sub dir!
-          </div>
-          <p>
-            JSON: 
-            mdx-bundler
-          </p>
-          <div>
-            this is js info
-          </div>
-          <div>
-            jsx comp
-          </div>
-          <h1>
-            Frontmatter title: 
-            This is frontmatter
-          </h1>
-        </div>
-      </main>
-    </div>
-  `)
+  expect(container).toMatchInlineSnapshot()
 })
 
 test('bundles 3rd party deps', async () => {
@@ -169,7 +114,7 @@ export default () => leftPad("Neat demo!", 12, '!')
   // this test ensures that *not* passing leftPad as a global here
   // will work because I didn't externalize the left-pad module
   const Component = getMDXComponent(result.code)
-  render(<Component />)
+  render(React.createElement(Component))
 })
 
 test('gives a handy error when the entry imports a module that cannot be found', async () => {
@@ -179,9 +124,9 @@ import Demo from './demo'
 <Demo />
   `.trim()
 
-  const error = (await bundleMDX(mdxSource, {
+  const error = /** @type Error */ (await bundleMDX(mdxSource, {
     files: {},
-  }).catch(e => e)) as Error
+  }).catch(e => e))
 
   expect(error.message).toMatchInlineSnapshot(`
     "Build failed with 1 error:
@@ -196,11 +141,11 @@ import Demo from './demo'
 <Demo />
   `.trim()
 
-  const error = (await bundleMDX(mdxSource, {
+  const error = /** @type Error */ (await bundleMDX(mdxSource, {
     files: {
       './demo.tsx': `import './blah-blah'`,
     },
-  }).catch(e => e)) as Error
+  }).catch(e => e))
 
   expect(error.message).toMatchInlineSnapshot(`
     "Build failed with 1 error:
@@ -215,11 +160,11 @@ import Demo from './demo.blah'
 <Demo />
   `.trim()
 
-  const error = (await bundleMDX(mdxSource, {
+  const error = /** @type Error */ (await bundleMDX(mdxSource, {
     files: {
       './demo.blah': `what even is this?`,
     },
-  }).catch(e => e)) as Error
+  }).catch(e => e))
 
   expect(error.message).toMatchInlineSnapshot(`
     "Build failed with 1 error:
@@ -262,7 +207,7 @@ return leftPad(s, 12, '!')
 
   const Component = getMDXComponent(code)
 
-  const {container} = render(<Component />)
+  const {container} = render(React.createElement(Component))
 
   expect(container).toMatchInlineSnapshot(`
     <div>
@@ -288,7 +233,7 @@ import LeftPad from 'left-pad-js'
 
   const Component = getMDXComponent(code)
 
-  const {container} = render(<Component />)
+  const {container} = render(React.createElement(Component))
 
   expect(container).toMatchInlineSnapshot(`
     <div>

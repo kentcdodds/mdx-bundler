@@ -1,3 +1,5 @@
+// this is cjs because jest doesn't yet support importing environment files as ESM
+
 const JSDOMEnvironment = require('jest-environment-jsdom')
 
 // Modifies the JS DOM Environment so it uses Node's `Uint8Array` and `ArrayBuffer`
