@@ -4,13 +4,13 @@ import remarkFrontmatter from 'remark-frontmatter'
 import {remarkMdxFrontmatter} from 'remark-mdx-frontmatter'
 import matter from 'gray-matter'
 import * as esbuild from 'esbuild'
-import nodeResolve from '@esbuild-plugins/node-resolve'
+import {NodeResolvePlugin} from '@esbuild-plugins/node-resolve'
 import {globalExternals} from '@fal-works/esbuild-plugin-global-externals'
 
 /**
  *
  * @param {string} mdxSource - A string of mdx source code
- * @param {import('../types').BundleMDXOptions} options
+ * @param {import('./types').BundleMDXOptions} options
  * @returns
  */
 async function bundleMDX(
@@ -60,7 +60,7 @@ async function bundleMDX(
         return {
           errors: [
             {
-              text: `Could not resolve "${filePath}" in ${
+              text: `Could not resolve "${filePath}" from ${
                 importer === entryPath
                   ? 'the entry MDX file.'
                   : `"${importer.replace(dir, '.')}"`
@@ -127,7 +127,8 @@ async function bundleMDX(
           type: 'cjs',
         },
       }),
-      nodeResolve({extensions: ['.js', '.ts', '.jsx', '.tsx']}),
+      // eslint-disable-next-line babel/new-cap
+      NodeResolvePlugin({extensions: ['.js', '.ts', '.jsx', '.tsx']}),
       inMemoryPlugin,
       // NOTE: the only time the xdm esbuild plugin will be used
       // is if it's not processed by our inMemory plugin which will

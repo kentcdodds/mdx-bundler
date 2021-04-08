@@ -1,0 +1,5 @@
+{
+  "type": "commonjs",
+  "main": "./client.js",
+  "types": "./client.d.ts"
+}

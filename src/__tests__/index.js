@@ -1,8 +1,13 @@
-import * as React from 'react'
-import {render} from '@testing-library/react'
+import './setup-tests.js'
+import {test} from 'uvu'
+import * as assert from 'uvu/assert'
+import React from 'react'
+import rtl from '@testing-library/react'
 import leftPad from 'left-pad'
-import {bundleMDX} from '..'
-import {getMDXComponent} from '../client'
+import {bundleMDX} from '../index.js'
+import {getMDXComponent} from '../client.js'
+
+const {render} = rtl
 
 test('smoke test', async () => {
   const mdxSource = `
@@ -86,12 +91,20 @@ title: This is frontmatter
   /** @param {React.HTMLAttributes<HTMLSpanElement>} props */
   const SpanBold = props => React.createElement('span', props)
 
-  expect(frontmatter).toMatchInlineSnapshot()
-
+  assert.equal(frontmatter, {
+    title: 'Example Post',
+    published: new Date('2021-02-13'),
+    description: 'This is some meta-data',
+  })
+  
   const {container} = render(
     React.createElement(Component, {components: {strong: SpanBold}}),
   )
-  expect(container).toMatchInlineSnapshot()
+  
+  assert.equal(container.innerHTML, `<h1>This is the title</h1>
+
+<p>Here's a <span>neat</span> demo:</p>
+<div>$$Neat demo!<div class="sub-dir">Sub dir!</div><p>JSON: mdx-bundler</p><div>this is js info</div><div>jsx comp</div><h1>Frontmatter title: This is frontmatter</h1></div>`)
 })
 
 test('bundles 3rd party deps', async () => {
@@ -128,10 +141,8 @@ import Demo from './demo'
     files: {},
   }).catch(e => e))
 
-  expect(error.message).toMatchInlineSnapshot(`
-    "Build failed with 1 error:
-    __mdx_bundler_fake_dir__/index.mdx:2:17: error: [inMemory] Could not resolve \\"./demo\\" in the entry MDX file."
-  `)
+  assert.snapshot(error.message, `Build failed with 1 error:
+__mdx_bundler_fake_dir__/index.mdx:2:17: error: [inMemory] Could not resolve "./demo" from the entry MDX file.`)
 })
 
 test('gives a handy error when importing a module that cannot be found', async () => {
@@ -147,10 +158,9 @@ import Demo from './demo'
     },
   }).catch(e => e))
 
-  expect(error.message).toMatchInlineSnapshot(`
-    "Build failed with 1 error:
-    __mdx_bundler_fake_dir__/demo.tsx:1:7: error: [inMemory] Could not resolve \\"./blah-blah\\" in \\"./demo.tsx\\""
-  `)
+
+  assert.snapshot(error.message, `Build failed with 1 error:
+__mdx_bundler_fake_dir__/demo.tsx:1:7: error: [inMemory] Could not resolve "./blah-blah" from "./demo.tsx"`)
 })
 
 test('gives a handy error when a file of an unsupported type is provided', async () => {
@@ -166,14 +176,12 @@ import Demo from './demo.blah'
     },
   }).catch(e => e))
 
-  expect(error.message).toMatchInlineSnapshot(`
-    "Build failed with 1 error:
-    __mdx_bundler_fake_dir__/index.mdx:2:17: error: [JavaScript plugins] Invalid loader: \\"blah\\" (valid: js, jsx, ts, tsx, css, json, text, base64, dataurl, file, binary)"
-  `)
+  assert.snapshot(error.message, `Build failed with 1 error:
+__mdx_bundler_fake_dir__/index.mdx:2:17: error: [JavaScript plugins] Invalid loader: "blah" (valid: js, jsx, ts, tsx, css, json, text, base64, dataurl, file, binary)`)
 })
 
 test('files is optional', async () => {
-  await expect(bundleMDX('hello')).resolves.toBeTruthy()
+  await bundleMDX('hello')
 })
 
 test('uses the typescript loader where needed', async () => {
@@ -190,7 +198,7 @@ import * as React from 'react'
 import {left} from './left'
 
 const Demo: React.FC = () => { 
-return <p>{left("Typescript")}</p>
+return <p>{left("TypeScript")}</p>
 }
 
 export default Demo
@@ -208,14 +216,7 @@ return leftPad(s, 12, '!')
   const Component = getMDXComponent(code)
 
   const {container} = render(React.createElement(Component))
-
-  expect(container).toMatchInlineSnapshot(`
-    <div>
-      <p>
-        !!Typescript
-      </p>
-    </div>
-  `)
+  assert.match(container.innerHTML, '!!TypeScript')
 })
 
 test('can specify "node_modules" in the files', async () => {
@@ -235,11 +236,8 @@ import LeftPad from 'left-pad-js'
 
   const {container} = render(React.createElement(Component))
 
-  expect(container).toMatchInlineSnapshot(`
-    <div>
-      <div>
-        this is left pad
-      </div>
-    </div>
-  `)
+  assert.match(container.innerHTML, 'this is left pad')
 })
+
+
+test.run()
