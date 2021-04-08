@@ -1,4 +1,5 @@
 import './setup-tests.js'
+import path from 'path'
 import {test} from 'uvu'
 import * as assert from 'uvu/assert'
 import React from 'react'
@@ -141,8 +142,8 @@ import Demo from './demo'
     files: {},
   }).catch(e => e))
 
-  assert.snapshot(error.message, `Build failed with 1 error:
-__mdx_bundler_fake_dir__/index.mdx:2:17: error: [inMemory] Could not resolve "./demo" from the entry MDX file.`)
+  assert.equal(error.message, `Build failed with 1 error:
+__mdx_bundler_fake_dir__${path.sep}index.mdx:2:17: error: [inMemory] Could not resolve "./demo" from the entry MDX file.`)
 })
 
 test('gives a handy error when importing a module that cannot be found', async () => {
@@ -159,8 +160,8 @@ import Demo from './demo'
   }).catch(e => e))
 
 
-  assert.snapshot(error.message, `Build failed with 1 error:
-__mdx_bundler_fake_dir__/demo.tsx:1:7: error: [inMemory] Could not resolve "./blah-blah" from "./demo.tsx"`)
+  assert.equal(error.message, `Build failed with 1 error:
+__mdx_bundler_fake_dir__${path.sep}demo.tsx:1:7: error: [inMemory] Could not resolve "./blah-blah" from "./demo.tsx"`)
 })
 
 test('gives a handy error when a file of an unsupported type is provided', async () => {
@@ -176,8 +177,8 @@ import Demo from './demo.blah'
     },
   }).catch(e => e))
 
-  assert.snapshot(error.message, `Build failed with 1 error:
-__mdx_bundler_fake_dir__/index.mdx:2:17: error: [JavaScript plugins] Invalid loader: "blah" (valid: js, jsx, ts, tsx, css, json, text, base64, dataurl, file, binary)`)
+  assert.equal(error.message, `Build failed with 1 error:
+__mdx_bundler_fake_dir__${path.sep}index.mdx:2:17: error: [JavaScript plugins] Invalid loader: "blah" (valid: js, jsx, ts, tsx, css, json, text, base64, dataurl, file, binary)`)
 })
 
 test('files is optional', async () => {
