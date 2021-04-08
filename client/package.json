@@ -1,5 +1,5 @@
 {
   "type": "commonjs",
-  "main": "./client.js",
-  "types": "./client.d.ts"
+  "main": "./index.js",
+  "types": "./index.d.ts"
 }

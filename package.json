@@ -28,8 +28,7 @@
   "homepage": "https://github.com/kentcdodds/mdx-bundler#readme",
   "files": [
     "dist",
-    "client.js",
-    "client.d.ts"
+    "client"
   ],
   "scripts": {
     "build": "kcd-scripts build",
