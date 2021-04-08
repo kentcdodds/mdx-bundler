@@ -97,15 +97,18 @@ title: This is frontmatter
     published: new Date('2021-02-13'),
     description: 'This is some meta-data',
   })
-  
+
   const {container} = render(
     React.createElement(Component, {components: {strong: SpanBold}}),
   )
-  
-  assert.equal(container.innerHTML, `<h1>This is the title</h1>
+
+  assert.equal(
+    container.innerHTML,
+    `<h1>This is the title</h1>
 
 <p>Here's a <span>neat</span> demo:</p>
-<div>$$Neat demo!<div class="sub-dir">Sub dir!</div><p>JSON: mdx-bundler</p><div>this is js info</div><div>jsx comp</div><h1>Frontmatter title: This is frontmatter</h1></div>`)
+<div>$$Neat demo!<div class="sub-dir">Sub dir!</div><p>JSON: mdx-bundler</p><div>this is js info</div><div>jsx comp</div><h1>Frontmatter title: This is frontmatter</h1></div>`,
+  )
 })
 
 test('bundles 3rd party deps', async () => {
@@ -142,8 +145,11 @@ import Demo from './demo'
     files: {},
   }).catch(e => e))
 
-  assert.equal(error.message, `Build failed with 1 error:
-__mdx_bundler_fake_dir__${path.sep}index.mdx:2:17: error: [inMemory] Could not resolve "./demo" from the entry MDX file.`)
+  assert.equal(
+    error.message,
+    `Build failed with 1 error:
+__mdx_bundler_fake_dir__${path.sep}index.mdx:2:17: error: [inMemory] Could not resolve "./demo" from the entry MDX file.`,
+  )
 })
 
 test('gives a handy error when importing a module that cannot be found', async () => {
@@ -159,9 +165,11 @@ import Demo from './demo'
     },
   }).catch(e => e))
 
-
-  assert.equal(error.message, `Build failed with 1 error:
-__mdx_bundler_fake_dir__${path.sep}demo.tsx:1:7: error: [inMemory] Could not resolve "./blah-blah" from "./demo.tsx"`)
+  assert.equal(
+    error.message,
+    `Build failed with 1 error:
+__mdx_bundler_fake_dir__${path.sep}demo.tsx:1:7: error: [inMemory] Could not resolve "./blah-blah" from "./demo.tsx"`,
+  )
 })
 
 test('gives a handy error when a file of an unsupported type is provided', async () => {
@@ -177,8 +185,11 @@ import Demo from './demo.blah'
     },
   }).catch(e => e))
 
-  assert.equal(error.message, `Build failed with 1 error:
-__mdx_bundler_fake_dir__${path.sep}index.mdx:2:17: error: [JavaScript plugins] Invalid loader: "blah" (valid: js, jsx, ts, tsx, css, json, text, base64, dataurl, file, binary)`)
+  assert.equal(
+    error.message,
+    `Build failed with 1 error:
+__mdx_bundler_fake_dir__${path.sep}index.mdx:2:17: error: [JavaScript plugins] Invalid loader: "blah" (valid: js, jsx, ts, tsx, css, json, text, base64, dataurl, file, binary)`,
+  )
 })
 
 test('files is optional', async () => {
@@ -239,6 +250,5 @@ import LeftPad from 'left-pad-js'
 
   assert.match(container.innerHTML, 'this is left pad')
 })
-
 
 test.run()
