@@ -4,120 +4,23 @@ import remarkFrontmatter from 'remark-frontmatter'
 import {remarkMdxFrontmatter} from 'remark-mdx-frontmatter'
 import matter from 'gray-matter'
 import * as esbuild from 'esbuild'
-import type {Plugin, BuildOptions, Loader} from 'esbuild'
-import nodeResolve from '@esbuild-plugins/node-resolve'
+import {NodeResolvePlugin} from '@esbuild-plugins/node-resolve'
 import {globalExternals} from '@fal-works/esbuild-plugin-global-externals'
-import type {ModuleInfo} from '@fal-works/esbuild-plugin-global-externals'
-import type {VFileCompatible, CompileOptions} from 'xdm/lib/compile'
 
-type ESBuildOptions = BuildOptions & {write: false}
-
-type BundleMDXOptions = {
-  /**
-   * The dependencies of the MDX code to be bundled
-   *
-   * @example
-   * ```
-   * bundleMDX(mdxString, {
-   *   files: {
-   *     './components.tsx': `
-   *       import * as React from 'react'
-   *
-   *      type CounterProps = {initialCount: number, step: number}
-   *
-   *       function Counter({initialCount = 0, step = 1}: CounterProps) {
-   *         const [count, setCount] = React.useState(initialCount)
-   *         const increment = () => setCount(c => c + step)
-   *         return <button onClick={increment}>{count}</button>
-   *       }
-   *     `
-   *   },
-   * })
-   * ```
-   */
-  files?: Record<string, string>
-  /**
-   * This allows you to modify the built-in xdm configuration (passed to xdm.compile).
-   * This can be helpful for specifying your own remarkPlugins/rehypePlugins.
-   *
-   * @param vfileCompatible the path and contents of the mdx file being compiled
-   * @param options the default options which you are expected to modify and return
-   * @returns the options to be passed to xdm.compile
-   *
-   * @example
-   * ```
-   * bundleMDX(mdxString, {
-   *   xdmOptions(input, options) {
-   *     // this is the recommended way to add custom remark/rehype plugins:
-   *     // The syntax might look weird, but it protects you in case we add/remove
-   *     // plugins in the future.
-   *     options.remarkPlugins = [...(options.remarkPlugins ?? []), myRemarkPlugin]
-   *     options.rehypePlugins = [...(options.rehypePlugins ?? []), myRehypePlugin]
-   *
-   *     return options
-   *   }
-   * })
-   * ```
-   */
-  xdmOptions?: (
-    vfileCompatible: VFileCompatible,
-    options: CompileOptions,
-  ) => CompileOptions
-  /**
-   * This allows you to modify the built-in esbuild configuration. This can be
-   * especially helpful for specifying the compilation target.
-   *
-   * @example
-   * ```
-   * bundleMDX(mdxString, {
-   *   esbuildOptions(options) {
-   *     options.target = [
-   *       'es2020',
-   *       'chrome58',
-   *       'firefox57',
-   *       'safari11',
-   *       'edge16',
-   *       'node12',
-   *     ]
-   *     return options
-   *   }
-   * })
-   * ```
-   */
-  esbuildOptions?: (options: ESBuildOptions) => ESBuildOptions
-  /**
-   * Any variables you want treated as global variables in the bundling.
-   *
-   * NOTE: These do not have to be technically global as you will be providing
-   * their values when you use getMDXComponent, but as far as esbuild is concerned
-   * it will treat these values as global variables so they will not be included
-   * in the bundle.
-   *
-   * @example
-   * ```
-   * bundlMDX(mdxString, {
-   *   globals: {'left-pad': 'myLeftPad'},
-   * })
-   *
-   * // then later
-   *
-   * import leftPad from 'left-pad'
-   *
-   * const Component = getMDXComponent(result.code, {myLeftPad: leftPad})
-   * ```
-   */
-  globals?: Record<string, string | ModuleInfo>
-}
-
+/**
+ *
+ * @param {string} mdxSource - A string of mdx source code
+ * @param {import('./types').BundleMDXOptions} options
+ * @returns
+ */
 async function bundleMDX(
-  mdxSource: string,
+  mdxSource,
   {
     files = {},
-    xdmOptions = (vfileCompatible: VFileCompatible, options: CompileOptions) =>
-      options,
-    esbuildOptions = (options: ESBuildOptions) => options,
+    xdmOptions = (vfileCompatible, options) => options,
+    esbuildOptions = options => options,
     globals = {},
-  }: BundleMDXOptions = {},
+  } = {},
 ) {
   // xdm is a native ESM, and we're running in a CJS context. This is the
   // only way to import ESM within CJS
@@ -131,13 +34,15 @@ async function bundleMDX(
   const dir = path.join(process.cwd(), `__mdx_bundler_fake_dir__`)
   const entryPath = path.join(dir, './index.mdx')
 
-  const absoluteFiles: Record<string, string> = {[entryPath]: mdxSource}
+  /** @type Record<string, string> */
+  const absoluteFiles = {[entryPath]: mdxSource}
 
   for (const [filepath, fileCode] of Object.entries(files)) {
     absoluteFiles[path.join(dir, filepath)] = fileCode
   }
 
-  const inMemoryPlugin: Plugin = {
+  /** @type import('esbuild').Plugin */
+  const inMemoryPlugin = {
     name: 'inMemory',
     setup(build) {
       build.onResolve({filter: /.*/}, ({path: filePath, importer}) => {
@@ -155,7 +60,7 @@ async function bundleMDX(
         return {
           errors: [
             {
-              text: `Could not resolve "${filePath}" in ${
+              text: `Could not resolve "${filePath}" from ${
                 importer === entryPath
                   ? 'the entry MDX file.'
                   : `"${importer.replace(dir, '.')}"`
@@ -175,7 +80,8 @@ async function bundleMDX(
 
           switch (fileType) {
             case 'mdx': {
-              const vFileCompatible: VFileCompatible = {
+              /** @type import('xdm/lib/compile').VFileCompatible */
+              const vFileCompatible = {
                 path: filePath,
                 contents,
               }
@@ -191,8 +97,12 @@ async function bundleMDX(
               )
               return {contents: vfile.toString(), loader: 'jsx'}
             }
-            default:
-              return {contents, loader: fileType as Loader}
+            default: {
+              return {
+                contents,
+                loader: /** @type import('esbuild').Loader */ (fileType),
+              }
+            }
           }
         },
       )
@@ -217,7 +127,8 @@ async function bundleMDX(
           type: 'cjs',
         },
       }),
-      nodeResolve({extensions: ['.js', '.ts', '.jsx', '.tsx']}),
+      // eslint-disable-next-line babel/new-cap
+      NodeResolvePlugin({extensions: ['.js', '.ts', '.jsx', '.tsx']}),
       inMemoryPlugin,
       // NOTE: the only time the xdm esbuild plugin will be used
       // is if it's not processed by our inMemory plugin which will

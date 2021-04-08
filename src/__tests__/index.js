@@ -1,8 +1,14 @@
-import * as React from 'react'
-import {render} from '@testing-library/react'
+import './setup-tests.js'
+import path from 'path'
+import {test} from 'uvu'
+import * as assert from 'uvu/assert'
+import React from 'react'
+import rtl from '@testing-library/react'
 import leftPad from 'left-pad'
-import {bundleMDX} from '..'
-import {getMDXComponent} from '../client'
+import {bundleMDX} from '../index.js'
+import {getMDXComponent} from '../client.js'
+
+const {render} = rtl
 
 test('smoke test', async () => {
   const mdxSource = `
@@ -66,87 +72,40 @@ title: This is frontmatter
     globals: {'left-pad': 'myLeftPad'},
   })
 
-  const frontmatter = result.frontmatter as {
-    title: string
-    description: string
-    published: string
-  }
+  const frontmatter =
+    /** @type { title: string, description: string, published: string } */ result.frontmatter
 
-  // This creates a custom left pad which uses a different filler character to the one supplied.
-  // If it is not substituted the original will be used and we will get "!" instead of "$"
-  const myLeftPad = (string: string, length: number) => {
+  /**
+   * This creates a custom left pad which uses a different filler character to the one supplied.
+   * If it is not substituted the original will be used and we will get "!" instead of "$"
+   *
+   * @param {string} string
+   * @param {number} length
+   * @returns {string}
+   */
+  const myLeftPad = (string, length) => {
     return leftPad(string, length, '$')
   }
 
   const Component = getMDXComponent(result.code, {myLeftPad})
 
-  const SpanBold: React.FC = props => {
-    return <span {...props} />
-  }
+  /** @param {React.HTMLAttributes<HTMLSpanElement>} props */
+  const SpanBold = props => React.createElement('span', props)
 
+  assert.equal(frontmatter, {
+    title: 'Example Post',
+    published: new Date('2021-02-13'),
+    description: 'This is some meta-data',
+  })
+  
   const {container} = render(
-    <>
-      <header>
-        <h1>{frontmatter.title}</h1>
-        <p>{frontmatter.description}</p>
-      </header>
-      <main>
-        <Component components={{strong: SpanBold}} />
-      </main>
-    </>,
+    React.createElement(Component, {components: {strong: SpanBold}}),
   )
-  expect(container).toMatchInlineSnapshot(`
-    <div>
-      <header>
-        <h1>
-          Example Post
-        </h1>
-        <p>
-          This is some meta-data
-        </p>
-      </header>
-      <main>
-        <h1>
-          This is the title
-        </h1>
-        
+  
+  assert.equal(container.innerHTML, `<h1>This is the title</h1>
 
-        
-
-        <p>
-          Here's a 
-          <span>
-            neat
-          </span>
-           demo:
-        </p>
-        
-
-        <div>
-          $$Neat demo!
-          <div
-            class="sub-dir"
-          >
-            Sub dir!
-          </div>
-          <p>
-            JSON: 
-            mdx-bundler
-          </p>
-          <div>
-            this is js info
-          </div>
-          <div>
-            jsx comp
-          </div>
-          <h1>
-            Frontmatter title: 
-            This is frontmatter
-          </h1>
-        </div>
-      </main>
-    </div>
-  `)
+<p>Here's a <span>neat</span> demo:</p>
+<div>$$Neat demo!<div class="sub-dir">Sub dir!</div><p>JSON: mdx-bundler</p><div>this is js info</div><div>jsx comp</div><h1>Frontmatter title: This is frontmatter</h1></div>`)
 })
 
 test('bundles 3rd party deps', async () => {
@@ -169,7 +128,7 @@ export default () => leftPad("Neat demo!", 12, '!')
   // this test ensures that *not* passing leftPad as a global here
   // will work because I didn't externalize the left-pad module
   const Component = getMDXComponent(result.code)
-  render(<Component />)
+  render(React.createElement(Component))
 })
 
 test('gives a handy error when the entry imports a module that cannot be found', async () => {
@@ -179,14 +138,12 @@ import Demo from './demo'
 <Demo />
   `.trim()
 
-  const error = (await bundleMDX(mdxSource, {
+  const error = /** @type Error */ (await bundleMDX(mdxSource, {
     files: {},
-  }).catch(e => e)) as Error
+  }).catch(e => e))
 
-  expect(error.message).toMatchInlineSnapshot(`
-    "Build failed with 1 error:
-    __mdx_bundler_fake_dir__/index.mdx:2:17: error: [inMemory] Could not resolve \\"./demo\\" in the entry MDX file."
-  `)
+  assert.equal(error.message, `Build failed with 1 error:
+__mdx_bundler_fake_dir__${path.sep}index.mdx:2:17: error: [inMemory] Could not resolve "./demo" from the entry MDX file.`)
 })
 
 test('gives a handy error when importing a module that cannot be found', async () => {
@@ -196,16 +153,15 @@ import Demo from './demo'
 <Demo />
   `.trim()
 
-  const error = (await bundleMDX(mdxSource, {
+  const error = /** @type Error */ (await bundleMDX(mdxSource, {
     files: {
       './demo.tsx': `import './blah-blah'`,
     },
-  }).catch(e => e)) as Error
+  }).catch(e => e))
 
-  expect(error.message).toMatchInlineSnapshot(`
-    "Build failed with 1 error:
-    __mdx_bundler_fake_dir__/demo.tsx:1:7: error: [inMemory] Could not resolve \\"./blah-blah\\" in \\"./demo.tsx\\""
-  `)
+
+  assert.equal(error.message, `Build failed with 1 error:
+__mdx_bundler_fake_dir__${path.sep}demo.tsx:1:7: error: [inMemory] Could not resolve "./blah-blah" from "./demo.tsx"`)
 })
 
 test('gives a handy error when a file of an unsupported type is provided', async () => {
@@ -215,20 +171,18 @@ import Demo from './demo.blah'
 <Demo />
   `.trim()
 
-  const error = (await bundleMDX(mdxSource, {
+  const error = /** @type Error */ (await bundleMDX(mdxSource, {
     files: {
       './demo.blah': `what even is this?`,
     },
-  }).catch(e => e)) as Error
+  }).catch(e => e))
 
-  expect(error.message).toMatchInlineSnapshot(`
-    "Build failed with 1 error:
-    __mdx_bundler_fake_dir__/index.mdx:2:17: error: [JavaScript plugins] Invalid loader: \\"blah\\" (valid: js, jsx, ts, tsx, css, json, text, base64, dataurl, file, binary)"
-  `)
+  assert.equal(error.message, `Build failed with 1 error:
+__mdx_bundler_fake_dir__${path.sep}index.mdx:2:17: error: [JavaScript plugins] Invalid loader: "blah" (valid: js, jsx, ts, tsx, css, json, text, base64, dataurl, file, binary)`)
 })
 
 test('files is optional', async () => {
-  await expect(bundleMDX('hello')).resolves.toBeTruthy()
+  await bundleMDX('hello')
 })
 
 test('uses the typescript loader where needed', async () => {
@@ -245,7 +199,7 @@ import * as React from 'react'
 import {left} from './left'
 
 const Demo: React.FC = () => { 
-return <p>{left("Typescript")}</p>
+return <p>{left("TypeScript")}</p>
 }
 
 export default Demo
@@ -262,15 +216,8 @@ return leftPad(s, 12, '!')
 
   const Component = getMDXComponent(code)
 
-  const {container} = render(<Component />)
-
-  expect(container).toMatchInlineSnapshot(`
-    <div>
-      <p>
-        !!Typescript
-      </p>
-    </div>
-  `)
+  const {container} = render(React.createElement(Component))
+  assert.match(container.innerHTML, '!!TypeScript')
 })
 
 test('can specify "node_modules" in the files', async () => {
@@ -288,13 +235,10 @@ import LeftPad from 'left-pad-js'
 
   const Component = getMDXComponent(code)
 
-  const {container} = render(<Component />)
+  const {container} = render(React.createElement(Component))
 
-  expect(container).toMatchInlineSnapshot(`
-    <div>
-      <div>
-        this is left pad
-      </div>
-    </div>
-  `)
+  assert.match(container.innerHTML, 'this is left pad')
 })
+
+
+test.run()
