@@ -76,9 +76,6 @@ jobs:
       - name: 🏗 Run build script
         run: npm run build
 
-      - name: 🔀 CJS-ify
-        run: node ./other/cjs-ify.js
-
       - name: 🚀 Release
         uses: cycjimmy/semantic-release-action@v2
         with:
