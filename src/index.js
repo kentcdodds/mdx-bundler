@@ -6,7 +6,6 @@ import matter from 'gray-matter'
 import * as esbuild from 'esbuild'
 import {NodeResolvePlugin} from '@esbuild-plugins/node-resolve'
 import {globalExternals} from '@fal-works/esbuild-plugin-global-externals'
-
 import dirnameMessedUp from './dirname-messed-up.cjs'
 
 if (dirnameMessedUp) {
