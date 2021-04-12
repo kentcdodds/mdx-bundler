@@ -7,6 +7,14 @@ import * as esbuild from 'esbuild'
 import {NodeResolvePlugin} from '@esbuild-plugins/node-resolve'
 import {globalExternals} from '@fal-works/esbuild-plugin-global-externals'
 
+import dirnameMessedUp from './dirname-messed-up.cjs'
+
+if (dirnameMessedUp) {
+  console.warn(
+    `mdx-bundler warning: esbuild maybe unable to find its binary, if your build fails you'll need to set the binary path. Learn more: https://github.com/kentcdodds/mdx-bundler/blob/main/README.md#nextjs-esbuild-enoent`,
+  )
+}
+
 /**
  *
  * @param {string} mdxSource - A string of mdx source code
