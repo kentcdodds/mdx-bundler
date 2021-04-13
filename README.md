@@ -436,7 +436,7 @@ this defeats the purpose of using Cloudflare workers. Another potential
 workaround is to use WASM from within the worker. There is
 [`esbuild-wasm`](https://esbuild.github.io/getting-started/#install-the-wasm-version)
 but there are some issues with that package explained at that link. Then there's
-[`wasm-jsevaal`](https://github.com/maple3142/wasm-jseval), but I couldn't get
+[`wasm-jseval`](https://github.com/maple3142/wasm-jseval), but I couldn't get
 that to run code that was output from `mdx-bundler` without error.
 
 If someone would like to dig into this, that would be stellar, but unfortunately
