@@ -419,6 +419,29 @@ function MDXPage({code}: {code: string}) {
 
 ### Known Issues
 
+#### Cloudflare Workers
+
+We'd _love_ for this to work in cloudflare workers. Unfortunately cloudflares
+have two limitations that prevent `mdx-bundler` from working in that
+envrionment:
+
+1. Workers can't run binaries. `bundleMDX` uses `esbuild` (a binary) to bundle
+   your MDX code.
+2. Workers can't run `eval` or similar. `getMDXComponent` evaluates the bundled
+   code using `new Function`.
+
+One workaround to this is to put your mdx-bundler related code in a different
+environment and call that environment from within the Cloudflare worker. IMO,
+this defeats the purpose of using Cloudflare workers. Another potential
+workaround is to use WASM from within the worker. There is
+[`esbuild-wasm`](https://esbuild.github.io/getting-started/#install-the-wasm-version)
+but there are some issues with that package explained at that link. Then there's
+[`wasm-jsevaal`](https://github.com/maple3142/wasm-jseval), but I couldn't get
+that to run code that was output from `mdx-bundler` without error.
+
+If someone would like to dig into this, that would be stellar, but unfortunately
+it's unlikely I'll ever work on it.
+
 #### Next.JS esbuild ENOENT
 
 esbuild relies on `__dirname` to work out where is executable is, Next.JS and
