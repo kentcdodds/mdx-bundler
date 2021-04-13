@@ -6,6 +6,13 @@ import matter from 'gray-matter'
 import * as esbuild from 'esbuild'
 import {NodeResolvePlugin} from '@esbuild-plugins/node-resolve'
 import {globalExternals} from '@fal-works/esbuild-plugin-global-externals'
+import dirnameMessedUp from './dirname-messed-up.cjs'
+
+if (dirnameMessedUp && !process.env.ESBUILD_BINARY_PATH) {
+  console.warn(
+    `mdx-bundler warning: esbuild maybe unable to find its binary, if your build fails you'll need to set ESBUILD_BINARY_PATH. Learn more: https://github.com/kentcdodds/mdx-bundler/blob/main/README.md#nextjs-esbuild-enoent`,
+  )
+}
 
 /**
  *
