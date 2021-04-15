@@ -397,6 +397,7 @@ Here's an example that removes _p_ tags from around images.
 
 ```tsx
 import * as React from 'react'
+import {getMDXComponent} from 'mdx-bundler/client'
 
 const Paragraph: React.FC = props => {
   if (typeof props.children !== 'string' && props.children.type === 'img') {
