@@ -251,4 +251,24 @@ import LeftPad from 'left-pad-js'
   assert.match(container.innerHTML, 'this is left pad')
 })
 
+test('require from current directory', async () => {
+  const mdxSource = `
+# Title
+
+import {Sample} from './other/sample-component'
+
+<Sample />
+`.trim()
+
+  const {code} = await bundleMDX(mdxSource, {
+    cwd: process.cwd()
+  })
+
+  const Component = getMDXComponent(code)
+
+  const {container} = render(React.createElement(Component))
+
+  assert.match(container.innerHTML, 'Sample!')
+})
+
 test.run()

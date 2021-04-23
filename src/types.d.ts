@@ -105,4 +105,5 @@ type BundleMDXOptions = {
    * ```
    */
   globals?: Record<string, string | ModuleInfo>
+  cwd?: string
 }
