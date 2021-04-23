@@ -261,7 +261,15 @@ import {Sample} from './other/sample-component'
 `.trim()
 
   const {code} = await bundleMDX(mdxSource, {
-    cwd: process.cwd()
+    cwd: process.cwd(),
+    esbuildOptions: (options) => {
+      options.loader = {
+        ...options.loader,
+        '.png': 'dataurl'
+      }
+
+      return options
+    }
   })
 
   const Component = getMDXComponent(code)
@@ -269,6 +277,7 @@ import {Sample} from './other/sample-component'
   const {container} = render(React.createElement(Component))
 
   assert.match(container.innerHTML, 'Sample!')
+  assert.match(container.innerHTML, 'src="')
 })
 
 test.run()
