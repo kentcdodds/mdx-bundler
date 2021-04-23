@@ -387,6 +387,50 @@ function MDXPage({code}: {code: string}) {
 }
 ```
 
+#### cwd
+
+This allows you to set the _current working directory_ of the esbuild bundling 
+process. This allows you to skip the `files` option and still import within your
+MDX.
+
+_content/pages/demo.tsx_
+```typescript
+import * as React from 'react'
+
+function Demo() {
+  return <div>Neat demo!</div>
+}
+
+export default Demo
+```
+
+_src/build.ts_
+```typescript
+import {bundleMDX} from 'mdx-bundler'
+
+const mdxSource = `
+---
+title: Example Post
+published: 2021-02-13
+description: This is some description
+---
+
+# Wahoo
+
+import Demo from './demo'
+
+Here's a **neat** demo:
+
+<Demo />
+`.trim()
+
+const result = await bundleMDX(mdxSource, {
+  cwd: '/users/you/site/_content/pages',
+})
+
+const {code, frontmatter} = result
+```
+
 ### Component Substitution
 
 MDX Bundler passes on

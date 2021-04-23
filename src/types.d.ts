@@ -105,5 +105,18 @@ type BundleMDXOptions = {
    * ```
    */
   globals?: Record<string, string | ModuleInfo>
+  /**
+   * The current working directory for the mdx bundle.
+   * 
+   * All relative paths are resolved from this directory by esbuild. The supplied
+   * folder doesn't have to exist.
+   * 
+   * @example
+   * ```
+   * bundleMDX(mdxString, {
+   *  cwd: '/users/you/site/mdx_root'
+   * })
+   * ```
+   */
   cwd?: string
 }
