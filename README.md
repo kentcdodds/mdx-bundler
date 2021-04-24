@@ -423,7 +423,7 @@ function MDXPage({code}: {code: string}) {
 
 You can reference frontmatter meta or consts in the mdx content.
 
-```msx
+```mdx
 ---
 title: Example Post
 ---
