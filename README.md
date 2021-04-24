@@ -174,6 +174,7 @@ It has more features, fewer bugs, and no runtime!
 - [Usage](#usage)
   - [Options](#options)
   - [Component Substitution](#component-substitution)
+  - [Frontmatter and const](#frontmatter-and-const)
   - [Known Issues](#known-issues)
 - [Inspiration](#inspiration)
 - [Other Solutions](#other-solutions)
@@ -416,6 +417,23 @@ function MDXPage({code}: {code: string}) {
     </main>
   )
 }
+```
+
+### Frontmatter and const
+
+You can reference frontmatter meta or consts in the mdx content.
+
+```mdx
+---
+title: Example Post
+---
+
+export const exampleImage = 'https://example.com/image.jpg';
+
+# {frontmatter.title}
+
+<img src={exampleImage} alt="Image alt text" />
+
 ```
 
 ### Known Issues
