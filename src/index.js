@@ -28,7 +28,7 @@ async function bundleMDX(
     xdmOptions = (vfileCompatible, options) => options,
     esbuildOptions = options => options,
     globals = {},
-    cwd = undefined
+    cwd,
   } = {},
 ) {
   // xdm is a native ESM, and we're running in a CJS context. This is the
@@ -66,12 +66,24 @@ async function bundleMDX(
           if (fullModulePath in absoluteFiles) return {path: fullModulePath}
         }
 
-        if(cwd){
-          const cwdModulePath = modulePath.replace(/^(.*__mdx_bundler_fake_dir__)/, cwd)
+        if (cwd) {
+          const cwdModulePath = modulePath.replace(
+            /^(.*__mdx_bundler_fake_dir__)/,
+            cwd,
+          )
 
-          for (const ext of ['', '.js', '.ts', '.jsx', '.tsx', '.json', '.mdx']) {
+          for (const ext of [
+            '',
+            '.js',
+            '.ts',
+            '.jsx',
+            '.tsx',
+            '.json',
+            '.mdx',
+          ]) {
             const fullCWDModulePath = `${cwdModulePath}${ext}`
-            if(fs.existsSync(fullCWDModulePath)) return {path: fullCWDModulePath}
+            if (fs.existsSync(fullCWDModulePath))
+              return {path: fullCWDModulePath}
           }
         }
 

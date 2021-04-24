@@ -4,8 +4,10 @@ import image from './150.png'
 
 /** @type React.FC */
 export const Sample = () => {
-  return <div>
-    <b>Sample!</b>
-    <img src={image} />
-  </div>
+  return (
+    <div>
+      <b>Sample!</b>
+      <img src={image} />
+    </div>
+  )
 }

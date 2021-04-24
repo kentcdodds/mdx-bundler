@@ -389,11 +389,12 @@ function MDXPage({code}: {code: string}) {
 
 #### cwd
 
-This allows you to set the _current working directory_ of the esbuild bundling 
+This allows you to set the _current working directory_ of the esbuild bundling
 process. This allows you to skip the `files` option and still import within your
 MDX.
 
 _content/pages/demo.tsx_
+
 ```typescript
 import * as React from 'react'
 
@@ -405,6 +406,7 @@ export default Demo
 ```
 
 _src/build.ts_
+
 ```typescript
 import {bundleMDX} from 'mdx-bundler'
 

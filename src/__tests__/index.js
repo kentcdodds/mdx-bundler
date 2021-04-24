@@ -262,14 +262,14 @@ import {Sample} from './other/sample-component'
 
   const {code} = await bundleMDX(mdxSource, {
     cwd: process.cwd(),
-    esbuildOptions: (options) => {
+    esbuildOptions: options => {
       options.loader = {
         ...options.loader,
-        '.png': 'dataurl'
+        '.png': 'dataurl',
       }
 
       return options
-    }
+    },
   })
 
   const Component = getMDXComponent(code)
