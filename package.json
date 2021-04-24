@@ -67,7 +67,8 @@
     "extends": "./node_modules/kcd-scripts/eslint.js",
     "rules": {
       "import/extensions": "off",
-      "@typescript-eslint/no-unsafe-assignment": "off"
+      "@typescript-eslint/no-unsafe-assignment": "off",
+      "max-lines-per-function": "off"
     }
   },
   "eslintIgnore": [
