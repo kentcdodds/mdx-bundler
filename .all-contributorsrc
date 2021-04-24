@@ -65,6 +65,15 @@
       "contributions": [
         "ideas"
       ]
+    },
+    {
+      "login": "peduarte",
+      "name": "Pedro Duarte",
+      "avatar_url": "https://avatars.githubusercontent.com/u/372831?v=4",
+      "profile": "https://ped.ro",
+      "contributions": [
+        "doc"
+      ]
     }
   ],
   "commitConvention": "none"

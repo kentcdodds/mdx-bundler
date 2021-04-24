@@ -174,6 +174,7 @@ It has more features, fewer bugs, and no runtime!
 - [Usage](#usage)
   - [Options](#options)
   - [Component Substitution](#component-substitution)
+  - [Frontmatter and const](#frontmatter-and-const)
   - [Known Issues](#known-issues)
 - [Inspiration](#inspiration)
 - [Other Solutions](#other-solutions)
@@ -464,6 +465,23 @@ function MDXPage({code}: {code: string}) {
 }
 ```
 
+### Frontmatter and const
+
+You can reference frontmatter meta or consts in the mdx content.
+
+```mdx
+---
+title: Example Post
+---
+
+export const exampleImage = 'https://example.com/image.jpg';
+
+# {frontmatter.title}
+
+<img src={exampleImage} alt="Image alt text" />
+
+```
+
 ### Known Issues
 
 #### Cloudflare Workers
@@ -568,6 +586,7 @@ Thanks goes to these people ([emoji key][emojis]):
     <td align="center"><a href="https://arcath.net"><img src="https://avatars.githubusercontent.com/u/19609?v=4?s=100" width="100px;" alt=""/><br /><sub><b>Adam Laycock</b></sub></a><br /><a href="https://github.com/kentcdodds/mdx-bundler/commits?author=Arcath" title="Code">💻</a> <a href="https://github.com/kentcdodds/mdx-bundler/commits?author=Arcath" title="Tests">⚠️</a> <a href="#ideas-Arcath" title="Ideas, Planning, & Feedback">🤔</a> <a href="https://github.com/kentcdodds/mdx-bundler/pulls?q=is%3Apr+reviewed-by%3AArcath" title="Reviewed Pull Requests">👀</a> <a href="https://github.com/kentcdodds/mdx-bundler/commits?author=Arcath" title="Documentation">📖</a></td>
     <td align="center"><a href="http://wooorm.com"><img src="https://avatars.githubusercontent.com/u/944406?v=4?s=100" width="100px;" alt=""/><br /><sub><b>Titus</b></sub></a><br /><a href="#ideas-wooorm" title="Ideas, Planning, & Feedback">🤔</a> <a href="https://github.com/kentcdodds/mdx-bundler/pulls?q=is%3Apr+reviewed-by%3Awooorm" title="Reviewed Pull Requests">👀</a> <a href="https://github.com/kentcdodds/mdx-bundler/commits?author=wooorm" title="Code">💻</a></td>
     <td align="center"><a href="https://github.com/ChristianMurphy"><img src="https://avatars.githubusercontent.com/u/3107513?v=4?s=100" width="100px;" alt=""/><br /><sub><b>Christian Murphy</b></sub></a><br /><a href="#ideas-ChristianMurphy" title="Ideas, Planning, & Feedback">🤔</a></td>
+    <td align="center"><a href="https://ped.ro"><img src="https://avatars.githubusercontent.com/u/372831?v=4?s=100" width="100px;" alt=""/><br /><sub><b>Pedro Duarte</b></sub></a><br /><a href="https://github.com/kentcdodds/mdx-bundler/commits?author=peduarte" title="Documentation">📖</a></td>
   </tr>
 </table>
 
