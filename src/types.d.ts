@@ -109,7 +109,8 @@ type BundleMDXOptions = {
    * The current working directory for the mdx bundle.
    *
    * All relative paths are resolved from this directory by esbuild. The supplied
-   * folder doesn't have to exist.
+   * folder doesn't have to exist, useful if your MDX content doesn't live on the
+   * disk.
    *
    * @example
    * ```

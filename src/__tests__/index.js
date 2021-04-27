@@ -266,9 +266,7 @@ import {Sample} from './other/sample-component'
   const {code} = await bundleMDX(mdxSource, {
     cwd: process.cwd(),
     xdmOptions: (vFile, options) => {
-      options.remarkPlugins = [
-        remarkMdxImages
-      ]
+      options.remarkPlugins = [remarkMdxImages]
 
       return options
     },
@@ -290,7 +288,10 @@ import {Sample} from './other/sample-component'
   // Test that the React components image is imported correctly.
   assert.match(container.innerHTML, 'img src="data:image/png')
   // Test that the markdowns image is imported correctly.
-  assert.match(container.innerHTML, 'img alt="A Sample Image" src="data:image/png')
+  assert.match(
+    container.innerHTML,
+    'img alt="A Sample Image" src="data:image/png',
+  )
 })
 
 test.run()

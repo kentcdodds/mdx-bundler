@@ -474,12 +474,11 @@ You can reference frontmatter meta or consts in the mdx content.
 title: Example Post
 ---
 
-export const exampleImage = 'https://example.com/image.jpg';
+export const exampleImage = 'https://example.com/image.jpg'
 
 # {frontmatter.title}
 
 <img src={exampleImage} alt="Image alt text" />
-
 ```
 
 ### Known Issues
