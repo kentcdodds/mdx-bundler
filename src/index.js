@@ -27,7 +27,7 @@ async function bundleMDX(
     xdmOptions = (vfileCompatible, options) => options,
     esbuildOptions = options => options,
     globals = {},
-    cwd,
+    cwd = path.join(process.cwd(), `__mdx_bundler_fake_dir__`),
   } = {},
 ) {
   // xdm is a native ESM, and we're running in a CJS context. This is the
@@ -39,14 +39,14 @@ async function bundleMDX(
   // extract the frontmatter
   const {data: frontmatter} = matter(mdxSource)
 
-  const dir = cwd ? cwd : path.join(process.cwd(), `__mdx_bundler_fake_dir__`)
-  const entryPath = path.join(dir, './index.mdx')
+  //const dir = cwd ? cwd : path.join(process.cwd(), `__mdx_bundler_fake_dir__`)
+  const entryPath = path.join(cwd, './index.mdx')
 
   /** @type Record<string, string> */
   const absoluteFiles = {[entryPath]: mdxSource}
 
   for (const [filepath, fileCode] of Object.entries(files)) {
-    absoluteFiles[path.join(dir, filepath)] = fileCode
+    absoluteFiles[path.join(cwd, filepath)] = fileCode
   }
 
   /** @type import('esbuild').Plugin */
@@ -69,20 +69,7 @@ async function bundleMDX(
         }
 
         // Return an empty object so that esbuild will handle resolving the file itself.
-        if (cwd) return {}
-
-        return {
-          errors: [
-            {
-              text: `Could not resolve "${filePath}" from ${
-                importer === entryPath
-                  ? 'the entry MDX file.'
-                  : `"${importer.replace(dir, '.')}"`
-              }`,
-              location: null,
-            },
-          ],
-        }
+        return {}
       })
 
       build.onLoad({filter: /.*/}, async ({path: filePath, pluginData}) => {

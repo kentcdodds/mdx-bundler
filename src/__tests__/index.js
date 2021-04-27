@@ -149,7 +149,7 @@ import Demo from './demo'
   assert.equal(
     error.message,
     `Build failed with 1 error:
-__mdx_bundler_fake_dir__/index.mdx:2:17: error: [plugin: inMemory] Could not resolve "./demo" from the entry MDX file.`,
+__mdx_bundler_fake_dir__/index.mdx:2:17: error: Could not resolve "./demo"`,
   )
 })
 
@@ -169,7 +169,7 @@ import Demo from './demo'
   assert.equal(
     error.message,
     `Build failed with 1 error:
-__mdx_bundler_fake_dir__/demo.tsx:1:7: error: [plugin: inMemory] Could not resolve "./blah-blah" from ".${path.sep}demo.tsx"`,
+__mdx_bundler_fake_dir__/demo.tsx:1:7: error: Could not resolve "./blah-blah"`,
   )
 })
 
