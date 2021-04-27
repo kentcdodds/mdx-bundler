@@ -7,6 +7,7 @@ import rtl from '@testing-library/react'
 import leftPad from 'left-pad'
 import {bundleMDX} from '../index.js'
 import {getMDXComponent} from '../client.js'
+import {remarkMdxImages} from 'remark-mdx-images'
 
 const {render} = rtl
 
@@ -258,10 +259,19 @@ test('require from current directory', async () => {
 import {Sample} from './other/sample-component'
 
 <Sample />
+
+![A Sample Image](./other/150.png)
 `.trim()
 
   const {code} = await bundleMDX(mdxSource, {
     cwd: process.cwd(),
+    xdmOptions: (vFile, options) => {
+      options.remarkPlugins = [
+        remarkMdxImages
+      ]
+
+      return options
+    },
     esbuildOptions: options => {
       options.loader = {
         ...options.loader,
@@ -277,7 +287,10 @@ import {Sample} from './other/sample-component'
   const {container} = render(React.createElement(Component))
 
   assert.match(container.innerHTML, 'Sample!')
-  assert.match(container.innerHTML, 'src="')
+  // Test that the React components image is imported correctly.
+  assert.match(container.innerHTML, 'img src="data:image/png')
+  // Test that the markdowns image is imported correctly.
+  assert.match(container.innerHTML, 'img alt="A Sample Image" src="data:image/png')
 })
 
 test.run()
