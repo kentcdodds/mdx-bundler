@@ -148,7 +148,7 @@ import Demo from './demo'
   assert.equal(
     error.message,
     `Build failed with 1 error:
-__mdx_bundler_fake_dir__/index.mdx:2:17: error: [inMemory] Could not resolve "./demo" from the entry MDX file.`,
+__mdx_bundler_fake_dir__/index.mdx:2:17: error: [plugin: inMemory] Could not resolve "./demo" from the entry MDX file.`,
   )
 })
 
@@ -168,7 +168,7 @@ import Demo from './demo'
   assert.equal(
     error.message,
     `Build failed with 1 error:
-__mdx_bundler_fake_dir__/demo.tsx:1:7: error: [inMemory] Could not resolve "./blah-blah" from ".${path.sep}demo.tsx"`,
+__mdx_bundler_fake_dir__/demo.tsx:1:7: error: [plugin: inMemory] Could not resolve "./blah-blah" from ".${path.sep}demo.tsx"`,
   )
 })
 
@@ -188,7 +188,7 @@ import Demo from './demo.blah'
   assert.equal(
     error.message,
     `Build failed with 1 error:
-__mdx_bundler_fake_dir__/index.mdx:2:17: error: [JavaScript plugins] Invalid loader: "blah" (valid: js, jsx, ts, tsx, css, json, text, base64, dataurl, file, binary)`,
+__mdx_bundler_fake_dir__/index.mdx:2:17: error: [plugin: JavaScript plugins] Invalid loader: "blah" (valid: js, jsx, ts, tsx, css, json, text, base64, dataurl, file, binary)`,
   )
 })
 
