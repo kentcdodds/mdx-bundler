@@ -390,9 +390,9 @@ function MDXPage({code}: {code: string}) {
 
 #### cwd
 
-This allows you to set the _current working directory_ of the esbuild bundling
-process. This allows you to skip the `files` option and still import within your
-MDX.
+Setting `cwd` (_current working directory_) to a directory will allow esbuild to
+resolve imports. This directory could be the directory the mdx content was read
+from or a directory that off-disk mdx should be _run_ in.
 
 _content/pages/demo.tsx_
 
