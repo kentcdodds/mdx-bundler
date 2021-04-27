@@ -1,5 +1,4 @@
 import './setup-tests.js'
-import path from 'path'
 import {test} from 'uvu'
 import * as assert from 'uvu/assert'
 import React from 'react'
