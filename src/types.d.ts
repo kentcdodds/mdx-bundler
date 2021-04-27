@@ -106,11 +106,11 @@ type BundleMDXOptions = {
    */
   globals?: Record<string, string | ModuleInfo>
   /**
-   * The current working directory for the mdx bundle.
+   * The current working directory for the mdx bundle. Supplying this allows
+   * esbuild to resolve paths itself instead of using `files`.
    *
-   * All relative paths are resolved from this directory by esbuild. The supplied
-   * folder doesn't have to exist, useful if your MDX content doesn't live on the
-   * disk.
+   * This could be the directory the mdx content was read from or in the case
+   * of off-disk content a common root directory.
    *
    * @example
    * ```

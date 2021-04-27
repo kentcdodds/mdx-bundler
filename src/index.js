@@ -54,20 +54,22 @@ async function bundleMDX(
     name: 'inMemory',
     setup(build) {
       build.onResolve({filter: /.*/}, ({path: filePath, importer}) => {
-        if (filePath === entryPath) return {path: filePath, pluginData: {inMemory: true}}
+        if (filePath === entryPath)
+          return {path: filePath, pluginData: {inMemory: true}}
 
         const modulePath = path.resolve(path.dirname(importer), filePath)
 
-        if (modulePath in absoluteFiles) return {path: modulePath, pluginData: {inMemory: true}}
+        if (modulePath in absoluteFiles)
+          return {path: modulePath, pluginData: {inMemory: true}}
 
         for (const ext of ['.js', '.ts', '.jsx', '.tsx', '.json', '.mdx']) {
           const fullModulePath = `${modulePath}${ext}`
-          if (fullModulePath in absoluteFiles) return {path: fullModulePath, pluginData: {inMemory: true}}
+          if (fullModulePath in absoluteFiles)
+            return {path: fullModulePath, pluginData: {inMemory: true}}
         }
 
-        if (cwd) {
-          return {}
-        }
+        // Return an empty object so that esbuild will handle resolving the file itself.
+        if (cwd) return {}
 
         return {
           errors: [
@@ -83,45 +85,43 @@ async function bundleMDX(
         }
       })
 
-      build.onLoad(
-        {filter: /.*/},
-        async ({path: filePath, pluginData}) => {
-          if(pluginData === undefined || !pluginData.inMemory){
-            return {}
-          }
+      build.onLoad({filter: /.*/}, async ({path: filePath, pluginData}) => {
+        if (pluginData === undefined || !pluginData.inMemory) {
+          // Return an empty object so that esbuild will load & parse the file contents itself.
+          return {}
+        }
 
-          // the || .js allows people to exclude a file extension
-          const fileType = (path.extname(filePath) || '.jsx').slice(1)
-          const contents = absoluteFiles[filePath]
+        // the || .js allows people to exclude a file extension
+        const fileType = (path.extname(filePath) || '.jsx').slice(1)
+        const contents = absoluteFiles[filePath]
 
-          switch (fileType) {
-            case 'mdx': {
-              /** @type import('xdm/lib/compile').VFileCompatible */
-              const vFileCompatible = {
-                path: filePath,
-                contents,
-              }
-              const vfile = await compileMDX(
-                vFileCompatible,
-                xdmOptions(vFileCompatible, {
-                  jsx: true,
-                  remarkPlugins: [
-                    remarkFrontmatter,
-                    [remarkMdxFrontmatter, {name: 'frontmatter'}],
-                  ],
-                }),
-              )
-              return {contents: vfile.toString(), loader: 'jsx'}
+        switch (fileType) {
+          case 'mdx': {
+            /** @type import('xdm/lib/compile').VFileCompatible */
+            const vFileCompatible = {
+              path: filePath,
+              contents,
             }
-            default: {
-              return {
-                contents,
-                loader: /** @type import('esbuild').Loader */ (fileType),
-              }
+            const vfile = await compileMDX(
+              vFileCompatible,
+              xdmOptions(vFileCompatible, {
+                jsx: true,
+                remarkPlugins: [
+                  remarkFrontmatter,
+                  [remarkMdxFrontmatter, {name: 'frontmatter'}],
+                ],
+              }),
+            )
+            return {contents: vfile.toString(), loader: 'jsx'}
+          }
+          default: {
+            return {
+              contents,
+              loader: /** @type import('esbuild').Loader */ (fileType),
             }
           }
-        },
-      )
+        }
+      })
     },
   }
 
