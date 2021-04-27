@@ -66,7 +66,7 @@ async function bundleMDX(
         }
 
         if (cwd) {
-          return
+          return {}
         }
 
         return {
@@ -87,7 +87,7 @@ async function bundleMDX(
         {filter: /.*/},
         async ({path: filePath, pluginData}) => {
           if(pluginData === undefined || !pluginData.inMemory){
-            return
+            return {}
           }
 
           // the || .js allows people to exclude a file extension

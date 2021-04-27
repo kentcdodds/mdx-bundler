@@ -5,9 +5,9 @@ import * as assert from 'uvu/assert'
 import React from 'react'
 import rtl from '@testing-library/react'
 import leftPad from 'left-pad'
+import {remarkMdxImages} from 'remark-mdx-images'
 import {bundleMDX} from '../index.js'
 import {getMDXComponent} from '../client.js'
-import {remarkMdxImages} from 'remark-mdx-images'
 
 const {render} = rtl
 
