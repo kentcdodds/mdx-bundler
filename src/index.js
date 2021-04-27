@@ -1,5 +1,4 @@
 import path from 'path'
-import fs from 'fs'
 import {StringDecoder} from 'string_decoder'
 import remarkFrontmatter from 'remark-frontmatter'
 import {remarkMdxFrontmatter} from 'remark-mdx-frontmatter'
