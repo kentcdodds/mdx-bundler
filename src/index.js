@@ -39,7 +39,6 @@ async function bundleMDX(
   // extract the frontmatter
   const {data: frontmatter} = matter(mdxSource)
 
-  //const dir = cwd ? cwd : path.join(process.cwd(), `__mdx_bundler_fake_dir__`)
   const entryPath = path.join(cwd, './index.mdx')
 
   /** @type Record<string, string> */
