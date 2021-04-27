@@ -27,6 +27,7 @@ async function bundleMDX(
     xdmOptions = (vfileCompatible, options) => options,
     esbuildOptions = options => options,
     globals = {},
+    cwd = path.join(process.cwd(), `__mdx_bundler_fake_dir__`),
   } = {},
 ) {
   // xdm is a native ESM, and we're running in a CJS context. This is the
@@ -38,14 +39,13 @@ async function bundleMDX(
   // extract the frontmatter
   const {data: frontmatter} = matter(mdxSource)
 
-  const dir = path.join(process.cwd(), `__mdx_bundler_fake_dir__`)
-  const entryPath = path.join(dir, './index.mdx')
+  const entryPath = path.join(cwd, './index.mdx')
 
   /** @type Record<string, string> */
   const absoluteFiles = {[entryPath]: mdxSource}
 
   for (const [filepath, fileCode] of Object.entries(files)) {
-    absoluteFiles[path.join(dir, filepath)] = fileCode
+    absoluteFiles[path.join(cwd, filepath)] = fileCode
   }
 
   /** @type import('esbuild').Plugin */
@@ -53,66 +53,61 @@ async function bundleMDX(
     name: 'inMemory',
     setup(build) {
       build.onResolve({filter: /.*/}, ({path: filePath, importer}) => {
-        if (filePath === entryPath) return {path: filePath}
+        if (filePath === entryPath)
+          return {path: filePath, pluginData: {inMemory: true}}
 
         const modulePath = path.resolve(path.dirname(importer), filePath)
 
-        if (modulePath in absoluteFiles) return {path: modulePath}
+        if (modulePath in absoluteFiles)
+          return {path: modulePath, pluginData: {inMemory: true}}
 
         for (const ext of ['.js', '.ts', '.jsx', '.tsx', '.json', '.mdx']) {
           const fullModulePath = `${modulePath}${ext}`
-          if (fullModulePath in absoluteFiles) return {path: fullModulePath}
+          if (fullModulePath in absoluteFiles)
+            return {path: fullModulePath, pluginData: {inMemory: true}}
         }
 
-        return {
-          errors: [
-            {
-              text: `Could not resolve "${filePath}" from ${
-                importer === entryPath
-                  ? 'the entry MDX file.'
-                  : `"${importer.replace(dir, '.')}"`
-              }`,
-              location: null,
-            },
-          ],
-        }
+        // Return an empty object so that esbuild will handle resolving the file itself.
+        return {}
       })
 
-      build.onLoad(
-        {filter: /__mdx_bundler_fake_dir__/},
-        async ({path: filePath}) => {
-          // the || .js allows people to exclude a file extension
-          const fileType = (path.extname(filePath) || '.jsx').slice(1)
-          const contents = absoluteFiles[filePath]
+      build.onLoad({filter: /.*/}, async ({path: filePath, pluginData}) => {
+        if (pluginData === undefined || !pluginData.inMemory) {
+          // Return an empty object so that esbuild will load & parse the file contents itself.
+          return {}
+        }
 
-          switch (fileType) {
-            case 'mdx': {
-              /** @type import('xdm/lib/compile').VFileCompatible */
-              const vFileCompatible = {
-                path: filePath,
-                contents,
-              }
-              const vfile = await compileMDX(
-                vFileCompatible,
-                xdmOptions(vFileCompatible, {
-                  jsx: true,
-                  remarkPlugins: [
-                    remarkFrontmatter,
-                    [remarkMdxFrontmatter, {name: 'frontmatter'}],
-                  ],
-                }),
-              )
-              return {contents: vfile.toString(), loader: 'jsx'}
+        // the || .js allows people to exclude a file extension
+        const fileType = (path.extname(filePath) || '.jsx').slice(1)
+        const contents = absoluteFiles[filePath]
+
+        switch (fileType) {
+          case 'mdx': {
+            /** @type import('xdm/lib/compile').VFileCompatible */
+            const vFileCompatible = {
+              path: filePath,
+              contents,
             }
-            default: {
-              return {
-                contents,
-                loader: /** @type import('esbuild').Loader */ (fileType),
-              }
+            const vfile = await compileMDX(
+              vFileCompatible,
+              xdmOptions(vFileCompatible, {
+                jsx: true,
+                remarkPlugins: [
+                  remarkFrontmatter,
+                  [remarkMdxFrontmatter, {name: 'frontmatter'}],
+                ],
+              }),
+            )
+            return {contents: vfile.toString(), loader: 'jsx'}
+          }
+          default: {
+            return {
+              contents,
+              loader: /** @type import('esbuild').Loader */ (fileType),
             }
           }
-        },
-      )
+        }
+      })
     },
   }
 

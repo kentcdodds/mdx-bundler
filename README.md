@@ -388,6 +388,52 @@ function MDXPage({code}: {code: string}) {
 }
 ```
 
+#### cwd
+
+Setting `cwd` (_current working directory_) to a directory will allow esbuild to
+resolve imports. This directory could be the directory the mdx content was read
+from or a directory that off-disk mdx should be _run_ in.
+
+_content/pages/demo.tsx_
+
+```typescript
+import * as React from 'react'
+
+function Demo() {
+  return <div>Neat demo!</div>
+}
+
+export default Demo
+```
+
+_src/build.ts_
+
+```typescript
+import {bundleMDX} from 'mdx-bundler'
+
+const mdxSource = `
+---
+title: Example Post
+published: 2021-02-13
+description: This is some description
+---
+
+# Wahoo
+
+import Demo from './demo'
+
+Here's a **neat** demo:
+
+<Demo />
+`.trim()
+
+const result = await bundleMDX(mdxSource, {
+  cwd: '/users/you/site/_content/pages',
+})
+
+const {code, frontmatter} = result
+```
+
 ### Component Substitution
 
 MDX Bundler passes on
@@ -428,12 +474,11 @@ You can reference frontmatter meta or consts in the mdx content.
 title: Example Post
 ---
 
-export const exampleImage = 'https://example.com/image.jpg';
+export const exampleImage = 'https://example.com/image.jpg'
 
 # {frontmatter.title}
 
 <img src={exampleImage} alt="Image alt text" />
-
 ```
 
 ### Known Issues

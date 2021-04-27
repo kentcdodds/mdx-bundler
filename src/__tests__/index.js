@@ -1,10 +1,10 @@
 import './setup-tests.js'
-import path from 'path'
 import {test} from 'uvu'
 import * as assert from 'uvu/assert'
 import React from 'react'
 import rtl from '@testing-library/react'
 import leftPad from 'left-pad'
+import {remarkMdxImages} from 'remark-mdx-images'
 import {bundleMDX} from '../index.js'
 import {getMDXComponent} from '../client.js'
 
@@ -148,7 +148,7 @@ import Demo from './demo'
   assert.equal(
     error.message,
     `Build failed with 1 error:
-__mdx_bundler_fake_dir__${path.sep}index.mdx:2:17: error: [inMemory] Could not resolve "./demo" from the entry MDX file.`,
+__mdx_bundler_fake_dir__/index.mdx:2:17: error: Could not resolve "./demo"`,
   )
 })
 
@@ -168,7 +168,7 @@ import Demo from './demo'
   assert.equal(
     error.message,
     `Build failed with 1 error:
-__mdx_bundler_fake_dir__${path.sep}demo.tsx:1:7: error: [inMemory] Could not resolve "./blah-blah" from "./demo.tsx"`,
+__mdx_bundler_fake_dir__/demo.tsx:1:7: error: Could not resolve "./blah-blah"`,
   )
 })
 
@@ -188,7 +188,7 @@ import Demo from './demo.blah'
   assert.equal(
     error.message,
     `Build failed with 1 error:
-__mdx_bundler_fake_dir__${path.sep}index.mdx:2:17: error: [JavaScript plugins] Invalid loader: "blah" (valid: js, jsx, ts, tsx, css, json, text, base64, dataurl, file, binary)`,
+__mdx_bundler_fake_dir__/index.mdx:2:17: error: [plugin: JavaScript plugins] Invalid loader: "blah" (valid: js, jsx, ts, tsx, css, json, text, base64, dataurl, file, binary)`,
   )
 })
 
@@ -249,6 +249,48 @@ import LeftPad from 'left-pad-js'
   const {container} = render(React.createElement(Component))
 
   assert.match(container.innerHTML, 'this is left pad')
+})
+
+test('require from current directory', async () => {
+  const mdxSource = `
+# Title
+
+import {Sample} from './other/sample-component'
+
+<Sample />
+
+![A Sample Image](./other/150.png)
+`.trim()
+
+  const {code} = await bundleMDX(mdxSource, {
+    cwd: process.cwd(),
+    xdmOptions: (vFile, options) => {
+      options.remarkPlugins = [remarkMdxImages]
+
+      return options
+    },
+    esbuildOptions: options => {
+      options.loader = {
+        ...options.loader,
+        '.png': 'dataurl',
+      }
+
+      return options
+    },
+  })
+
+  const Component = getMDXComponent(code)
+
+  const {container} = render(React.createElement(Component))
+
+  assert.match(container.innerHTML, 'Sample!')
+  // Test that the React components image is imported correctly.
+  assert.match(container.innerHTML, 'img src="data:image/png')
+  // Test that the markdowns image is imported correctly.
+  assert.match(
+    container.innerHTML,
+    'img alt="A Sample Image" src="data:image/png',
+  )
 })
 
 test.run()
