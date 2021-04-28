@@ -148,7 +148,7 @@ import Demo from './demo'
   assert.equal(
     error.message,
     `Build failed with 1 error:
-__mdx_bundler_fake_dir__/index.mdx:2:17: error: Could not resolve "./demo"`,
+__mdx_bundler_fake_dir__/_mdx_bundler_entry_point.mdx:2:17: error: Could not resolve "./demo"`,
   )
 })
 
@@ -188,7 +188,7 @@ import Demo from './demo.blah'
   assert.equal(
     error.message,
     `Build failed with 1 error:
-__mdx_bundler_fake_dir__/index.mdx:2:17: error: [plugin: JavaScript plugins] Invalid loader: "blah" (valid: js, jsx, ts, tsx, css, json, text, base64, dataurl, file, binary)`,
+__mdx_bundler_fake_dir__/_mdx_bundler_entry_point.mdx:2:17: error: [plugin: JavaScript plugins] Invalid loader: "blah" (valid: js, jsx, ts, tsx, css, json, text, base64, dataurl, file, binary)`,
   )
 })
 
