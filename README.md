@@ -195,6 +195,9 @@ should be installed as one of your project's `dependencies`:
 npm install --save mdx-bundler
 ```
 
+One of mdx-bundler's dependancies requires a working [node-gyp][node-gyp] setup
+to be able to install correctly.
+
 ## Usage
 
 ```typescript
@@ -481,6 +484,68 @@ export const exampleImage = 'https://example.com/image.jpg'
 <img src={exampleImage} alt="Image alt text" />
 ```
 
+### Image Bundling
+
+With the [cwd](#cwd) and the remark plugin
+[remark-mdx-images](https://www.npmjs.com/package/remark-mdx-images) you can
+bundle images in your mdx!
+
+There are two loaders in esbuild that can be used here. The easiest is `dataurl`
+which outputs the images as inline data urls in the returned code.
+
+```js
+import {remarkMdxImages} from 'remark-mdx-images'
+
+const {code} = await bundleMDX(mdxSource, {
+  cwd: '/users/you/site/_content/pages',
+  xdmOptions: (vFile, options) => {
+    options.remarkPlugins = [remarkMdxImages]
+
+    return options
+  },
+  esbuildOptions: options => {
+    options.loader = {
+      ...options.loader,
+      '.png': 'dataurl',
+    }
+
+    return options
+  },
+})
+```
+
+The `file` loader requires a little more configuration to get working. With the
+`file` loader your images are copied to the output directory so esbuild needs to
+be set to write files and needs to know where to put them plus the url of the
+folder to be used in image sources.
+
+```js
+const {code} = await bundleMDX(mdxSource, {
+  cwd: '/users/you/site/_content/pages',
+  xdmOptions: (vFile, options) => {
+    options.remarkPlugins = [remarkMdxImages]
+
+    return options
+  },
+  esbuildOptions: options => {
+    // Set the `outdir` to your public directory.
+    options.outdir = '/users/you/site/public/img'
+    options.loader = {
+      ...options.loader,
+      // Tell esbuild to use the `file` loader for pngs
+      '.png': 'file',
+    }
+    // Set the public path to /img/ so image sources start /img/
+    options.publicPath = '/img/'
+
+    // Set write to true so that esbuild will output the files.
+    options.write = true
+
+    return options
+  },
+})
+```
+
 ### Known Issues
 
 #### Cloudflare Workers
@@ -624,4 +689,5 @@ MIT
 [bugs]: https://github.com/kentcdodds/mdx-bundler/issues?utf8=%E2%9C%93&q=is%3Aissue+is%3Aopen+sort%3Acreated-desc+label%3Abug
 [requests]: https://github.com/kentcdodds/mdx-bundler/issues?utf8=%E2%9C%93&q=is%3Aissue+is%3Aopen+sort%3Areactions-%2B1-desc+label%3Aenhancement
 [good-first-issue]: https://github.com/kentcdodds/mdx-bundler/issues?utf8=%E2%9C%93&q=is%3Aissue+is%3Aopen+sort%3Areactions-%2B1-desc+label%3Aenhancement+label%3A%22good+first+issue%22
+[node-gyp]: https://github.com/nodejs/node-gyp#installation
 <!-- prettier-ignore-end -->

@@ -43,7 +43,7 @@
     "@babel/runtime": "^7.13.17",
     "@esbuild-plugins/node-resolve": "^0.1.4",
     "@fal-works/esbuild-plugin-global-externals": "^2.1.1",
-    "esbuild": "^0.11.15",
+    "esbuild": "^0.11.16",
     "gray-matter": "^4.0.3",
     "jsdom": "^16.5.3",
     "remark-frontmatter": "^3.0.0",

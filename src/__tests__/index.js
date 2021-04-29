@@ -5,6 +5,7 @@ import React from 'react'
 import rtl from '@testing-library/react'
 import leftPad from 'left-pad'
 import {remarkMdxImages} from 'remark-mdx-images'
+import path from 'path'
 import {bundleMDX} from '../index.js'
 import {getMDXComponent} from '../client.js'
 
@@ -290,6 +291,64 @@ import {Sample} from './other/sample-component'
   assert.match(
     container.innerHTML,
     'img alt="A Sample Image" src="data:image/png',
+  )
+})
+
+test('should output assets', async () => {
+  const mdxSource = `
+# Sample Post
+
+![Sample Image](./other/150.png)
+  `.trim()
+
+  const {code} = await bundleMDX(mdxSource, {
+    cwd: process.cwd(),
+    xdmOptions: (vFile, options) => {
+      options.remarkPlugins = [remarkMdxImages]
+
+      return options
+    },
+    esbuildOptions: options => {
+      options.outdir = path.join(process.cwd(), 'output')
+      options.loader = {
+        ...options.loader,
+        '.png': 'file',
+      }
+      options.publicPath = '/img/'
+      options.write = true
+
+      return options
+    },
+  })
+
+  const Component = getMDXComponent(code)
+
+  const {container} = render(React.createElement(Component))
+
+  assert.match(container.innerHTML, 'src="/img/150')
+
+  const error = /** @type Error */ (await bundleMDX(mdxSource, {
+    cwd: process.cwd(),
+    xdmOptions: (vFile, options) => {
+      options.remarkPlugins = [remarkMdxImages]
+
+      return options
+    },
+    esbuildOptions: options => {
+      options.loader = {
+        ...options.loader,
+        // esbuild will throw its own error if we try to use `file` loader without `outdir`
+        '.png': 'dataurl',
+      }
+      options.write = true
+
+      return options
+    },
+  }).catch(e => e))
+
+  assert.equal(
+    error.message,
+    "You must either specify `write: false` or `write: true` and `outdir: '/path'` in your esbuild options",
   )
 })
 

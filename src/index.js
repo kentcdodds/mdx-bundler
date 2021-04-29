@@ -1,3 +1,4 @@
+import fs from 'fs'
 import path from 'path'
 import {StringDecoder} from 'string_decoder'
 import remarkFrontmatter from 'remark-frontmatter'
@@ -7,6 +8,8 @@ import * as esbuild from 'esbuild'
 import {NodeResolvePlugin} from '@esbuild-plugins/node-resolve'
 import {globalExternals} from '@fal-works/esbuild-plugin-global-externals'
 import dirnameMessedUp from './dirname-messed-up.cjs'
+
+const {readFile, unlink} = fs.promises
 
 /**
  *
@@ -149,14 +152,33 @@ async function bundleMDX(
 
   const bundled = await esbuild.build(buildOptions)
 
-  const decoder = new StringDecoder('utf8')
+  if (bundled.outputFiles) {
+    const decoder = new StringDecoder('utf8')
 
-  const code = decoder.write(Buffer.from(bundled.outputFiles[0].contents))
+    const code = decoder.write(Buffer.from(bundled.outputFiles[0].contents))
 
-  return {
-    code: `${code};return Component.default;`,
-    frontmatter,
+    return {
+      code: `${code};return Component.default;`,
+      frontmatter,
+    }
   }
+
+  if (buildOptions.outdir && buildOptions.write) {
+    const code = await readFile(
+      path.join(buildOptions.outdir, '_mdx_bundler_entry_point.js'),
+    )
+
+    await unlink(path.join(buildOptions.outdir, '_mdx_bundler_entry_point.js'))
+
+    return {
+      code: `${code};return Component.default;`,
+      frontmatter,
+    }
+  }
+
+  throw new Error(
+    "You must either specify `write: false` or `write: true` and `outdir: '/path'` in your esbuild options",
+  )
 }
 
 export {bundleMDX}
