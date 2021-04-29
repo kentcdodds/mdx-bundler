@@ -8,7 +8,7 @@ import type {Plugin, BuildOptions, Loader} from 'esbuild'
 import type {ModuleInfo} from '@fal-works/esbuild-plugin-global-externals'
 import type {VFileCompatible, CompileOptions} from 'xdm/lib/compile'
 
-type ESBuildOptions = BuildOptions & {write: false}
+type ESBuildOptions = BuildOptions
 
 type BundleMDXOptions = {
   /**
