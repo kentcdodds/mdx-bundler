@@ -152,7 +152,7 @@ async function bundleMDX(
 
   const bundled = await esbuild.build(buildOptions)
 
-  if(bundled.outputFiles){
+  if (bundled.outputFiles) {
     const decoder = new StringDecoder('utf8')
 
     const code = decoder.write(Buffer.from(bundled.outputFiles[0].contents))
@@ -163,8 +163,10 @@ async function bundleMDX(
     }
   }
 
-  if(buildOptions.outdir && buildOptions.write){
-    const code = await readFile(path.join(buildOptions.outdir, '_mdx_bundler_entry_point.js'))
+  if (buildOptions.outdir && buildOptions.write) {
+    const code = await readFile(
+      path.join(buildOptions.outdir, '_mdx_bundler_entry_point.js'),
+    )
 
     await unlink(path.join(buildOptions.outdir, '_mdx_bundler_entry_point.js'))
 
@@ -174,7 +176,9 @@ async function bundleMDX(
     }
   }
 
-  throw new Error("You must either specify `write: false` or `write: true` and `outdir: '/path'` in your esbuild options")
+  throw new Error(
+    "You must either specify `write: false` or `write: true` and `outdir: '/path'` in your esbuild options",
+  )
 }
 
 export {bundleMDX}

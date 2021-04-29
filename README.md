@@ -195,7 +195,7 @@ should be installed as one of your project's `dependencies`:
 npm install --save mdx-bundler
 ```
 
-One of mdx-bundler's the dependancies requires a working [node-gyp](node-gyp) setup
+One of mdx-bundler's dependancies requires a working [node-gyp][node-gyp] setup
 to be able to install correctly.
 
 ## Usage
@@ -486,8 +486,9 @@ export const exampleImage = 'https://example.com/image.jpg'
 
 ### Image Bundling
 
-With the [cwd](#cwd) and the remark plugin [remark-mdx-images](https://www.npmjs.com/package/remark-mdx-images)
-you can bundle images in your mdx!
+With the [cwd](#cwd) and the remark plugin
+[remark-mdx-images](https://www.npmjs.com/package/remark-mdx-images) you can
+bundle images in your mdx!
 
 There are two loaders in esbuild that can be used here. The easiest is `dataurl`
 which outputs the images as inline data urls in the returned code.
@@ -505,18 +506,18 @@ const {code} = await bundleMDX(mdxSource, {
   esbuildOptions: options => {
     options.loader = {
       ...options.loader,
-      '.png': 'dataurl'
+      '.png': 'dataurl',
     }
 
     return options
-  }
+  },
 })
 ```
 
 The `file` loader requires a little more configuration to get working. With the
-`file` loader your images are copied to the output directory so esbuild needs
-to be set to write files and needs to know where to put them plus the url of
-the folder to be used in image sources.
+`file` loader your images are copied to the output directory so esbuild needs to
+be set to write files and needs to know where to put them plus the url of the
+folder to be used in image sources.
 
 ```js
 const {code} = await bundleMDX(mdxSource, {
@@ -532,7 +533,7 @@ const {code} = await bundleMDX(mdxSource, {
     options.loader = {
       ...options.loader,
       // Tell esbuild to use the `file` loader for pngs
-      '.png': 'file'
+      '.png': 'file',
     }
     // Set the public path to /img/ so image sources start /img/
     options.publicPath = '/img/'
@@ -541,7 +542,7 @@ const {code} = await bundleMDX(mdxSource, {
     options.write = true
 
     return options
-  }
+  },
 })
 ```
 

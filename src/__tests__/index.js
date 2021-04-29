@@ -312,13 +312,13 @@ test('should output assets', async () => {
       options.outdir = path.join(process.cwd(), 'output')
       options.loader = {
         ...options.loader,
-        '.png': 'file'
+        '.png': 'file',
       }
       options.publicPath = '/img/'
       options.write = true
 
       return options
-    }
+    },
   })
 
   const Component = getMDXComponent(code)
@@ -334,16 +334,16 @@ test('should output assets', async () => {
 
       return options
     },
-    esbuildOptions: (options) => {
+    esbuildOptions: options => {
       options.loader = {
         ...options.loader,
         // esbuild will throw its own error if we try to use `file` loader without `outdir`
-        '.png': 'dataurl'
+        '.png': 'dataurl',
       }
       options.write = true
 
       return options
-    }
+    },
   }).catch(e => e))
 
   assert.equal(
