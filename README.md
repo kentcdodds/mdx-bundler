@@ -195,6 +195,9 @@ should be installed as one of your project's `dependencies`:
 npm install --save mdx-bundler
 ```
 
+One of mdx-bundler's the dependancies requires a working [node-gyp](node-gyp) setup
+to be able to install correctly.
+
 ## Usage
 
 ```typescript
@@ -685,4 +688,5 @@ MIT
 [bugs]: https://github.com/kentcdodds/mdx-bundler/issues?utf8=%E2%9C%93&q=is%3Aissue+is%3Aopen+sort%3Acreated-desc+label%3Abug
 [requests]: https://github.com/kentcdodds/mdx-bundler/issues?utf8=%E2%9C%93&q=is%3Aissue+is%3Aopen+sort%3Areactions-%2B1-desc+label%3Aenhancement
 [good-first-issue]: https://github.com/kentcdodds/mdx-bundler/issues?utf8=%E2%9C%93&q=is%3Aissue+is%3Aopen+sort%3Areactions-%2B1-desc+label%3Aenhancement+label%3A%22good+first+issue%22
+[node-gyp]: https://github.com/nodejs/node-gyp#installation
 <!-- prettier-ignore-end -->
