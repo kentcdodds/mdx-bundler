@@ -552,7 +552,7 @@ const {code} = await bundleMDX(mdxSource, {
 
 We'd _love_ for this to work in cloudflare workers. Unfortunately cloudflares
 have two limitations that prevent `mdx-bundler` from working in that
-envrionment:
+environment:
 
 1. Workers can't run binaries. `bundleMDX` uses `esbuild` (a binary) to bundle
    your MDX code.
