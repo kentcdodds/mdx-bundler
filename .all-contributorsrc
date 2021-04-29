@@ -74,6 +74,15 @@
       "contributions": [
         "doc"
       ]
+    },
+    {
+      "login": "erikras",
+      "name": "Erik Rasmussen",
+      "avatar_url": "https://avatars.githubusercontent.com/u/4396759?v=4",
+      "profile": "https://keybase.io/erikras",
+      "contributions": [
+        "doc"
+      ]
     }
   ],
   "commitConvention": "none"
