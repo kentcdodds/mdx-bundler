@@ -1,11 +1,11 @@
 import './setup-tests.js'
+import path from 'path'
 import {test} from 'uvu'
 import * as assert from 'uvu/assert'
 import React from 'react'
 import rtl from '@testing-library/react'
 import leftPad from 'left-pad'
 import {remarkMdxImages} from 'remark-mdx-images'
-import path from 'path'
 import {bundleMDX} from '../index.js'
 import {getMDXComponent} from '../client.js'
 
@@ -282,6 +282,12 @@ export const Demo: React.FC = () => {
       return options
     },
   })
+
+  const Component = getMDXComponent(code)
+
+  const {container} = render(React.createElement(Component))
+
+  assert.match(container.innerHTML, 'Sample')
 })
 
 test('require from current directory', async () => {
