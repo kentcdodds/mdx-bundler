@@ -252,6 +252,38 @@ import LeftPad from 'left-pad-js'
   assert.match(container.innerHTML, 'this is left pad')
 })
 
+test('should respect the configured loader for files', async () => {
+  const mdxSource = `
+# Title
+
+import {Demo} from './demo'
+
+<Demo />
+  `.trim()
+
+  const files = {
+    './demo.ts': `
+import React from 'react'
+
+export const Demo: React.FC = () => { 
+  return <p>Sample</p>
+}
+    `.trim(),
+  }
+
+  const {code} = await bundleMDX(mdxSource, {
+    files,
+    esbuildOptions: options => {
+      options.loader = {
+        ...options.loader,
+        '.ts': 'tsx',
+      }
+
+      return options
+    },
+  })
+})
+
 test('require from current directory', async () => {
   const mdxSource = `
 # Title

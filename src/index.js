@@ -104,9 +104,21 @@ async function bundleMDX(
             return {contents: vfile.toString(), loader: 'jsx'}
           }
           default: {
+            /** @type import('esbuild').Loader */
+            let loader
+
+            if (
+              build.initialOptions.loader &&
+              build.initialOptions.loader[`.${fileType}`]
+            ) {
+              loader = build.initialOptions.loader[`.${fileType}`]
+            } else {
+              loader = /** @type import('esbuild').Loader */ (fileType)
+            }
+
             return {
               contents,
-              loader: /** @type import('esbuild').Loader */ (fileType),
+              loader,
             }
           }
         }
