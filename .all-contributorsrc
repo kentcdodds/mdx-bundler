@@ -83,6 +83,15 @@
       "contributions": [
         "doc"
       ]
+    },
+    {
+      "login": "ozyxdev",
+      "name": "Omar Syx",
+      "avatar_url": "https://avatars.githubusercontent.com/u/83309085?v=4",
+      "profile": "https://github.com/ozyxdev",
+      "contributions": [
+        "bug"
+      ]
     }
   ],
   "commitConvention": "none"

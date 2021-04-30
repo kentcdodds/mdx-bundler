@@ -653,6 +653,9 @@ Thanks goes to these people ([emoji key][emojis]):
     <td align="center"><a href="https://ped.ro"><img src="https://avatars.githubusercontent.com/u/372831?v=4?s=100" width="100px;" alt=""/><br /><sub><b>Pedro Duarte</b></sub></a><br /><a href="https://github.com/kentcdodds/mdx-bundler/commits?author=peduarte" title="Documentation">📖</a></td>
     <td align="center"><a href="https://keybase.io/erikras"><img src="https://avatars.githubusercontent.com/u/4396759?v=4?s=100" width="100px;" alt=""/><br /><sub><b>Erik Rasmussen</b></sub></a><br /><a href="https://github.com/kentcdodds/mdx-bundler/commits?author=erikras" title="Documentation">📖</a></td>
   </tr>
+  <tr>
+    <td align="center"><a href="https://github.com/ozyxdev"><img src="https://avatars.githubusercontent.com/u/83309085?v=4?s=100" width="100px;" alt=""/><br /><sub><b>Omar Syx</b></sub></a><br /><a href="https://github.com/kentcdodds/mdx-bundler/issues?q=author%3Aozyxdev" title="Bug reports">🐛</a></td>
+  </tr>
 </table>
 
 <!-- markdownlint-restore -->
