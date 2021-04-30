@@ -1,11 +1,11 @@
 import './setup-tests.js'
+import path from 'path'
 import {test} from 'uvu'
 import * as assert from 'uvu/assert'
 import React from 'react'
 import rtl from '@testing-library/react'
 import leftPad from 'left-pad'
 import {remarkMdxImages} from 'remark-mdx-images'
-import path from 'path'
 import {bundleMDX} from '../index.js'
 import {getMDXComponent} from '../client.js'
 
@@ -250,6 +250,44 @@ import LeftPad from 'left-pad-js'
   const {container} = render(React.createElement(Component))
 
   assert.match(container.innerHTML, 'this is left pad')
+})
+
+test('should respect the configured loader for files', async () => {
+  const mdxSource = `
+# Title
+
+import {Demo} from './demo'
+
+<Demo />
+  `.trim()
+
+  const files = {
+    './demo.ts': `
+import React from 'react'
+
+export const Demo: React.FC = () => { 
+  return <p>Sample</p>
+}
+    `.trim(),
+  }
+
+  const {code} = await bundleMDX(mdxSource, {
+    files,
+    esbuildOptions: options => {
+      options.loader = {
+        ...options.loader,
+        '.ts': 'tsx',
+      }
+
+      return options
+    },
+  })
+
+  const Component = getMDXComponent(code)
+
+  const {container} = render(React.createElement(Component))
+
+  assert.match(container.innerHTML, 'Sample')
 })
 
 test('require from current directory', async () => {
