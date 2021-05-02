@@ -390,4 +390,16 @@ test('should output assets', async () => {
   )
 })
 
+test('should support mdx from node_modules', async () => {
+  const mdxSource = `
+import mdxData from 'mdx-test-data'
+
+Local Content
+
+<mdxData />
+  `.trim()
+
+  const {code} = await bundleMDX(mdxSource, {})
+})
+
 test.run()
