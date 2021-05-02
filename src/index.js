@@ -125,7 +125,7 @@ async function bundleMDX(
   const xdmPlugin = {
     name: 'xdm',
     setup(build) {
-      build.onLoad({filter: /\.mdx$/}, async ({path: filePath, pluginData}) => {
+      build.onLoad({filter: /\.(md|markdown|mdown|mkdn|mkd|mdwn|mkdown|ron|mdx)$/}, async ({path: filePath, pluginData}) => {
         /** @type string */
         let fileContents
 
