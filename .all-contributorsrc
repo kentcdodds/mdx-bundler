@@ -92,6 +92,15 @@
       "contributions": [
         "bug"
       ]
+    },
+    {
+      "login": "gaelhameon",
+      "name": "Gaël Haméon",
+      "avatar_url": "https://avatars.githubusercontent.com/u/17253950?v=4",
+      "profile": "https://github.com/gaelhameon",
+      "contributions": [
+        "doc"
+      ]
     }
   ],
   "commitConvention": "none"
