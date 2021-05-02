@@ -112,6 +112,23 @@ title: This is frontmatter
   )
 })
 
+test('bundles mdx files from node_modules', async () => {
+  const mdxSource = `
+import MdxTestData from 'mdx-test-data'
+
+The content below was imported from an MDX File in node_modules.
+
+<MdxTestData />
+  `.trim()
+
+  const result = await bundleMDX(mdxSource, {
+    files: {},
+  })
+
+  const Component = getMDXComponent(result.code)
+  render(React.createElement(Component))
+})
+
 test('bundles 3rd party deps', async () => {
   const mdxSource = `
 import Demo from './demo'
