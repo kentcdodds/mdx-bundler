@@ -35,10 +35,7 @@ async function bundleMDX(
 
   // xdm is a native ESM, and we're running in a CJS context. This is the
   // only way to import ESM within CJS
-  const [{compile: compileMDX}, {default: xdmESBuild}] = await Promise.all([
-    await import('xdm'),
-    await import('xdm/esbuild.js'),
-  ])
+  const [{compile: compileMDX}] = await Promise.all([await import('xdm')])
   // extract the frontmatter
   const {data: frontmatter} = matter(mdxSource)
 

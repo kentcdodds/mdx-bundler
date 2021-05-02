@@ -392,14 +392,23 @@ test('should output assets', async () => {
 
 test('should support mdx from node_modules', async () => {
   const mdxSource = `
-import mdxData from 'mdx-test-data'
+import MdxData from 'mdx-test-data'
 
 Local Content
 
-<mdxData />
+<MdxData />
   `.trim()
 
   const {code} = await bundleMDX(mdxSource, {})
+
+  const Component = getMDXComponent(code)
+
+  const {container} = render(React.createElement(Component))
+
+  assert.match(
+    container.innerHTML,
+    'Mdx file published as an npm package, for testing purposes.',
+  )
 })
 
 test.run()
