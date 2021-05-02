@@ -655,6 +655,7 @@ Thanks goes to these people ([emoji key][emojis]):
   </tr>
   <tr>
     <td align="center"><a href="https://github.com/ozyxdev"><img src="https://avatars.githubusercontent.com/u/83309085?v=4?s=100" width="100px;" alt=""/><br /><sub><b>Omar Syx</b></sub></a><br /><a href="https://github.com/kentcdodds/mdx-bundler/issues?q=author%3Aozyxdev" title="Bug reports">🐛</a></td>
+    <td align="center"><a href="https://github.com/gaelhameon"><img src="https://avatars.githubusercontent.com/u/17253950?v=4?s=100" width="100px;" alt=""/><br /><sub><b>Gaël Haméon</b></sub></a><br /><a href="https://github.com/kentcdodds/mdx-bundler/commits?author=gaelhameon" title="Documentation">📖</a></td>
   </tr>
 </table>
 
