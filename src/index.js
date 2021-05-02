@@ -70,14 +70,14 @@ async function bundleMDX(
             return {path: fullModulePath, pluginData: {inMemory: true}}
         }
 
-        // Return an empty object so that esbuild will handle resolving the file itself.
-        return {}
+        // Return undefined so that esbuild will handle resolving the file itself.
+        return undefined
       })
 
       build.onLoad({filter: /.*/}, async ({path: filePath, pluginData}) => {
         if (pluginData === undefined || !pluginData.inMemory) {
-          // Return an empty object so that esbuild will load & parse the file contents itself.
-          return {}
+          // Return undefined so that esbuild will load & parse the file contents itself.
+          return undefined
         }
 
         // the || .js allows people to exclude a file extension
