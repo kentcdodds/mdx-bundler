@@ -55,23 +55,25 @@ async function bundleMDX(
     name: 'inMemory',
     setup(build) {
       build.onResolve({filter: /.*/}, ({path: filePath, importer}) => {
-        if (filePath === entryPath)
+        if (filePath === entryPath) {
           return {
             path: filePath,
             pluginData: {inMemory: true, contents: absoluteFiles[filePath]},
           }
+        }
 
         const modulePath = path.resolve(path.dirname(importer), filePath)
 
-        if (modulePath in absoluteFiles)
+        if (modulePath in absoluteFiles) {
           return {
             path: modulePath,
             pluginData: {inMemory: true, contents: absoluteFiles[modulePath]},
           }
+        }
 
         for (const ext of ['.js', '.ts', '.jsx', '.tsx', '.json', '.mdx']) {
           const fullModulePath = `${modulePath}${ext}`
-          if (fullModulePath in absoluteFiles)
+          if (fullModulePath in absoluteFiles) {
             return {
               path: fullModulePath,
               pluginData: {
@@ -79,6 +81,7 @@ async function bundleMDX(
                 contents: absoluteFiles[fullModulePath],
               },
             }
+          }
         }
 
         // Return an empty object so that esbuild will handle resolving the file itself.
@@ -95,29 +98,23 @@ async function bundleMDX(
         const fileType = (path.extname(filePath) || '.jsx').slice(1)
         const contents = absoluteFiles[filePath]
 
-        switch (fileType) {
-          case 'mdx': {
-            // Doing this allows xdmESBuild to handle it
-            return null
-          }
-          default: {
-            /** @type import('esbuild').Loader */
-            let loader
+        if (fileType === 'mdx') return null
 
-            if (
-              build.initialOptions.loader &&
-              build.initialOptions.loader[`.${fileType}`]
-            ) {
-              loader = build.initialOptions.loader[`.${fileType}`]
-            } else {
-              loader = /** @type import('esbuild').Loader */ (fileType)
-            }
+        /** @type import('esbuild').Loader */
+        let loader
 
-            return {
-              contents,
-              loader,
-            }
-          }
+        if (
+          build.initialOptions.loader &&
+          build.initialOptions.loader[`.${fileType}`]
+        ) {
+          loader = build.initialOptions.loader[`.${fileType}`]
+        } else {
+          loader = /** @type import('esbuild').Loader */ (fileType)
+        }
+
+        return {
+          contents,
+          loader,
         }
       })
     },

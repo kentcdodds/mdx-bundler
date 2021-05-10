@@ -6,11 +6,7 @@
 
 import type {Plugin, BuildOptions, Loader} from 'esbuild'
 import type {ModuleInfo} from '@fal-works/esbuild-plugin-global-externals'
-import type {
-  VFileCompatible,
-  CompileOptions,
-  CoreProcessorOptions,
-} from 'xdm/lib/compile'
+import type {CoreProcessorOptions} from 'xdm/lib/compile'
 
 type ESBuildOptions = BuildOptions
 
