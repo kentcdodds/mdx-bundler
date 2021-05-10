@@ -21,7 +21,7 @@ async function bundleMDX(
   mdxSource,
   {
     files = {},
-    xdmOptions = (vfileCompatible, options) => options,
+    xdmOptions = options => options,
     esbuildOptions = options => options,
     globals = {},
     cwd = path.join(process.cwd(), `__mdx_bundler_fake_dir__`),
@@ -35,7 +35,9 @@ async function bundleMDX(
 
   // xdm is a native ESM, and we're running in a CJS context. This is the
   // only way to import ESM within CJS
-  const [{compile: compileMDX}] = await Promise.all([await import('xdm')])
+  const [{default: xdmESBuild}] = await Promise.all([
+    await import('xdm/esbuild.js'),
+  ])
   // extract the frontmatter
   const {data: frontmatter} = matter(mdxSource)
 
@@ -95,7 +97,7 @@ async function bundleMDX(
 
         switch (fileType) {
           case 'mdx': {
-            // Doing this allows xdmPlugin to handle it
+            // Doing this allows xdmESBuild to handle it
             return null
           }
           default: {
@@ -121,40 +123,6 @@ async function bundleMDX(
     },
   }
 
-  /** @type import('esbuild').Plugin */
-  const xdmPlugin = {
-    name: 'xdm',
-    setup(build) {
-      build.onLoad({filter: /\.(md|markdown|mdown|mkdn|mkd|mdwn|mkdown|ron|mdx)$/}, async ({path: filePath, pluginData}) => {
-        /** @type string */
-        let fileContents
-
-        if (pluginData !== undefined && pluginData.inMemory) {
-          fileContents = pluginData.contents
-        } else {
-          fileContents = (await readFile(filePath)).toString()
-        }
-
-        /** @type import('xdm/lib/compile').VFileCompatible */
-        const vFileCompatible = {
-          path: filePath,
-          contents: fileContents,
-        }
-        const vfile = await compileMDX(
-          vFileCompatible,
-          xdmOptions(vFileCompatible, {
-            jsx: true,
-            remarkPlugins: [
-              remarkFrontmatter,
-              [remarkMdxFrontmatter, {name: 'frontmatter'}],
-            ],
-          }),
-        )
-        return {contents: vfile.toString(), loader: 'jsx'}
-      })
-    },
-  }
-
   const buildOptions = esbuildOptions({
     entryPoints: [entryPath],
     write: false,
@@ -176,7 +144,14 @@ async function bundleMDX(
       // eslint-disable-next-line babel/new-cap
       NodeResolvePlugin({extensions: ['.js', '.ts', '.jsx', '.tsx']}),
       inMemoryPlugin,
-      xdmPlugin,
+      xdmESBuild(
+        xdmOptions({
+          remarkPlugins: [
+            remarkFrontmatter,
+            [remarkMdxFrontmatter, {name: 'frontmatter'}],
+          ],
+        }),
+      ),
     ],
     bundle: true,
     format: 'iife',
