@@ -149,7 +149,7 @@ import Demo from './demo'
   assert.equal(
     error.message,
     `Build failed with 1 error:
-__mdx_bundler_fake_dir__/_mdx_bundler_entry_point.mdx:2:17: error: Could not resolve "./demo"`,
+__mdx_bundler_fake_dir__/_mdx_bundler_entry_point.mdx:3:17: error: Could not resolve "./demo"`,
   )
 })
 
@@ -189,7 +189,7 @@ import Demo from './demo.blah'
   assert.equal(
     error.message,
     `Build failed with 1 error:
-__mdx_bundler_fake_dir__/_mdx_bundler_entry_point.mdx:2:17: error: [plugin: JavaScript plugins] Invalid loader: "blah" (valid: js, jsx, ts, tsx, css, json, text, base64, dataurl, file, binary)`,
+__mdx_bundler_fake_dir__/_mdx_bundler_entry_point.mdx:3:17: error: [plugin: JavaScript plugins] Invalid loader: "blah" (valid: js, jsx, ts, tsx, css, json, text, base64, dataurl, file, binary)`,
   )
 })
 
@@ -303,7 +303,7 @@ import {Sample} from './other/sample-component'
 
   const {code} = await bundleMDX(mdxSource, {
     cwd: process.cwd(),
-    xdmOptions: (vFile, options) => {
+    xdmOptions: options => {
       options.remarkPlugins = [remarkMdxImages]
 
       return options
@@ -341,7 +341,7 @@ test('should output assets', async () => {
 
   const {code} = await bundleMDX(mdxSource, {
     cwd: process.cwd(),
-    xdmOptions: (vFile, options) => {
+    xdmOptions: options => {
       options.remarkPlugins = [remarkMdxImages]
 
       return options
@@ -367,7 +367,7 @@ test('should output assets', async () => {
 
   const error = /** @type Error */ (await bundleMDX(mdxSource, {
     cwd: process.cwd(),
-    xdmOptions: (vFile, options) => {
+    xdmOptions: options => {
       options.remarkPlugins = [remarkMdxImages]
 
       return options
@@ -387,6 +387,27 @@ test('should output assets', async () => {
   assert.equal(
     error.message,
     "You must either specify `write: false` or `write: true` and `outdir: '/path'` in your esbuild options",
+  )
+})
+
+test('should support mdx from node_modules', async () => {
+  const mdxSource = `
+import MdxData from 'mdx-test-data'
+
+Local Content
+
+<MdxData />
+  `.trim()
+
+  const {code} = await bundleMDX(mdxSource, {})
+
+  const Component = getMDXComponent(code)
+
+  const {container} = render(React.createElement(Component))
+
+  assert.match(
+    container.innerHTML,
+    'Mdx file published as an npm package, for testing purposes.',
   )
 })
 

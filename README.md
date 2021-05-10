@@ -290,13 +290,13 @@ database. If your MDX doesn't reference other files (or only imports things from
 
 #### xdmOptions
 
-This allows you to modify the built-in xdm configuration (passed to
-xdm.compile). This can be helpful for specifying your own
+This allows you to modify the built-in xdm configuration (passed to the xdm
+esbuild plugin). This can be helpful for specifying your own
 remarkPlugins/rehypePlugins.
 
 ```ts
 bundleMDX(mdxString, {
-  xdmOptions(input, options) {
+  xdmOptions(options) {
     // this is the recommended way to add custom remark/rehype plugins:
     // The syntax might look weird, but it protects you in case we add/remove
     // plugins in the future.

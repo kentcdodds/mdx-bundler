@@ -6,7 +6,7 @@
 
 import type {Plugin, BuildOptions, Loader} from 'esbuild'
 import type {ModuleInfo} from '@fal-works/esbuild-plugin-global-externals'
-import type {VFileCompatible, CompileOptions} from 'xdm/lib/compile'
+import type {CoreProcessorOptions} from 'xdm/lib/compile'
 
 type ESBuildOptions = BuildOptions
 
@@ -45,7 +45,7 @@ type BundleMDXOptions = {
    * @example
    * ```
    * bundleMDX(mdxString, {
-   *   xdmOptions(input, options) {
+   *   xdmOptions(options) {
    *     // this is the recommended way to add custom remark/rehype plugins:
    *     // The syntax might look weird, but it protects you in case we add/remove
    *     // plugins in the future.
@@ -57,10 +57,7 @@ type BundleMDXOptions = {
    * })
    * ```
    */
-  xdmOptions?: (
-    vfileCompatible: VFileCompatible,
-    options: CompileOptions,
-  ) => CompileOptions
+  xdmOptions?: (options: CoreProcessorOptions) => CoreProcessorOptions
   /**
    * This allows you to modify the built-in esbuild configuration. This can be
    * especially helpful for specifying the compilation target.
