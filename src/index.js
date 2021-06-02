@@ -138,7 +138,7 @@ async function bundleMDX(
           type: 'cjs',
         },
       }),
-      // eslint-disable-next-line babel/new-cap
+      // eslint-disable-next-line @babel/new-cap
       NodeResolvePlugin({extensions: ['.js', '.ts', '.jsx', '.tsx']}),
       inMemoryPlugin,
       xdmESBuild(
