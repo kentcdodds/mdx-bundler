@@ -170,8 +170,9 @@ async function bundleMDX(
   }
 
   if (buildOptions.outdir && buildOptions.write) {
-    // @ts-ignore
-    const entryFile = buildOptions.entryPoints[0]
+    // We know that this has to be an array of entry point strings, with a single entry
+    const entryFile = /** @type {{entryPoints: string[]}} */ (buildOptions)
+      .entryPoints[0]
 
     const fileName = path.basename(entryFile).replace(/\.[^/.]+$/, '.js')
 

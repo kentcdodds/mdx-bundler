@@ -1,5 +1,6 @@
 import './setup-tests.js'
 import path from 'path'
+import {fileURLToPath} from 'url'
 import {test} from 'uvu'
 import * as assert from 'uvu/assert'
 import React from 'react'
@@ -8,7 +9,6 @@ import leftPad from 'left-pad'
 import {remarkMdxImages} from 'remark-mdx-images'
 import {bundleMDX} from '../index.js'
 import {getMDXComponent} from '../client.js'
-import {fileURLToPath} from 'url'
 
 const {render} = rtl
 
