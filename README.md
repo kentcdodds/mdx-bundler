@@ -519,7 +519,13 @@ The `file` loader requires a little more configuration to get working. With the
 be set to write files and needs to know where to put them plus the url of the
 folder to be used in image sources.
 
+> Each call to `bundleMDX` is isloated from the others. If you set the directory
+> the same for everything `bundleMDX` will overwrite images without warning. As
+> a result each _bundle_ needs its own output directory.
+
 ```js
+// For the file `_content/pages/about.mdx`
+
 const {code} = await bundleMDX(mdxSource, {
   cwd: '/users/you/site/_content/pages',
   xdmOptions: (vFile, options) => {
@@ -528,15 +534,15 @@ const {code} = await bundleMDX(mdxSource, {
     return options
   },
   esbuildOptions: options => {
-    // Set the `outdir` to your public directory.
-    options.outdir = '/users/you/site/public/img'
+    // Set the `outdir` to a public location for this bundle.
+    options.outdir = '/users/you/site/public/img/about'
     options.loader = {
       ...options.loader,
       // Tell esbuild to use the `file` loader for pngs
       '.png': 'file',
     }
-    // Set the public path to /img/ so image sources start /img/
-    options.publicPath = '/img/'
+    // Set the public path to /img/about
+    options.publicPath = '/img/about'
 
     // Set write to true so that esbuild will output the files.
     options.write = true
