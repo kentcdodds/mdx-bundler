@@ -8,6 +8,7 @@ import leftPad from 'left-pad'
 import {remarkMdxImages} from 'remark-mdx-images'
 import {bundleMDX} from '../index.js'
 import {getMDXComponent} from '../client.js'
+import {fileURLToPath} from 'url'
 
 const {render} = rtl
 
@@ -415,7 +416,14 @@ test('should support over-riding the entry point', async () => {
   const {code} = await bundleMDX('', {
     cwd: process.cwd(),
     esbuildOptions: options => {
-      options.entryPoints = [path.join(process.cwd(), 'Readme.md')]
+      options.entryPoints = [
+        path.join(
+          path.dirname(fileURLToPath(import.meta.url)),
+          '..',
+          '..',
+          'Readme.md',
+        ),
+      ]
       options.outdir = path.join(process.cwd(), 'output')
       options.write = true
 
