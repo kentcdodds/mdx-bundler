@@ -498,7 +498,7 @@ import {remarkMdxImages} from 'remark-mdx-images'
 
 const {code} = await bundleMDX(mdxSource, {
   cwd: '/users/you/site/_content/pages',
-  xdmOptions: (vFile, options) => {
+  xdmOptions: options => {
     options.remarkPlugins = [remarkMdxImages]
 
     return options
@@ -528,7 +528,7 @@ folder to be used in image sources.
 
 const {code} = await bundleMDX(mdxSource, {
   cwd: '/users/you/site/_content/pages',
-  xdmOptions: (vFile, options) => {
+  xdmOptions: options => {
     options.remarkPlugins = [remarkMdxImages]
 
     return options
@@ -546,6 +546,23 @@ const {code} = await bundleMDX(mdxSource, {
 
     // Set write to true so that esbuild will output the files.
     options.write = true
+
+    return options
+  },
+})
+```
+
+### Replacing the entry point
+
+If your MDX file is on your disk you can save some time and code by having
+`esbuild` read the file for you. To do this you can override the `entryPoints`
+settings in `esbuildOptions` with the path to your mdx source.
+
+```js
+const {code, frontmatter} = await bundleMDX('', {
+  cwd: '/users/you/site/_content/pages',
+  esbuildOptions: options => {
+    options.entryPoints = ['/users/you/site/_content/pages/file.mdx']
 
     return options
   },
