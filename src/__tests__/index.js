@@ -411,4 +411,23 @@ Local Content
   )
 })
 
+test('should support over-riding the entry point', async () => {
+  const {code} = await bundleMDX('', {
+    cwd: process.cwd(),
+    esbuildOptions: options => {
+      options.entryPoints = [path.join(process.cwd(), 'Readme.md')]
+      options.outdir = path.join(process.cwd(), 'output')
+      options.write = true
+
+      return options
+    },
+  })
+
+  const Component = getMDXComponent(code)
+
+  const {container} = render(React.createElement(Component))
+
+  assert.match(container.innerHTML, 'Thanks')
+})
+
 test.run()
