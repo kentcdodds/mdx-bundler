@@ -1,5 +1,6 @@
 import './setup-tests.js'
 import path from 'path'
+import {fileURLToPath} from 'url'
 import {test} from 'uvu'
 import * as assert from 'uvu/assert'
 import React from 'react'
@@ -409,6 +410,32 @@ Local Content
     container.innerHTML,
     'Mdx file published as an npm package, for testing purposes.',
   )
+})
+
+test('should support over-riding the entry point', async () => {
+  const {code} = await bundleMDX('', {
+    cwd: process.cwd(),
+    esbuildOptions: options => {
+      options.entryPoints = [
+        path.join(
+          path.dirname(fileURLToPath(import.meta.url)),
+          '..',
+          '..',
+          'CONTRIBUTING.md',
+        ),
+      ]
+      options.outdir = path.join(process.cwd(), 'output')
+      options.write = true
+
+      return options
+    },
+  })
+
+  const Component = getMDXComponent(code)
+
+  const {container} = render(React.createElement(Component))
+
+  assert.match(container.innerHTML, 'Thanks for being willing to contribute')
 })
 
 test.run()

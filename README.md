@@ -498,7 +498,7 @@ import {remarkMdxImages} from 'remark-mdx-images'
 
 const {code} = await bundleMDX(mdxSource, {
   cwd: '/users/you/site/_content/pages',
-  xdmOptions: (vFile, options) => {
+  xdmOptions: options => {
     options.remarkPlugins = [remarkMdxImages]
 
     return options
@@ -519,27 +519,50 @@ The `file` loader requires a little more configuration to get working. With the
 be set to write files and needs to know where to put them plus the url of the
 folder to be used in image sources.
 
+> Each call to `bundleMDX` is isloated from the others. If you set the directory
+> the same for everything `bundleMDX` will overwrite images without warning. As
+> a result each _bundle_ needs its own output directory.
+
 ```js
+// For the file `_content/pages/about.mdx`
+
 const {code} = await bundleMDX(mdxSource, {
   cwd: '/users/you/site/_content/pages',
-  xdmOptions: (vFile, options) => {
+  xdmOptions: options => {
     options.remarkPlugins = [remarkMdxImages]
 
     return options
   },
   esbuildOptions: options => {
-    // Set the `outdir` to your public directory.
-    options.outdir = '/users/you/site/public/img'
+    // Set the `outdir` to a public location for this bundle.
+    options.outdir = '/users/you/site/public/img/about'
     options.loader = {
       ...options.loader,
       // Tell esbuild to use the `file` loader for pngs
       '.png': 'file',
     }
-    // Set the public path to /img/ so image sources start /img/
-    options.publicPath = '/img/'
+    // Set the public path to /img/about
+    options.publicPath = '/img/about'
 
     // Set write to true so that esbuild will output the files.
     options.write = true
+
+    return options
+  },
+})
+```
+
+### Replacing the entry point
+
+If your MDX file is on your disk you can save some time and code by having
+`esbuild` read the file for you. To do this you can override the `entryPoints`
+settings in `esbuildOptions` with the path to your mdx source.
+
+```js
+const {code, frontmatter} = await bundleMDX('', {
+  cwd: '/users/you/site/_content/pages',
+  esbuildOptions: options => {
+    options.entryPoints = ['/users/you/site/_content/pages/file.mdx']
 
     return options
   },
@@ -647,7 +670,7 @@ Thanks goes to these people ([emoji key][emojis]):
   <tr>
     <td align="center"><a href="https://kentcdodds.com"><img src="https://avatars.githubusercontent.com/u/1500684?v=3?s=100" width="100px;" alt=""/><br /><sub><b>Kent C. Dodds</b></sub></a><br /><a href="https://github.com/kentcdodds/mdx-bundler/commits?author=kentcdodds" title="Code">💻</a> <a href="https://github.com/kentcdodds/mdx-bundler/commits?author=kentcdodds" title="Documentation">📖</a> <a href="#infra-kentcdodds" title="Infrastructure (Hosting, Build-Tools, etc)">🚇</a> <a href="https://github.com/kentcdodds/mdx-bundler/commits?author=kentcdodds" title="Tests">⚠️</a></td>
     <td align="center"><a href="https://github.com/benwis"><img src="https://avatars.githubusercontent.com/u/6953353?v=4?s=100" width="100px;" alt=""/><br /><sub><b>benwis</b></sub></a><br /><a href="https://github.com/kentcdodds/mdx-bundler/issues?q=author%3Abenwis" title="Bug reports">🐛</a> <a href="https://github.com/kentcdodds/mdx-bundler/pulls?q=is%3Apr+reviewed-by%3Abenwis" title="Reviewed Pull Requests">👀</a></td>
-    <td align="center"><a href="https://arcath.net"><img src="https://avatars.githubusercontent.com/u/19609?v=4?s=100" width="100px;" alt=""/><br /><sub><b>Adam Laycock</b></sub></a><br /><a href="https://github.com/kentcdodds/mdx-bundler/commits?author=Arcath" title="Code">💻</a> <a href="https://github.com/kentcdodds/mdx-bundler/commits?author=Arcath" title="Tests">⚠️</a> <a href="#ideas-Arcath" title="Ideas, Planning, & Feedback">🤔</a> <a href="https://github.com/kentcdodds/mdx-bundler/pulls?q=is%3Apr+reviewed-by%3AArcath" title="Reviewed Pull Requests">👀</a> <a href="https://github.com/kentcdodds/mdx-bundler/commits?author=Arcath" title="Documentation">📖</a></td>
+    <td align="center"><a href="https://www.arcath.net"><img src="https://avatars.githubusercontent.com/u/19609?v=4?s=100" width="100px;" alt=""/><br /><sub><b>Adam Laycock</b></sub></a><br /><a href="https://github.com/kentcdodds/mdx-bundler/commits?author=Arcath" title="Code">💻</a> <a href="https://github.com/kentcdodds/mdx-bundler/commits?author=Arcath" title="Tests">⚠️</a> <a href="#ideas-Arcath" title="Ideas, Planning, & Feedback">🤔</a> <a href="https://github.com/kentcdodds/mdx-bundler/pulls?q=is%3Apr+reviewed-by%3AArcath" title="Reviewed Pull Requests">👀</a> <a href="https://github.com/kentcdodds/mdx-bundler/commits?author=Arcath" title="Documentation">📖</a></td>
     <td align="center"><a href="http://wooorm.com"><img src="https://avatars.githubusercontent.com/u/944406?v=4?s=100" width="100px;" alt=""/><br /><sub><b>Titus</b></sub></a><br /><a href="#ideas-wooorm" title="Ideas, Planning, & Feedback">🤔</a> <a href="https://github.com/kentcdodds/mdx-bundler/pulls?q=is%3Apr+reviewed-by%3Awooorm" title="Reviewed Pull Requests">👀</a> <a href="https://github.com/kentcdodds/mdx-bundler/commits?author=wooorm" title="Code">💻</a></td>
     <td align="center"><a href="https://github.com/ChristianMurphy"><img src="https://avatars.githubusercontent.com/u/3107513?v=4?s=100" width="100px;" alt=""/><br /><sub><b>Christian Murphy</b></sub></a><br /><a href="#ideas-ChristianMurphy" title="Ideas, Planning, & Feedback">🤔</a></td>
     <td align="center"><a href="https://ped.ro"><img src="https://avatars.githubusercontent.com/u/372831?v=4?s=100" width="100px;" alt=""/><br /><sub><b>Pedro Duarte</b></sub></a><br /><a href="https://github.com/kentcdodds/mdx-bundler/commits?author=peduarte" title="Documentation">📖</a></td>

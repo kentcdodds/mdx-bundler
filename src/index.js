@@ -170,11 +170,15 @@ async function bundleMDX(
   }
 
   if (buildOptions.outdir && buildOptions.write) {
-    const code = await readFile(
-      path.join(buildOptions.outdir, '_mdx_bundler_entry_point.js'),
-    )
+    // We know that this has to be an array of entry point strings, with a single entry
+    const entryFile = /** @type {{entryPoints: string[]}} */ (buildOptions)
+      .entryPoints[0]
 
-    await unlink(path.join(buildOptions.outdir, '_mdx_bundler_entry_point.js'))
+    const fileName = path.basename(entryFile).replace(/\.[^/.]+$/, '.js')
+
+    const code = await readFile(path.join(buildOptions.outdir, fileName))
+
+    await unlink(path.join(buildOptions.outdir, fileName))
 
     return {
       code: `${code};return Component.default;`,
