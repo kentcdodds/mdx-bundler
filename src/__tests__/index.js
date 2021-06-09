@@ -421,7 +421,7 @@ test('should support over-riding the entry point', async () => {
           path.dirname(fileURLToPath(import.meta.url)),
           '..',
           '..',
-          'Readme.md',
+          'CONTRIBUTING.md',
         ),
       ]
       options.outdir = path.join(process.cwd(), 'output')
@@ -435,7 +435,7 @@ test('should support over-riding the entry point', async () => {
 
   const {container} = render(React.createElement(Component))
 
-  assert.match(container.innerHTML, 'Thanks')
+  assert.match(container.innerHTML, 'Thanks for being willing to contribute')
 })
 
 test.run()
