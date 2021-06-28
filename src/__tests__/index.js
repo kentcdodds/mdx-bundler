@@ -143,9 +143,11 @@ import Demo from './demo'
 <Demo />
   `.trim()
 
-  const error = /** @type Error */ (await bundleMDX(mdxSource, {
-    files: {},
-  }).catch(e => e))
+  const error = /** @type Error */ (
+    await bundleMDX(mdxSource, {
+      files: {},
+    }).catch(e => e)
+  )
 
   assert.equal(
     error.message,
@@ -161,11 +163,13 @@ import Demo from './demo'
 <Demo />
   `.trim()
 
-  const error = /** @type Error */ (await bundleMDX(mdxSource, {
-    files: {
-      './demo.tsx': `import './blah-blah'`,
-    },
-  }).catch(e => e))
+  const error = /** @type Error */ (
+    await bundleMDX(mdxSource, {
+      files: {
+        './demo.tsx': `import './blah-blah'`,
+      },
+    }).catch(e => e)
+  )
 
   assert.equal(
     error.message,
@@ -181,16 +185,18 @@ import Demo from './demo.blah'
 <Demo />
   `.trim()
 
-  const error = /** @type Error */ (await bundleMDX(mdxSource, {
-    files: {
-      './demo.blah': `what even is this?`,
-    },
-  }).catch(e => e))
+  const error = /** @type Error */ (
+    await bundleMDX(mdxSource, {
+      files: {
+        './demo.blah': `what even is this?`,
+      },
+    }).catch(e => e)
+  )
 
   assert.equal(
     error.message,
     `Build failed with 1 error:
-__mdx_bundler_fake_dir__/_mdx_bundler_entry_point.mdx:3:17: error: [plugin: JavaScript plugins] Invalid loader: "blah" (valid: js, jsx, ts, tsx, css, json, text, base64, dataurl, file, binary)`,
+__mdx_bundler_fake_dir__/_mdx_bundler_entry_point.mdx:3:17: error: [plugin: inMemory] Invalid loader: "blah" (valid: js, jsx, ts, tsx, css, json, text, base64, dataurl, file, binary)`,
   )
 })
 
@@ -366,24 +372,26 @@ test('should output assets', async () => {
 
   assert.match(container.innerHTML, 'src="/img/150')
 
-  const error = /** @type Error */ (await bundleMDX(mdxSource, {
-    cwd: process.cwd(),
-    xdmOptions: options => {
-      options.remarkPlugins = [remarkMdxImages]
+  const error = /** @type Error */ (
+    await bundleMDX(mdxSource, {
+      cwd: process.cwd(),
+      xdmOptions: options => {
+        options.remarkPlugins = [remarkMdxImages]
 
-      return options
-    },
-    esbuildOptions: options => {
-      options.loader = {
-        ...options.loader,
-        // esbuild will throw its own error if we try to use `file` loader without `outdir`
-        '.png': 'dataurl',
-      }
-      options.write = true
+        return options
+      },
+      esbuildOptions: options => {
+        options.loader = {
+          ...options.loader,
+          // esbuild will throw its own error if we try to use `file` loader without `outdir`
+          '.png': 'dataurl',
+        }
+        options.write = true
 
-      return options
-    },
-  }).catch(e => e))
+        return options
+      },
+    }).catch(e => e)
+  )
 
   assert.equal(
     error.message,
