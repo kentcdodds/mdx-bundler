@@ -165,6 +165,20 @@ It has more features, fewer bugs, and no runtime!
 
 </details>
 
+<details>
+  <summary>
+    <strong>
+      "Why is esbuild a peer dependancy?"
+    </strong>
+  </summary>
+
+esbuild provides a service written in GO that it interacts with. Only one
+instance of this service can run at a time and it must have an identical version
+to the npm package. If it was a hard dependency you would only be able to use
+the esbuild version mdx-bundler uses.
+
+</details>
+
 ## Table of Contents
 
 <!-- START doctoc generated TOC please keep comment here to allow auto update -->
