@@ -101,6 +101,16 @@
       "contributions": [
         "doc"
       ]
+    },
+    {
+      "login": "loiacon",
+      "name": "Gabriel Loiácono",
+      "avatar_url": "https://avatars.githubusercontent.com/u/32134586?v=4",
+      "profile": "https://github.com/loiacon",
+      "contributions": [
+        "code",
+        "test"
+      ]
     }
   ],
   "commitConvention": "none"
