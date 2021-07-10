@@ -446,4 +446,35 @@ test('should support over-riding the entry point', async () => {
   assert.match(container.innerHTML, 'Thanks for being willing to contribute')
 })
 
+test('should work with react-dom api', async () => {
+  const mdxSource = `
+import Demo from './demo'
+
+<Demo />
+  `.trim()
+  
+  const result = await bundleMDX(mdxSource, {
+    files: {
+      './demo.tsx': `
+import * as ReactDOM from 'react-dom'
+
+function Demo() {
+  return ReactDOM.createPortal(
+    <div>Portal!</div>,
+    document.body
+  )
+}
+
+export default Demo
+`.trim()
+    }
+  })
+
+  const Component = getMDXComponent(result.code)
+
+  const {container} = render(React.createElement(Component), { container: document.body })
+
+  assert.match(container.innerHTML, 'Portal!')
+})
+
 test.run()

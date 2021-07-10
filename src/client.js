@@ -1,5 +1,6 @@
 import * as React from 'react'
 import * as _jsx_runtime from 'react/jsx-runtime.js'
+import * as ReactDOM from 'react-dom'
 
 /**
  * @typedef {{[name: string]: React.ComponentType | string | ComponentMap}} ComponentMap
@@ -16,7 +17,7 @@ import * as _jsx_runtime from 'react/jsx-runtime.js'
  * @return {React.FunctionComponent<MDXContentProps>}
  */
 function getMDXComponent(code, globals) {
-  const scope = {React, _jsx_runtime, ...globals}
+  const scope = {React, ReactDOM, _jsx_runtime, ...globals}
   // eslint-disable-next-line
   const fn = new Function(...Object.keys(scope), code)
   return fn(...Object.values(scope))
