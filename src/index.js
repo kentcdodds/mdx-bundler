@@ -120,9 +120,30 @@ async function bundleMDX(
     },
   }
 
+  /** @type import('esbuild').Plugin */
+  const absRootPlugin = {
+    name: 'absRoot',
+    setup: ({onResolve}) => {
+      onResolve({filter: /.*/}, ({path: filePath, importer}) => {
+        const modulePath = path.resolve(path.dirname(importer), filePath)
+
+        if (
+          modulePath.includes('__mdx_bundler_fake_dir__') ||
+          modulePath === entryPath
+        ) {
+          return
+        }
+
+        // eslint-disable-next-line consistent-return
+        return {path: modulePath}
+      })
+    },
+  }
+
   const buildOptions = esbuildOptions({
     entryPoints: [entryPath],
     write: false,
+    absWorkingDir: cwd,
     define: {
       'process.env.NODE_ENV': JSON.stringify(process.env.NODE_ENV),
     },
@@ -144,6 +165,7 @@ async function bundleMDX(
       }),
       // eslint-disable-next-line @babel/new-cap
       NodeResolvePlugin({extensions: ['.js', '.ts', '.jsx', '.tsx']}),
+      absRootPlugin,
       inMemoryPlugin,
       xdmESBuild(
         xdmOptions({

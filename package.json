@@ -42,20 +42,20 @@
   "dependencies": {
     "@babel/runtime": "^7.14.6",
     "@esbuild-plugins/node-resolve": "^0.1.4",
-    "@fal-works/esbuild-plugin-global-externals": "^2.1.1",
+    "@fal-works/esbuild-plugin-global-externals": "^2.1.2",
     "gray-matter": "^4.0.3",
     "remark-frontmatter": "^3.0.0",
     "remark-mdx-frontmatter": "^1.0.1",
-    "xdm": "^1.11.1"
+    "xdm": "^1.12.1"
   },
   "peerDependencies": {
     "esbuild": "0.11.x || 0.12.x"
   },
   "devDependencies": {
     "@testing-library/react": "^12.0.0",
-    "@types/jsdom": "^16.2.12",
-    "@types/react": "^17.0.13",
-    "@types/react-dom": "^17.0.8",
+    "@types/jsdom": "^16.2.13",
+    "@types/react": "^17.0.14",
+    "@types/react-dom": "^17.0.9",
     "cross-env": "^7.0.3",
     "esbuild": "^0.12.15",
     "jsdom": "^16.6.0",
@@ -64,7 +64,7 @@
     "mdx-test-data": "^1.0.1",
     "react": "^17.0.2",
     "react-dom": "^17.0.2",
-    "remark-mdx-images": "^1.0.2",
+    "remark-mdx-images": "^1.0.3",
     "typescript": "^4.3.5",
     "uvu": "^0.5.1"
   },
