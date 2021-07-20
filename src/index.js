@@ -123,6 +123,7 @@ async function bundleMDX(
   const buildOptions = esbuildOptions({
     entryPoints: [entryPath],
     write: false,
+    absWorkingDir: cwd,
     define: {
       'process.env.NODE_ENV': JSON.stringify(process.env.NODE_ENV),
     },
@@ -143,7 +144,10 @@ async function bundleMDX(
         },
       }),
       // eslint-disable-next-line @babel/new-cap
-      NodeResolvePlugin({extensions: ['.js', '.ts', '.jsx', '.tsx']}),
+      NodeResolvePlugin({
+        extensions: ['.js', '.ts', '.jsx', '.tsx'],
+        resolveOptions: {basedir: cwd},
+      }),
       inMemoryPlugin,
       xdmESBuild(
         xdmOptions({
@@ -170,6 +174,7 @@ async function bundleMDX(
     return {
       code: `${code};return Component.default;`,
       frontmatter,
+      errors: bundled.errors,
     }
   }
 
@@ -187,6 +192,7 @@ async function bundleMDX(
     return {
       code: `${code};return Component.default;`,
       frontmatter,
+      errors: bundled.errors,
     }
   }
 

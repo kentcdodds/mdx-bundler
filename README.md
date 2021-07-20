@@ -206,7 +206,7 @@ This module is distributed via [npm][npm] which is bundled with [node][node] and
 should be installed as one of your project's `dependencies`:
 
 ```
-npm install --save mdx-bundler
+npm install --save mdx-bundler esbuild
 ```
 
 One of mdx-bundler's dependancies requires a working [node-gyp][node-gyp] setup

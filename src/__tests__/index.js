@@ -152,7 +152,7 @@ import Demo from './demo'
   assert.equal(
     error.message,
     `Build failed with 1 error:
-__mdx_bundler_fake_dir__/_mdx_bundler_entry_point.mdx:3:17: error: Could not resolve "./demo"`,
+_mdx_bundler_entry_point.mdx:3:17: error: Could not resolve "./demo"`,
   )
 })
 
@@ -174,7 +174,7 @@ import Demo from './demo'
   assert.equal(
     error.message,
     `Build failed with 1 error:
-__mdx_bundler_fake_dir__/demo.tsx:1:7: error: Could not resolve "./blah-blah"`,
+demo.tsx:1:7: error: Could not resolve "./blah-blah"`,
   )
 })
 
@@ -196,7 +196,7 @@ import Demo from './demo.blah'
   assert.equal(
     error.message,
     `Build failed with 1 error:
-__mdx_bundler_fake_dir__/_mdx_bundler_entry_point.mdx:3:17: error: [plugin: inMemory] Invalid loader: "blah" (valid: js, jsx, ts, tsx, css, json, text, base64, dataurl, file, binary)`,
+_mdx_bundler_entry_point.mdx:3:17: error: [plugin: inMemory] Invalid loader: "blah" (valid: js, jsx, ts, tsx, css, json, text, base64, dataurl, file, binary)`,
   )
 })
 
@@ -301,15 +301,15 @@ test('require from current directory', async () => {
   const mdxSource = `
 # Title
 
-import {Sample} from './other/sample-component'
+import {Sample} from './sample-component'
 
 <Sample />
 
-![A Sample Image](./other/150.png)
+![A Sample Image](./150.png)
 `.trim()
 
   const {code} = await bundleMDX(mdxSource, {
-    cwd: process.cwd(),
+    cwd: path.join(process.cwd(), 'other'),
     xdmOptions: options => {
       options.remarkPlugins = [remarkMdxImages]
 
@@ -343,11 +343,11 @@ test('should output assets', async () => {
   const mdxSource = `
 # Sample Post
 
-![Sample Image](./other/150.png)
+![Sample Image](./150.png)
   `.trim()
 
   const {code} = await bundleMDX(mdxSource, {
-    cwd: process.cwd(),
+    cwd: path.join(process.cwd(), 'other'),
     xdmOptions: options => {
       options.remarkPlugins = [remarkMdxImages]
 
@@ -374,7 +374,7 @@ test('should output assets', async () => {
 
   const error = /** @type Error */ (
     await bundleMDX(mdxSource, {
-      cwd: process.cwd(),
+      cwd: path.join(process.cwd(), 'other'),
       xdmOptions: options => {
         options.remarkPlugins = [remarkMdxImages]
 
@@ -452,7 +452,7 @@ import Demo from './demo'
 
 <Demo />
   `.trim()
-  
+
   const result = await bundleMDX(mdxSource, {
     files: {
       './demo.tsx': `
@@ -466,13 +466,15 @@ function Demo() {
 }
 
 export default Demo
-`.trim()
-    }
+`.trim(),
+    },
   })
 
   const Component = getMDXComponent(result.code)
 
-  const {container} = render(React.createElement(Component), { container: document.body })
+  const {container} = render(React.createElement(Component), {
+    container: document.body,
+  })
 
   assert.match(container.innerHTML, 'Portal!')
 })
