@@ -149,11 +149,7 @@ import Demo from './demo'
     }).catch(e => e)
   )
 
-  assert.equal(
-    error.message,
-    `Build failed with 1 error:
-_mdx_bundler_entry_point.mdx:3:17: error: Could not resolve "./demo"`,
-  )
+  assert.match(error.message, `error: Could not resolve "./demo"`)
 })
 
 test('gives a handy error when importing a module that cannot be found', async () => {
@@ -193,10 +189,9 @@ import Demo from './demo.blah'
     }).catch(e => e)
   )
 
-  assert.equal(
+  assert.match(
     error.message,
-    `Build failed with 1 error:
-_mdx_bundler_entry_point.mdx:3:17: error: [plugin: inMemory] Invalid loader: "blah" (valid: js, jsx, ts, tsx, css, json, text, base64, dataurl, file, binary)`,
+    `error: [plugin: inMemory] Invalid loader: "blah" (valid: js, jsx, ts, tsx, css, json, text, base64, dataurl, file, binary)`,
   )
 })
 

@@ -46,6 +46,7 @@
     "gray-matter": "^4.0.3",
     "remark-frontmatter": "^3.0.0",
     "remark-mdx-frontmatter": "^1.0.1",
+    "uuid": "^8.3.2",
     "xdm": "^1.12.1"
   },
   "peerDependencies": {
@@ -56,6 +57,7 @@
     "@types/jsdom": "^16.2.13",
     "@types/react": "^17.0.14",
     "@types/react-dom": "^17.0.9",
+    "@types/uuid": "^8.3.1",
     "cross-env": "^7.0.3",
     "esbuild": "^0.12.15",
     "jsdom": "^16.6.0",

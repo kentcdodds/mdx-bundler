@@ -7,6 +7,7 @@ import matter from 'gray-matter'
 import * as esbuild from 'esbuild'
 import {NodeResolvePlugin} from '@esbuild-plugins/node-resolve'
 import {globalExternals} from '@fal-works/esbuild-plugin-global-externals'
+import {v4 as uuid} from 'uuid'
 import dirnameMessedUp from './dirname-messed-up.cjs'
 
 const {readFile, unlink} = fs.promises
@@ -41,7 +42,7 @@ async function bundleMDX(
   // extract the frontmatter
   const {data: frontmatter} = matter(mdxSource)
 
-  const entryPath = path.join(cwd, './_mdx_bundler_entry_point.mdx')
+  const entryPath = path.join(cwd, `./_mdx_bundler_entry_point-${uuid()}.mdx`)
 
   /** @type Record<string, string> */
   const absoluteFiles = {[entryPath]: mdxSource}
