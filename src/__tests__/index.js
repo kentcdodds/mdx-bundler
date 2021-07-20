@@ -301,15 +301,15 @@ test('require from current directory', async () => {
   const mdxSource = `
 # Title
 
-import {Sample} from './other/sample-component'
+import {Sample} from './sample-component'
 
 <Sample />
 
-![A Sample Image](./other/150.png)
+![A Sample Image](./150.png)
 `.trim()
 
   const {code} = await bundleMDX(mdxSource, {
-    cwd: process.cwd(),
+    cwd: path.join(process.cwd(), 'other'),
     xdmOptions: options => {
       options.remarkPlugins = [remarkMdxImages]
 
