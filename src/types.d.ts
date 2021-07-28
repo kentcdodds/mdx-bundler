@@ -7,6 +7,7 @@
 import type {Plugin, BuildOptions, Loader} from 'esbuild'
 import type {ModuleInfo} from '@fal-works/esbuild-plugin-global-externals'
 import type {CoreProcessorOptions} from 'xdm/lib/compile'
+import type {GrayMatterOption, Input} from 'gray-matter'
 
 type ESBuildOptions = BuildOptions
 
@@ -117,4 +118,8 @@ type BundleMDXOptions = {
    * ```
    */
   cwd?: string
+  /**
+   * 
+   */
+  grayMatterOptions?: <I extends Input>(options: GrayMatterOption<I, any>) => GrayMatterOption<I, any>
 }

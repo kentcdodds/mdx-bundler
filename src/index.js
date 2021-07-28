@@ -3,7 +3,7 @@ import path from 'path'
 import {StringDecoder} from 'string_decoder'
 import remarkFrontmatter from 'remark-frontmatter'
 import {remarkMdxFrontmatter} from 'remark-mdx-frontmatter'
-import matter from 'gray-matter'
+import grayMatter from 'gray-matter'
 import * as esbuild from 'esbuild'
 import {NodeResolvePlugin} from '@esbuild-plugins/node-resolve'
 import {globalExternals} from '@fal-works/esbuild-plugin-global-externals'
@@ -26,6 +26,7 @@ async function bundleMDX(
     esbuildOptions = options => options,
     globals = {},
     cwd = path.join(process.cwd(), `__mdx_bundler_fake_dir__`),
+    grayMatterOptions = options => options
   } = {},
 ) {
   if (dirnameMessedUp && !process.env.ESBUILD_BINARY_PATH) {
@@ -40,7 +41,7 @@ async function bundleMDX(
     await import('xdm/esbuild.js'),
   ])
   // extract the frontmatter
-  const {data: frontmatter} = matter(mdxSource)
+  const matter = grayMatter(mdxSource, grayMatterOptions({}))
 
   const entryPath = path.join(cwd, `./_mdx_bundler_entry_point-${uuid()}.mdx`)
 
@@ -174,8 +175,9 @@ async function bundleMDX(
 
     return {
       code: `${code};return Component.default;`,
-      frontmatter,
+      frontmatter: matter.data,
       errors: bundled.errors,
+      matter
     }
   }
 
@@ -192,8 +194,9 @@ async function bundleMDX(
 
     return {
       code: `${code};return Component.default;`,
-      frontmatter,
+      frontmatter: matter.data,
       errors: bundled.errors,
+      matter
     }
   }
 
