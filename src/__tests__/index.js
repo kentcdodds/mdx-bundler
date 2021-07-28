@@ -474,4 +474,30 @@ export default Demo
   assert.match(container.innerHTML, 'Portal!')
 })
 
+test('should allow gray matter options to be accessed', async () => {
+  const mdxSource = `
+---
+title: Sample
+date: 2021-07-27
+---
+
+Some excerpt
+
+---
+
+This is the rest of the content
+
+  `.trim()
+
+  const {matter} = await bundleMDX(mdxSource, {
+    grayMatterOptions: options => {
+      options.excerpt = true
+
+      return options
+    },
+  })
+
+  assert.equal((matter.excerpt ? matter.excerpt : '').trim(), 'Some excerpt')
+})
+
 test.run()

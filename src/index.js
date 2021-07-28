@@ -3,7 +3,7 @@ import path from 'path'
 import {StringDecoder} from 'string_decoder'
 import remarkFrontmatter from 'remark-frontmatter'
 import {remarkMdxFrontmatter} from 'remark-mdx-frontmatter'
-import matter from 'gray-matter'
+import grayMatter from 'gray-matter'
 import * as esbuild from 'esbuild'
 import {NodeResolvePlugin} from '@esbuild-plugins/node-resolve'
 import {globalExternals} from '@fal-works/esbuild-plugin-global-externals'
@@ -26,13 +26,16 @@ async function bundleMDX(
     esbuildOptions = options => options,
     globals = {},
     cwd = path.join(process.cwd(), `__mdx_bundler_fake_dir__`),
+    grayMatterOptions = options => options
   } = {},
 ) {
+  /* c8 ignore start */
   if (dirnameMessedUp && !process.env.ESBUILD_BINARY_PATH) {
     console.warn(
       `mdx-bundler warning: esbuild maybe unable to find its binary, if your build fails you'll need to set ESBUILD_BINARY_PATH. Learn more: https://github.com/kentcdodds/mdx-bundler/blob/main/README.md#nextjs-esbuild-enoent`,
     )
   }
+  /* c8 ignore stop */
 
   // xdm is a native ESM, and we're running in a CJS context. This is the
   // only way to import ESM within CJS
@@ -40,7 +43,7 @@ async function bundleMDX(
     await import('xdm/esbuild.js'),
   ])
   // extract the frontmatter
-  const {data: frontmatter} = matter(mdxSource)
+  const matter = grayMatter(mdxSource, grayMatterOptions({}))
 
   const entryPath = path.join(cwd, `./_mdx_bundler_entry_point-${uuid()}.mdx`)
 
@@ -174,8 +177,9 @@ async function bundleMDX(
 
     return {
       code: `${code};return Component.default;`,
-      frontmatter,
+      frontmatter: matter.data,
       errors: bundled.errors,
+      matter
     }
   }
 
@@ -192,8 +196,9 @@ async function bundleMDX(
 
     return {
       code: `${code};return Component.default;`,
-      frontmatter,
+      frontmatter: matter.data,
       errors: bundled.errors,
+      matter
     }
   }
 
