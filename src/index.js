@@ -29,11 +29,13 @@ async function bundleMDX(
     grayMatterOptions = options => options
   } = {},
 ) {
+  /* c8 ignore start */
   if (dirnameMessedUp && !process.env.ESBUILD_BINARY_PATH) {
     console.warn(
       `mdx-bundler warning: esbuild maybe unable to find its binary, if your build fails you'll need to set ESBUILD_BINARY_PATH. Learn more: https://github.com/kentcdodds/mdx-bundler/blob/main/README.md#nextjs-esbuild-enoent`,
     )
   }
+  /* c8 ignore stop */
 
   // xdm is a native ESM, and we're running in a CJS context. This is the
   // only way to import ESM within CJS

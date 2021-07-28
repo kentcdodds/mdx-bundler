@@ -35,7 +35,7 @@
     "postbuild": "node ./other/cjs-ify.js",
     "lint": "kcd-scripts lint",
     "setup": "npm install && npm run validate -s",
-    "test": "uvu -i setup-tests.js src/__tests__",
+    "test": "c8 -r text -r lcov uvu -i setup-tests.js src/__tests__",
     "typecheck": "kcd-scripts typecheck",
     "validate": "kcd-scripts validate"
   },
@@ -58,6 +58,7 @@
     "@types/react": "^17.0.14",
     "@types/react-dom": "^17.0.9",
     "@types/uuid": "^8.3.1",
+    "c8": "^7.8.0",
     "cross-env": "^7.0.3",
     "esbuild": "^0.12.15",
     "jsdom": "^16.6.0",
