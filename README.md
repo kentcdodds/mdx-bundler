@@ -451,6 +451,33 @@ const result = await bundleMDX(mdxSource, {
 const {code, frontmatter} = result
 ```
 
+#### grayMatterOptions
+
+This allows you to configure the
+[gray-matter options](https://github.com/jonschlinkert/gray-matter#options).
+
+Your function is passed the current gray-matter configuration for you to modify.
+Return your modified configuration object for gray matter.
+
+```js
+bundleMDX(mdxString, {
+  grayMatterOptions: options => {
+    options.excerpt = true
+
+    return options
+  },
+})
+```
+
+### Returns
+
+`bundleMDX` returns a promise for an object with the following properties.
+
+- `code` - The bundle of your mdx as a `string`.
+- `frontmatter` - The frontmatter `object` from gray-matter.
+- `matter` - The whole
+  [object returned by gray-matter](https://github.com/jonschlinkert/gray-matter#returned-object)
+
 ### Component Substitution
 
 MDX Bundler passes on

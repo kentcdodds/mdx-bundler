@@ -119,7 +119,20 @@ type BundleMDXOptions = {
    */
   cwd?: string
   /**
-   * 
+   * This allows you to configure the gray matter options.
+   *
+   * @example
+   * ```
+   * bundleMDX(mdxString, {
+   *   grayMatterOptions: (options) => {
+   *     options.excerpt = true
+   *
+   *     return options
+   *   }
+   * })
+   * ```
    */
-  grayMatterOptions?: <I extends Input>(options: GrayMatterOption<I, any>) => GrayMatterOption<I, any>
+  grayMatterOptions?: <I extends Input>(
+    options: GrayMatterOption<I, any>,
+  ) => GrayMatterOption<I, any>
 }
