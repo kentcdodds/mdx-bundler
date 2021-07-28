@@ -490,14 +490,14 @@ This is the rest of the content
   `.trim()
 
   const {matter} = await bundleMDX(mdxSource, {
-    grayMatterOptions: (options) => {
+    grayMatterOptions: options => {
       options.excerpt = true
 
       return options
-    }
+    },
   })
 
-  assert.equal(matter.excerpt?.trim(), 'Some excerpt')
+  assert.equal((matter.excerpt ? matter.excerpt : '').trim(), 'Some excerpt')
 })
 
 test.run()
