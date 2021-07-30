@@ -47,7 +47,7 @@
     "remark-frontmatter": "^3.0.0",
     "remark-mdx-frontmatter": "^1.0.1",
     "uuid": "^8.3.2",
-    "xdm": "^1.12.1"
+    "xdm": "^1.12.2"
   },
   "peerDependencies": {
     "esbuild": "0.11.x || 0.12.x"
