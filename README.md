@@ -593,22 +593,23 @@ const {code} = await bundleMDX(mdxSource, {
 })
 ```
 
-### Replacing the entry point
+### bundleMDXFile
 
 If your MDX file is on your disk you can save some time and code by having
-`esbuild` read the file for you. To do this you can override the `entryPoints`
-settings in `esbuildOptions` with the path to your mdx source.
+`esbuild` read the file for you. To do this mdx-bundler provides the function
+`bundleMDXFile` which works the same as `bundleMDX` except it's first option is
+the path to the mdx file instead of the mdx source.
 
 ```js
-const {code, frontmatter} = await bundleMDX('', {
-  cwd: '/users/you/site/_content/pages',
-  esbuildOptions: options => {
-    options.entryPoints = ['/users/you/site/_content/pages/file.mdx']
+import {bundleMDXFile} from 'mdx-bundler'
 
-    return options
-  },
-})
+const {code, frontmatter} = await bundleMDXFile(
+  '/users/you/site/content/file.mdx',
+)
 ```
+
+`cwd` will be automatically set to the `dirname` of the given file path, you can
+still override this. All other options work the same as they do for `bundleMDX`.
 
 ### Known Issues
 

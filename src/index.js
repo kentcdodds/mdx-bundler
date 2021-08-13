@@ -223,4 +223,35 @@ async function bundleMDX(
   )
 }
 
-export {bundleMDX}
+/**
+ *
+ * @param {string} mdxPath - The file path to bundle.
+ * @param {import('./types').BundleMDXOptions} options
+ * @returns
+ */
+async function bundleMDXFile(
+  mdxPath,
+  {
+    files = {},
+    xdmOptions = options => options,
+    esbuildOptions = options => options,
+    globals = {},
+    cwd,
+    grayMatterOptions = options => options,
+  } = {},
+) {
+  return bundleMDX('', {
+    files,
+    xdmOptions,
+    esbuildOptions: options => {
+      options.entryPoints = [mdxPath]
+
+      return esbuildOptions(options)
+    },
+    globals,
+    cwd: cwd ? cwd : path.dirname(mdxPath),
+    grayMatterOptions,
+  })
+}
+
+export {bundleMDX, bundleMDXFile}
