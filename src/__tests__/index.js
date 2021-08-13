@@ -500,4 +500,16 @@ This is the rest of the content
   assert.equal((matter.excerpt ? matter.excerpt : '').trim(), 'Some excerpt')
 })
 
+test('change enrtryPath and test some other edge cases', async () => {
+  const {frontmatter} = await bundleMDX('', {
+    esbuildOptions: options => {
+      options.entryPoints = [path.join(process.cwd(), 'other', 'sample.mdx')]
+
+      return options
+    },
+  })
+
+  assert.equal(frontmatter.title, 'Sample')
+})
+
 test.run()
