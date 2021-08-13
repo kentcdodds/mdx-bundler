@@ -1,7 +1,6 @@
 import fs from 'fs'
 import path from 'path'
 import {StringDecoder} from 'string_decoder'
-import remarkFrontmatter from 'remark-frontmatter'
 import {remarkMdxFrontmatter} from 'remark-mdx-frontmatter'
 import grayMatter from 'gray-matter'
 import * as esbuild from 'esbuild'
@@ -39,8 +38,12 @@ async function bundleMDX(
 
   // xdm is a native ESM, and we're running in a CJS context. This is the
   // only way to import ESM within CJS
-  const [{default: xdmESBuild}] = await Promise.all([
-    await import('xdm/esbuild.js'),
+  const [
+    {default: xdmESBuild},
+    {default: remarkFrontmatter},
+  ] = await Promise.all([
+    import('xdm/esbuild.js'),
+    import('remark-frontmatter'),
   ])
 
   const entryPath = path.join(cwd, `./_mdx_bundler_entry_point-${uuid()}.mdx`)
