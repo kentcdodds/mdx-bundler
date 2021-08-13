@@ -7,7 +7,7 @@ import React from 'react'
 import rtl from '@testing-library/react'
 import leftPad from 'left-pad'
 import {remarkMdxImages} from 'remark-mdx-images'
-import {bundleMDX} from '../index.js'
+import {bundleMDX, bundleMDXFile} from '../index.js'
 import {getMDXComponent} from '../client.js'
 
 const {render} = rtl
@@ -498,6 +498,24 @@ This is the rest of the content
   })
 
   assert.equal((matter.excerpt ? matter.excerpt : '').trim(), 'Some excerpt')
+})
+
+test('specify a file using bundleMDXFile', async () => {
+  const {frontmatter} = await bundleMDXFile(
+    path.join(process.cwd(), 'other', 'sample.mdx'),
+    {
+      esbuildOptions: options => {
+        options.loader = {
+          ...options.loader,
+          '.png': 'dataurl',
+        }
+
+        return options
+      },
+    },
+  )
+
+  assert.equal(frontmatter.title, 'Sample')
 })
 
 test.run()

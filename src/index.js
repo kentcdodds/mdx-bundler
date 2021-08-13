@@ -26,7 +26,7 @@ async function bundleMDX(
     esbuildOptions = options => options,
     globals = {},
     cwd = path.join(process.cwd(), `__mdx_bundler_fake_dir__`),
-    grayMatterOptions = options => options
+    grayMatterOptions = options => options,
   } = {},
 ) {
   /* c8 ignore start */
@@ -42,8 +42,6 @@ async function bundleMDX(
   const [{default: xdmESBuild}] = await Promise.all([
     await import('xdm/esbuild.js'),
   ])
-  // extract the frontmatter
-  const matter = grayMatter(mdxSource, grayMatterOptions({}))
 
   const entryPath = path.join(cwd, `./_mdx_bundler_entry_point-${uuid()}.mdx`)
 
@@ -168,6 +166,24 @@ async function bundleMDX(
     minify: true,
   })
 
+  // Extract the front matter from the source or the entry point
+
+  /** @type grayMatter.GrayMatterFile<any> */
+  let matter
+
+  // We have to be a bit specific here to ensure type safety
+  if (
+    buildOptions.entryPoints &&
+    Array.isArray(buildOptions.entryPoints) &&
+    buildOptions.entryPoints[0] !== entryPath
+  ) {
+    //The user has replaced the entrypoint, we can assume this means `mdxSource` is empty
+
+    matter = grayMatter.read(buildOptions.entryPoints[0], grayMatterOptions({}))
+  } else {
+    matter = grayMatter(mdxSource, grayMatterOptions({}))
+  }
+
   const bundled = await esbuild.build(buildOptions)
 
   if (bundled.outputFiles) {
@@ -179,7 +195,7 @@ async function bundleMDX(
       code: `${code};return Component.default;`,
       frontmatter: matter.data,
       errors: bundled.errors,
-      matter
+      matter,
     }
   }
 
@@ -198,7 +214,7 @@ async function bundleMDX(
       code: `${code};return Component.default;`,
       frontmatter: matter.data,
       errors: bundled.errors,
-      matter
+      matter,
     }
   }
 
@@ -207,4 +223,35 @@ async function bundleMDX(
   )
 }
 
-export {bundleMDX}
+/**
+ *
+ * @param {string} mdxPath - The file path to bundle.
+ * @param {import('./types').BundleMDXOptions} options
+ * @returns
+ */
+async function bundleMDXFile(
+  mdxPath,
+  {
+    files = {},
+    xdmOptions = options => options,
+    esbuildOptions = options => options,
+    globals = {},
+    cwd,
+    grayMatterOptions = options => options,
+  } = {},
+) {
+  return bundleMDX('', {
+    files,
+    xdmOptions,
+    esbuildOptions: options => {
+      options.entryPoints = [mdxPath]
+
+      return esbuildOptions(options)
+    },
+    globals,
+    cwd: cwd ? cwd : path.dirname(mdxPath),
+    grayMatterOptions,
+  })
+}
+
+export {bundleMDX, bundleMDXFile}
