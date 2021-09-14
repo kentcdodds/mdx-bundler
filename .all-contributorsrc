@@ -111,6 +111,15 @@
         "code",
         "test"
       ]
+    },
+    {
+      "login": "skovy",
+      "name": "Spencer Miskoviak",
+      "avatar_url": "https://avatars.githubusercontent.com/u/5247455?v=4",
+      "profile": "https://skovy.dev",
+      "contributions": [
+        "doc"
+      ]
     }
   ],
   "commitConvention": "none"
