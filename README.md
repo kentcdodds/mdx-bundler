@@ -540,7 +540,7 @@ import {remarkMdxImages} from 'remark-mdx-images'
 const {code} = await bundleMDX(mdxSource, {
   cwd: '/users/you/site/_content/pages',
   xdmOptions: options => {
-    options.remarkPlugins = [remarkMdxImages]
+    options.remarkPlugins = [...(options.remarkPlugins ?? []), remarkMdxImages]
 
     return options
   },
@@ -570,7 +570,7 @@ folder to be used in image sources.
 const {code} = await bundleMDX(mdxSource, {
   cwd: '/users/you/site/_content/pages',
   xdmOptions: options => {
-    options.remarkPlugins = [remarkMdxImages]
+    options.remarkPlugins = [...(options.remarkPlugins ?? []), remarkMdxImages]
 
     return options
   },
