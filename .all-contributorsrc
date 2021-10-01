@@ -120,6 +120,15 @@
       "contributions": [
         "doc"
       ]
+    },
+    {
+      "login": "Dev-CasperTheGhost",
+      "name": "Casper",
+      "avatar_url": "https://avatars.githubusercontent.com/u/53900565?v=4",
+      "profile": "https://caspertheghost.me",
+      "contributions": [
+        "code"
+      ]
     }
   ],
   "commitConvention": "none"
