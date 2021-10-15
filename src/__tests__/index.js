@@ -402,15 +402,12 @@ published: 2021-02-13
 description: This is some meta-data
 ---
 
-export const uncle = 'bob'
+export const uncle = 'Bob'
 
-# Bob was indeed the uncle
+# {uncle} was indeed the uncle
 `.trim()
 
   const result = await bundleMDX(mdxSource)
-  const frontmatter =
-  /** @type { title: string, description: string, published: string } */ result.frontmatter
-
   const exports = getMDXExport(result.code)
 
   // remark-mdx-frontmatter exports frontmatter
@@ -420,7 +417,7 @@ export const uncle = 'bob'
     description: 'This is some meta-data',
   })
 
-  assert.equal(exports.uncle, 'bob')
+  assert.equal(exports.uncle, 'Bob')
 
   const { container } = render(
     React.createElement(exports.default),
