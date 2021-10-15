@@ -408,19 +408,19 @@ export const uncle = 'Bob'
 `.trim()
 
   const result = await bundleMDX(mdxSource)
-  const exports = getMDXExport(result.code)
+  const mdxExport = getMDXExport(result.code)
 
   // remark-mdx-frontmatter exports frontmatter
-  assert.equal(exports.frontmatter, {
+  assert.equal(mdxExport.frontmatter, {
     title: 'Example Post',
     published: new Date('2021-02-13'),
     description: 'This is some meta-data',
   })
 
-  assert.equal(exports.uncle, 'Bob')
+  assert.equal(mdxExport.uncle, 'Bob')
 
   const { container } = render(
-    React.createElement(exports.default),
+    React.createElement(mdxExport.default),
   )
   
   assert.equal(container.innerHTML, `<h1>Bob was indeed the uncle</h1>`)

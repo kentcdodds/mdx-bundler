@@ -17,8 +17,8 @@ import * as ReactDOM from 'react-dom'
  * @return {React.FunctionComponent<MDXContentProps>}
  */
 function getMDXComponent(code, globals) {
-  const exports = getMDXExport(code, globals)
-  return exports.default;
+  const mdxExport = getMDXExport(code, globals)
+  return mdxExport.default;
 }
 
 /**
