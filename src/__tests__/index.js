@@ -8,7 +8,7 @@ import rtl from '@testing-library/react'
 import leftPad from 'left-pad'
 import {remarkMdxImages} from 'remark-mdx-images'
 import {bundleMDX, bundleMDXFile} from '../index.js'
-import {getMDXComponent} from '../client.js'
+import {getMDXComponent, getMDXExport} from '../client.js'
 
 const {render} = rtl
 
@@ -392,6 +392,41 @@ test('should output assets', async () => {
     error.message,
     "You must either specify `write: false` or `write: true` and `outdir: '/path'` in your esbuild options",
   )
+})
+
+test('should support importing named exports', async () => {
+  const mdxSource = `
+---
+title: Example Post
+published: 2021-02-13
+description: This is some meta-data
+---
+
+export const uncle = 'bob'
+
+# Bob was indeed the uncle
+`.trim()
+
+  const result = await bundleMDX(mdxSource)
+  const frontmatter =
+  /** @type { title: string, description: string, published: string } */ result.frontmatter
+
+  const exports = getMDXExport(result.code)
+
+  // remark-mdx-frontmatter exports frontmatter
+  assert.equal(exports.frontmatter, {
+    title: 'Example Post',
+    published: new Date('2021-02-13'),
+    description: 'This is some meta-data',
+  })
+
+  assert.equal(exports.uncle, 'bob')
+
+  const { container } = render(
+    React.createElement(exports.default),
+  )
+  
+  assert.equal(container.innerHTML, `<h1>Bob was indeed the uncle</h1>`)
 })
 
 test('should support mdx from node_modules', async () => {
