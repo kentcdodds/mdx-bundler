@@ -136,3 +136,19 @@ type BundleMDXOptions = {
     options: GrayMatterOption<I, any>,
   ) => GrayMatterOption<I, any>
 }
+
+type MDXExport<
+  ExportObject extends {},
+  Frontmatter = {[key: string]: unknown},
+> = {
+  default: React.FunctionComponent<MDXContentProps>
+  frontmatter: Frontmatter
+} & ExportObject
+
+type MDXExportFunction<
+  ExportedObject extends {},
+  Frontmatter extends Record<string, unknown>,
+> = (
+  code: string,
+  globals?: Record<string, unknown>,
+) => MDXExport<ExportedObject, Frontmatter>

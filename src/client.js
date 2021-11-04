@@ -18,18 +18,16 @@ import * as ReactDOM from 'react-dom'
  */
 function getMDXComponent(code, globals) {
   const mdxExport = getMDXExport(code, globals)
-  return mdxExport.default;
+  return mdxExport.default
 }
 
 /**
- *
+ * @template ExportedObject
+ * @template Frontmatter
+ * @type {import('./types').MDXExportFunction<ExportedObject, Frontmatter>}
  * @param {string} code - The string of code you got from bundleMDX
  * @param {Record<string, unknown>} [globals] - Any variables your MDX needs to have accessible when it runs
- * @return {{
-  *  default: React.FunctionComponent<MDXContentProps>, 
-  *  frontmatter: { [key: string]: unknown },
-  *  [key: string]: unknown
- * }}
+ *
  */
 function getMDXExport(code, globals) {
   const scope = {React, ReactDOM, _jsx_runtime, ...globals}
