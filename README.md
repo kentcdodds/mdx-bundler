@@ -363,6 +363,8 @@ and once for this MDX component). This is wasteful and you'd be better off just
 telling esbuild to _not_ bundle `d3` and you can pass it to the component
 yourself when you call `getMDXComponent`.
 
+Global external configuration options: https://www.npmjs.com/package/@fal-works/esbuild-plugin-global-externals
+
 Here's an example:
 
 ```tsx
