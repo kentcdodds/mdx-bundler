@@ -129,6 +129,15 @@
       "contributions": [
         "code"
       ]
+    },
+    {
+      "login": "a7sc11u",
+      "name": "Apostolos Christodoulou",
+      "avatar_url": "https://avatars.githubusercontent.com/u/803868?v=4",
+      "profile": "http://a7sc11u.dev",
+      "contributions": [
+        "doc"
+      ]
     }
   ],
   "commitConvention": "none"
