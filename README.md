@@ -726,6 +726,7 @@ Thanks goes to these people ([emoji key][emojis]):
     <td align="center"><a href="https://github.com/loiacon"><img src="https://avatars.githubusercontent.com/u/32134586?v=4?s=100" width="100px;" alt=""/><br /><sub><b>Gabriel Loiácono</b></sub></a><br /><a href="https://github.com/kentcdodds/mdx-bundler/commits?author=loiacon" title="Code">💻</a> <a href="https://github.com/kentcdodds/mdx-bundler/commits?author=loiacon" title="Tests">⚠️</a></td>
     <td align="center"><a href="https://skovy.dev"><img src="https://avatars.githubusercontent.com/u/5247455?v=4?s=100" width="100px;" alt=""/><br /><sub><b>Spencer Miskoviak</b></sub></a><br /><a href="https://github.com/kentcdodds/mdx-bundler/commits?author=skovy" title="Documentation">📖</a></td>
     <td align="center"><a href="https://caspertheghost.me"><img src="https://avatars.githubusercontent.com/u/53900565?v=4?s=100" width="100px;" alt=""/><br /><sub><b>Casper</b></sub></a><br /><a href="https://github.com/kentcdodds/mdx-bundler/commits?author=Dev-CasperTheGhost" title="Code">💻</a></td>
+    <td align="center"><a href="http://a7sc11u.dev"><img src="https://avatars.githubusercontent.com/u/803868?v=4?s=100" width="100px;" alt=""/><br /><sub><b>Apostolos Christodoulou</b></sub></a><br /><a href="https://github.com/kentcdodds/mdx-bundler/commits?author=a7sc11u" title="Documentation">📖</a></td>
   </tr>
 </table>
 
