@@ -3,7 +3,7 @@ import * as _jsx_runtime from 'react/jsx-runtime.js'
 import * as ReactDOM from 'react-dom'
 
 /**
- * @typedef {{[name: string]: React.ComponentType | string | ComponentMap}} ComponentMap
+ * @typedef {import('mdx/types').MDXComponents} ComponentMap
  */
 
 /**
