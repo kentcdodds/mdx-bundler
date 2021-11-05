@@ -189,6 +189,9 @@ the esbuild version mdx-bundler uses.
   - [Options](#options)
   - [Component Substitution](#component-substitution)
   - [Frontmatter and const](#frontmatter-and-const)
+  - [Accessing named exports](#accessing-named-exports)
+  - [Image Bundling](#image-bundling)
+  - [bundleMDXFile](#bundlemdxfile)
   - [Known Issues](#known-issues)
 - [Inspiration](#inspiration)
 - [Other Solutions](#other-solutions)
@@ -527,6 +530,36 @@ export const exampleImage = 'https://example.com/image.jpg'
 <img src={exampleImage} alt="Image alt text" />
 ```
 
+### Accessing named exports
+
+You can use `getMDXExport` instead of `getMDXComponent` to treat the mdx file as a module instead of just a component.
+It takes the same arguments that `getMDXComponent` does.
+
+```mdx
+---
+title: Example Post
+---
+
+export const toc = [
+  { depth: 1, value: 'The title' }
+]
+
+# The title
+```
+
+```js
+import * as React from 'react'
+import {getMDXExport} from 'mdx-bundler/client'
+
+function MDXPage({code}: {code: string}) {
+  const mdxExport = getMDXExport(code)
+  console.log(mdxExport.toc) // [ { depth: 1, value: 'The title' } ]
+
+  const Component = React.useMemo(() => mdxExport.default, [code])
+
+  return <Component />
+}
+```
 ### Image Bundling
 
 With the [cwd](#cwd) and the remark plugin

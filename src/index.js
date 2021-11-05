@@ -195,7 +195,7 @@ async function bundleMDX(
     const code = decoder.write(Buffer.from(bundled.outputFiles[0].contents))
 
     return {
-      code: `${code};return Component.default;`,
+      code: `${code};return Component;`,
       frontmatter: matter.data,
       errors: bundled.errors,
       matter,
@@ -214,7 +214,7 @@ async function bundleMDX(
     await unlink(path.join(buildOptions.outdir, fileName))
 
     return {
-      code: `${code};return Component.default;`,
+      code: `${code};return Component`,
       frontmatter: matter.data,
       errors: bundled.errors,
       matter,
