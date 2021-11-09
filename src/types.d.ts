@@ -7,9 +7,27 @@
 import type {Plugin, BuildOptions, Loader} from 'esbuild'
 import type {ModuleInfo} from '@fal-works/esbuild-plugin-global-externals'
 import type {CoreProcessorOptions} from 'xdm/lib/compile'
-import type {GrayMatterOption, Input} from 'gray-matter'
+import type {GrayMatterOption, Input, GrayMatterFile} from 'gray-matter'
 
 type ESBuildOptions = BuildOptions
+
+export type BundleMDX = BundleMDXSource | BundleMDXFile
+
+export type BundleMDXSource = {
+  /**
+   * Your MDX source.
+   */
+  source: string
+  file?: undefined
+} & BundleMDXOptions
+
+export type BundleMDXFile = {
+  /**
+   * The path to the mdx file on disk.
+   */
+  file: string
+  source?: undefined
+} & BundleMDXOptions
 
 type BundleMDXOptions = {
   /**
@@ -58,7 +76,10 @@ type BundleMDXOptions = {
    * })
    * ```
    */
-  xdmOptions?: (options: CoreProcessorOptions) => CoreProcessorOptions
+  xdmOptions?: (
+    options: CoreProcessorOptions,
+    frontmatter: GrayMatterFile.data,
+  ) => CoreProcessorOptions
   /**
    * This allows you to modify the built-in esbuild configuration. This can be
    * especially helpful for specifying the compilation target.
@@ -80,7 +101,10 @@ type BundleMDXOptions = {
    * })
    * ```
    */
-  esbuildOptions?: (options: ESBuildOptions) => ESBuildOptions
+  esbuildOptions?: (
+    options: ESBuildOptions,
+    frontmatter: GrayMatterFile.data,
+  ) => ESBuildOptions
   /**
    * Any variables you want treated as global variables in the bundling.
    *
