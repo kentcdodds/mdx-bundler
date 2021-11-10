@@ -12,7 +12,8 @@ import dirnameMessedUp from './dirname-messed-up.cjs'
 const {readFile, unlink} = fs.promises
 
 /**
- * @param {import('./types').BundleMDX} options
+ * @template {{[key: string]: any}} Frontmatter
+ * @param {import('./types').BundleMDX<Frontmatter>} options
  * @returns
  */
 async function bundleMDX({
@@ -38,21 +39,17 @@ async function bundleMDX({
   const [{default: xdmESBuild}, {default: remarkFrontmatter}] =
     await Promise.all([import('xdm/esbuild.js'), import('remark-frontmatter')])
 
-  /** @type string */
-  let entryPath
+  let /** @type string */ entryPath, /** @type any */ matter //should be Omit<grayMatter.GrayMatterFile<string>, "data"> & {data: Frontmatter}
 
   /** @type Record<string, string> */
   const absoluteFiles = {}
 
-  /** @type grayMatter.GrayMatterFile<any> */
-  let matter
-
-  if (source !== undefined) {
+  if (typeof source === 'string') {
     // The user has supplied MDX source.
     matter = grayMatter(source, grayMatterOptions({}))
     entryPath = path.join(cwd, `./_mdx_bundler_entry_point-${uuid()}.mdx`)
     absoluteFiles[entryPath] = source
-  } else if (file !== undefined) {
+  } else if (typeof file === 'string') {
     // The user has supplied a file.
     matter = grayMatter.read(file, grayMatterOptions({}))
     entryPath = file

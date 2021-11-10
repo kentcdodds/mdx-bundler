@@ -11,25 +11,27 @@ import type {GrayMatterOption, Input, GrayMatterFile} from 'gray-matter'
 
 type ESBuildOptions = BuildOptions
 
-export type BundleMDX = BundleMDXSource | BundleMDXFile
+export type BundleMDX<Frontmatter extends {[key: string]: any}> =
+  | BundleMDXSource<Frontmatter>
+  | BundleMDXFile<Frontmatter>
 
-export type BundleMDXSource = {
+export type BundleMDXSource<Frontmatter> = {
   /**
    * Your MDX source.
    */
   source: string
   file?: undefined
-} & BundleMDXOptions
+} & BundleMDXOptions<Frontmatter>
 
-export type BundleMDXFile = {
+export type BundleMDXFile<Frontmatter> = {
   /**
    * The path to the mdx file on disk.
    */
   file: string
   source?: undefined
-} & BundleMDXOptions
+} & BundleMDXOptions<Frontmatter>
 
-type BundleMDXOptions = {
+type BundleMDXOptions<Frontmatter> = {
   /**
    * The dependencies of the MDX code to be bundled
    *
@@ -78,7 +80,7 @@ type BundleMDXOptions = {
    */
   xdmOptions?: (
     options: CoreProcessorOptions,
-    frontmatter: GrayMatterFile.data,
+    frontmatter: Frontmatter,
   ) => CoreProcessorOptions
   /**
    * This allows you to modify the built-in esbuild configuration. This can be
@@ -103,7 +105,7 @@ type BundleMDXOptions = {
    */
   esbuildOptions?: (
     options: ESBuildOptions,
-    frontmatter: GrayMatterFile.data,
+    frontmatter: Frontmatter,
   ) => ESBuildOptions
   /**
    * Any variables you want treated as global variables in the bundling.
