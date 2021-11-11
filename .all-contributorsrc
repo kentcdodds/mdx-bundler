@@ -147,6 +147,15 @@
       "contributions": [
         "code"
       ]
+    },
+    {
+      "login": "xoumi",
+      "name": "xoumi",
+      "avatar_url": "https://avatars.githubusercontent.com/u/24864287?v=4",
+      "profile": "https://github.com/xoumi",
+      "contributions": [
+        "code"
+      ]
     }
   ],
   "commitConvention": "none"
