@@ -45,7 +45,7 @@
     "@fal-works/esbuild-plugin-global-externals": "^2.1.2",
     "gray-matter": "^4.0.3",
     "remark-frontmatter": "^4.0.1",
-    "remark-mdx-frontmatter": "^1.0.1",
+    "remark-mdx-frontmatter": "1.0.1",
     "uuid": "^8.3.2",
     "xdm": "^3.2.0"
   },
