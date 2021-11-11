@@ -762,6 +762,9 @@ Thanks goes to these people ([emoji key][emojis]):
     <td align="center"><a href="http://a7sc11u.dev"><img src="https://avatars.githubusercontent.com/u/803868?v=4?s=100" width="100px;" alt=""/><br /><sub><b>Apostolos Christodoulou</b></sub></a><br /><a href="https://github.com/kentcdodds/mdx-bundler/commits?author=a7sc11u" title="Documentation">📖</a></td>
     <td align="center"><a href="https://github.com/yordis"><img src="https://avatars.githubusercontent.com/u/4237280?v=4?s=100" width="100px;" alt=""/><br /><sub><b>Yordis Prieto</b></sub></a><br /><a href="https://github.com/kentcdodds/mdx-bundler/commits?author=yordis" title="Code">💻</a></td>
   </tr>
+  <tr>
+    <td align="center"><a href="https://github.com/xoumi"><img src="https://avatars.githubusercontent.com/u/24864287?v=4?s=100" width="100px;" alt=""/><br /><sub><b>xoumi</b></sub></a><br /><a href="https://github.com/kentcdodds/mdx-bundler/commits?author=xoumi" title="Code">💻</a></td>
+  </tr>
 </table>
 
 <!-- markdownlint-restore -->
