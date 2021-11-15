@@ -43,7 +43,7 @@ async function bundleMDX({
 
   let /** @type string */ code,
     /** @type string */ entryPath,
-    /** @type any */ matter //should be Omit<grayMatter.GrayMatterFile<string>, "data"> & {data: Frontmatter}
+    /** @type Omit<grayMatter.GrayMatterFile<string>, "data"> & {data: Frontmatter} */ matter
 
   /** @type Record<string, string> */
   const absoluteFiles = {}
@@ -58,12 +58,16 @@ async function bundleMDX({
 
   if (typeof source === 'string') {
     // The user has supplied MDX source.
-    matter = grayMatter(source, grayMatterOptions({}))
+    /** @type any */ // Slight type hack to get the graymatter front matter typed correctly.
+    const gMatter = grayMatter(source, grayMatterOptions({}))
+    matter = gMatter
     entryPath = path.join(cwd, `./_mdx_bundler_entry_point-${uuid()}.mdx`)
     absoluteFiles[entryPath] = source
   } else if (typeof file === 'string') {
     // The user has supplied a file.
-    matter = grayMatter.read(file, grayMatterOptions({}))
+    /** @type any */ // Slight type hack to get the graymatter front matter typed correctly.
+    const gMatter = grayMatter.read(file, grayMatterOptions({}))
+    matter = gMatter
     entryPath = file
     /* c8 ignore start */
   } else {
