@@ -187,11 +187,13 @@ the esbuild version mdx-bundler uses.
 - [Installation](#installation)
 - [Usage](#usage)
   - [Options](#options)
+  - [Returns](#returns)
+  - [Types](#types)
   - [Component Substitution](#component-substitution)
   - [Frontmatter and const](#frontmatter-and-const)
   - [Accessing named exports](#accessing-named-exports)
   - [Image Bundling](#image-bundling)
-  - [bundleMDXFile](#bundlemdxfile)
+  - [Bundling a file.](#bundling-a-file)
   - [Known Issues](#known-issues)
 - [Inspiration](#inspiration)
 - [Other Solutions](#other-solutions)
@@ -325,9 +327,12 @@ This allows you to modify the built-in xdm configuration (passed to the xdm
 esbuild plugin). This can be helpful for specifying your own
 remarkPlugins/rehypePlugins.
 
+The function is passed the default xdmOptions and the frontmatter.
+
 ```ts
-bundleMDX(mdxString, {
-  xdmOptions(options) {
+bundleMDX({
+  source: mdxSource,
+  xdmOptions(options, frontmatter) {
     // this is the recommended way to add custom remark/rehype plugins:
     // The syntax might look weird, but it protects you in case we add/remove
     // plugins in the future.
@@ -342,12 +347,13 @@ bundleMDX(mdxString, {
 #### esbuildOptions
 
 You can customize any of esbuild options with the option `esbuildOptions`. This
-takes a function which is passed the default esbuild options and expects an
-options object to be returned.
+takes a function which is passed the default esbuild options and the frontmatter
+and expects an options object to be returned.
 
 ```typescript
-bundleMDX(mdxSource, {
-  esbuildOptions(options) {
+bundleMDX({
+  source: mdxSource,
+  esbuildOptions(options, frontmatter) {
     options.minify = false
     options.target = [
       'es2020',
@@ -539,6 +545,21 @@ const {code} = await bundleMDX({
 - `frontmatter` - The frontmatter `object` from gray-matter.
 - `matter` - The whole
   [object returned by gray-matter](https://github.com/jonschlinkert/gray-matter#returned-object)
+
+### Types
+
+`mdx-bundler` supplies complete typings within its own package.
+
+`bundleMDX` has a single type parameter which is the type of your frontmatter.
+It defaults to `{[key: string]: any}` and must be an object. This is then used
+to type the returned `frontmatter` and the frontmatter passed to
+`esbuildOptions` and `xdmOptions`.
+
+```ts
+const {frontmatter} = bundleMDX<{title: string}>({source})
+
+frontmatter.title // has type string
+```
 
 ### Component Substitution
 
