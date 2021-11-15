@@ -41,7 +41,9 @@ async function bundleMDX({
   const [{default: xdmESBuild}, {default: remarkFrontmatter}] =
     await Promise.all([import('xdm/esbuild.js'), import('remark-frontmatter')])
 
-  let /** @type string */ entryPath, /** @type any */ matter //should be Omit<grayMatter.GrayMatterFile<string>, "data"> & {data: Frontmatter}
+  let /** @type string */ code,
+    /** @type string */ entryPath,
+    /** @type any */ matter //should be Omit<grayMatter.GrayMatterFile<string>, "data"> & {data: Frontmatter}
 
   /** @type Record<string, string> */
   const absoluteFiles = {}
@@ -199,9 +201,6 @@ async function bundleMDX({
   )
 
   const bundled = await esbuild.build(buildOptions)
-
-  /** @type string */
-  let code
 
   if (bundled.outputFiles) {
     const decoder = new StringDecoder('utf8')
