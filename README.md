@@ -491,6 +491,46 @@ bundleMDX({
 })
 ```
 
+#### bundleDirectory & bundlePath
+
+This allows you to set the output directory for the bundle and the public URL to
+the directory. If one option is set the other must be aswell.
+
+_The Javascript bundle is not written to this directory and is still returned as
+a string from `bundleMDX`._
+
+This feature is best used with tweaks to `xdmOptions` and `esbuildOptions`. In
+the example below and `.png` files are written to the disk and then served from
+`/file/`.
+
+This allows you to store assets with your MDX and then have esbuild process them
+like anything else.
+
+_It is reccomended that each bundle has its own `bundleDirectory` so that
+multiple bundles don't overwrite each others assets._
+
+```ts
+const {code} = await bundleMDX({
+  file: '/path/to/site/content/file.mdx',
+  cwd: '/path/to/site/content',
+  bundleDirectory: '/path/to/site/public/file,
+  bundlePath: '/file/',
+  xdmOptions: options => {
+    options.remarkPlugins = [remarkMdxImages]
+
+    return options
+  },
+  esbuildOptions: options => {
+    options.loader = {
+      ...options.loader,
+      '.png': 'file',
+    }
+
+    return options
+  },
+})
+```
+
 ### Returns
 
 `bundleMDX` returns a promise for an object with the following properties.

@@ -1,6 +1,5 @@
 import './setup-tests.js'
 import path from 'path'
-import {fileURLToPath} from 'url'
 import {test} from 'uvu'
 import * as assert from 'uvu/assert'
 import React from 'react'
@@ -353,19 +352,18 @@ test('should output assets', async () => {
   const {code} = await bundleMDX({
     source: mdxSource,
     cwd: path.join(process.cwd(), 'other'),
+    bundleDirectory: path.join(process.cwd(), 'output'),
+    bundlePath: '/img/',
     xdmOptions: options => {
       options.remarkPlugins = [remarkMdxImages]
 
       return options
     },
     esbuildOptions: options => {
-      options.outdir = path.join(process.cwd(), 'output')
       options.loader = {
         ...options.loader,
         '.png': 'file',
       }
-      options.publicPath = '/img/'
-      options.write = true
 
       return options
     },
@@ -377,7 +375,7 @@ test('should output assets', async () => {
 
   assert.match(container.innerHTML, 'src="/img/150')
 
-  const error = /** @type Error */ (
+  const writeError = /** @type Error */ (
     await bundleMDX({
       source: mdxSource,
       cwd: path.join(process.cwd(), 'other'),
@@ -400,8 +398,21 @@ test('should output assets', async () => {
   )
 
   assert.equal(
-    error.message,
+    writeError.message,
     "You must either specify `write: false` or `write: true` and `outdir: '/path'` in your esbuild options",
+  )
+
+  const optionError = /** @type Error */ (
+    await bundleMDX({
+      source: mdxSource,
+      cwd: path.join(process.cwd(), 'other'),
+      bundleDirectory: path.join(process.cwd(), 'output'),
+    }).catch(e => e)
+  )
+
+  assert.equal(
+    optionError.message,
+    'When using `bundleDirectory` or `bundlePath` the other must be set.',
   )
 })
 
@@ -456,30 +467,6 @@ Local Content
     container.innerHTML,
     'Mdx file published as an npm package, for testing purposes.',
   )
-})
-
-test('should support using a file', async () => {
-  const {code} = await bundleMDX({
-    file: path.join(
-      path.dirname(fileURLToPath(import.meta.url)),
-      '..',
-      '..',
-      'CONTRIBUTING.md',
-    ),
-    cwd: process.cwd(),
-    esbuildOptions: options => {
-      options.outdir = path.join(process.cwd(), 'output')
-      options.write = true
-
-      return options
-    },
-  })
-
-  const Component = getMDXComponent(code)
-
-  const {container} = render(React.createElement(Component))
-
-  assert.match(container.innerHTML, 'Thanks for being willing to contribute')
 })
 
 test('should work with react-dom api', async () => {

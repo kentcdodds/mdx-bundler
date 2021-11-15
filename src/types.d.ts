@@ -37,7 +37,8 @@ type BundleMDXOptions<Frontmatter> = {
    *
    * @example
    * ```
-   * bundleMDX(mdxString, {
+   * bundleMDX({
+   *   source: mdxString,
    *   files: {
    *     './components.tsx': `
    *       import * as React from 'react'
@@ -65,7 +66,8 @@ type BundleMDXOptions<Frontmatter> = {
    *
    * @example
    * ```
-   * bundleMDX(mdxString, {
+   * bundleMDX({
+   *   source: mdxString,
    *   xdmOptions(options) {
    *     // this is the recommended way to add custom remark/rehype plugins:
    *     // The syntax might look weird, but it protects you in case we add/remove
@@ -88,7 +90,8 @@ type BundleMDXOptions<Frontmatter> = {
    *
    * @example
    * ```
-   * bundleMDX(mdxString, {
+   * bundleMDX({
+   *   source: mdxString,
    *   esbuildOptions(options) {
    *     options.target = [
    *       'es2020',
@@ -117,11 +120,12 @@ type BundleMDXOptions<Frontmatter> = {
    *
    * @example
    * ```
-   * bundlMDX(mdxString, {
+   * bundlMDX({
+   *   source: mdxString,
    *   globals: {'left-pad': 'myLeftPad'},
    * })
    *
-   * // then later
+   * // on the client side
    *
    * import leftPad from 'left-pad'
    *
@@ -138,7 +142,8 @@ type BundleMDXOptions<Frontmatter> = {
    *
    * @example
    * ```
-   * bundleMDX(mdxString, {
+   * bundleMDX({
+   *  source: mdxString
    *  cwd: '/users/you/site/mdx_root'
    * })
    * ```
@@ -149,7 +154,8 @@ type BundleMDXOptions<Frontmatter> = {
    *
    * @example
    * ```
-   * bundleMDX(mdxString, {
+   * bundleMDX({
+   *   source: mdxString,
    *   grayMatterOptions: (options) => {
    *     options.excerpt = true
    *
@@ -161,6 +167,27 @@ type BundleMDXOptions<Frontmatter> = {
   grayMatterOptions?: <I extends Input>(
     options: GrayMatterOption<I, any>,
   ) => GrayMatterOption<I, any>
+  /**
+   * This allows you to set the output directory of the bundle. You will need
+   * to set `bundlePath` as well to give esbuild the public url to the folder.
+   *
+   * *Note, the javascrpt bundle will not be placed here, only assets
+   * that can't be part of the main bundle.*
+   *
+   * @example
+   * ```
+   * bundleMDX({
+   *   file: '/path/to/file.mdx',
+   *   bundleDirectory: '/path/to/bundle'
+   *   bundlePath: '/path/to/public/bundle'
+   * })
+   * ```
+   */
+  bundleDirectory?: string
+  /**
+   * @see bundleDirectory
+   */
+  bundlePath?: string
 }
 
 type MDXExport<

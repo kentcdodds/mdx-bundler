@@ -25,6 +25,8 @@ async function bundleMDX({
   globals = {},
   cwd = path.join(process.cwd(), `__mdx_bundler_fake_dir__`),
   grayMatterOptions = options => options,
+  bundleDirectory,
+  bundlePath,
 }) {
   /* c8 ignore start */
   if (dirnameMessedUp && !process.env.ESBUILD_BINARY_PATH) {
@@ -43,6 +45,14 @@ async function bundleMDX({
 
   /** @type Record<string, string> */
   const absoluteFiles = {}
+
+  const isWriting = typeof bundleDirectory === 'string'
+
+  if (typeof bundleDirectory !== typeof bundlePath) {
+    throw new Error(
+      'When using `bundleDirectory` or `bundlePath` the other must be set.',
+    )
+  }
 
   if (typeof source === 'string') {
     // The user has supplied MDX source.
@@ -139,7 +149,9 @@ async function bundleMDX({
   const buildOptions = esbuildOptions(
     {
       entryPoints: [entryPath],
-      write: false,
+      write: isWriting,
+      outdir: isWriting ? bundleDirectory : undefined,
+      publicPath: isWriting ? bundlePath : undefined,
       absWorkingDir: cwd,
       define: {
         'process.env.NODE_ENV': JSON.stringify(process.env.NODE_ENV),
@@ -188,41 +200,35 @@ async function bundleMDX({
 
   const bundled = await esbuild.build(buildOptions)
 
+  /** @type string */
+  let code
+
   if (bundled.outputFiles) {
     const decoder = new StringDecoder('utf8')
 
-    const code = decoder.write(Buffer.from(bundled.outputFiles[0].contents))
-
-    return {
-      code: `${code};return Component;`,
-      frontmatter: matter.data,
-      errors: bundled.errors,
-      matter,
-    }
-  }
-
-  if (buildOptions.outdir && buildOptions.write) {
+    code = decoder.write(Buffer.from(bundled.outputFiles[0].contents))
+  } else if (buildOptions.outdir && buildOptions.write) {
     // We know that this has to be an array of entry point strings, with a single entry
     const entryFile = /** @type {{entryPoints: string[]}} */ (buildOptions)
       .entryPoints[0]
 
     const fileName = path.basename(entryFile).replace(/\.[^/.]+$/, '.js')
 
-    const code = await readFile(path.join(buildOptions.outdir, fileName))
+    code = (await readFile(path.join(buildOptions.outdir, fileName))).toString()
 
     await unlink(path.join(buildOptions.outdir, fileName))
-
-    return {
-      code: `${code};return Component`,
-      frontmatter: matter.data,
-      errors: bundled.errors,
-      matter,
-    }
+  } else {
+    throw new Error(
+      "You must either specify `write: false` or `write: true` and `outdir: '/path'` in your esbuild options",
+    )
   }
 
-  throw new Error(
-    "You must either specify `write: false` or `write: true` and `outdir: '/path'` in your esbuild options",
-  )
+  return {
+    code: `${code};return Component;`,
+    frontmatter: matter.data,
+    errors: bundled.errors,
+    matter,
+  }
 }
 
 export {bundleMDX}
