@@ -12,22 +12,22 @@ import dirnameMessedUp from './dirname-messed-up.cjs'
 const {readFile, unlink} = fs.promises
 
 /**
- *
- * @param {string} mdxSource - A string of mdx source code
- * @param {import('./types').BundleMDXOptions} options
+ * @template {{[key: string]: any}} Frontmatter
+ * @param {import('./types').BundleMDX<Frontmatter>} options
  * @returns
  */
-async function bundleMDX(
-  mdxSource,
-  {
-    files = {},
-    xdmOptions = options => options,
-    esbuildOptions = options => options,
-    globals = {},
-    cwd = path.join(process.cwd(), `__mdx_bundler_fake_dir__`),
-    grayMatterOptions = options => options,
-  } = {},
-) {
+async function bundleMDX({
+  file,
+  source,
+  files = {},
+  xdmOptions = options => options,
+  esbuildOptions = options => options,
+  globals = {},
+  cwd = path.join(process.cwd(), `__mdx_bundler_fake_dir__`),
+  grayMatterOptions = options => options,
+  bundleDirectory,
+  bundlePath,
+}) {
   /* c8 ignore start */
   if (dirnameMessedUp && !process.env.ESBUILD_BINARY_PATH) {
     console.warn(
@@ -38,18 +38,45 @@ async function bundleMDX(
 
   // xdm is a native ESM, and we're running in a CJS context. This is the
   // only way to import ESM within CJS
-  const [
-    {default: xdmESBuild},
-    {default: remarkFrontmatter},
-  ] = await Promise.all([
-    import('xdm/esbuild.js'),
-    import('remark-frontmatter'),
-  ])
+  const [{default: xdmESBuild}, {default: remarkFrontmatter}] =
+    await Promise.all([import('xdm/esbuild.js'), import('remark-frontmatter')])
 
-  const entryPath = path.join(cwd, `./_mdx_bundler_entry_point-${uuid()}.mdx`)
+  let /** @type string */ code,
+    /** @type string */ entryPath,
+    /** @type Omit<grayMatter.GrayMatterFile<string>, "data"> & {data: Frontmatter} */ matter
 
   /** @type Record<string, string> */
-  const absoluteFiles = {[entryPath]: mdxSource}
+  const absoluteFiles = {}
+
+  const isWriting = typeof bundleDirectory === 'string'
+
+  if (typeof bundleDirectory !== typeof bundlePath) {
+    throw new Error(
+      'When using `bundleDirectory` or `bundlePath` the other must be set.',
+    )
+  }
+
+  if (typeof source === 'string') {
+    // The user has supplied MDX source.
+    /** @type any */ // Slight type hack to get the graymatter front matter typed correctly.
+    const gMatter = grayMatter(source, grayMatterOptions({}))
+    matter = gMatter
+    entryPath = path.join(cwd, `./_mdx_bundler_entry_point-${uuid()}.mdx`)
+    absoluteFiles[entryPath] = source
+  } else if (typeof file === 'string') {
+    // The user has supplied a file.
+    /** @type any */ // Slight type hack to get the graymatter front matter typed correctly.
+    const gMatter = grayMatter.read(file, grayMatterOptions({}))
+    matter = gMatter
+    entryPath = file
+    /* c8 ignore start */
+  } else {
+    // The user supplied neither file or source.
+    // The typings should prevent reaching this point.
+    // It is ignored from coverage as the tests wouldn't run in a way that can get here.
+    throw new Error('`source` or `file` must be defined')
+  }
+  /* c8 ignore end*/
 
   for (const [filepath, fileCode] of Object.entries(files)) {
     absoluteFiles[path.join(cwd, filepath)] = fileCode
@@ -125,136 +152,86 @@ async function bundleMDX(
     },
   }
 
-  const buildOptions = esbuildOptions({
-    entryPoints: [entryPath],
-    write: false,
-    absWorkingDir: cwd,
-    define: {
-      'process.env.NODE_ENV': JSON.stringify(process.env.NODE_ENV),
-    },
-    plugins: [
-      globalExternals({
-        ...globals,
-        react: {
-          varName: 'React',
-          type: 'cjs',
-        },
-        'react-dom': {
-          varName: 'ReactDOM',
-          type: 'cjs',
-        },
-        'react/jsx-runtime': {
-          varName: '_jsx_runtime',
-          type: 'cjs',
-        },
-      }),
-      // eslint-disable-next-line @babel/new-cap
-      NodeResolvePlugin({
-        extensions: ['.js', '.ts', '.jsx', '.tsx'],
-        resolveOptions: {basedir: cwd},
-      }),
-      inMemoryPlugin,
-      xdmESBuild(
-        xdmOptions({
-          remarkPlugins: [
-            remarkFrontmatter,
-            [remarkMdxFrontmatter, {name: 'frontmatter'}],
-          ],
+  const buildOptions = esbuildOptions(
+    {
+      entryPoints: [entryPath],
+      write: isWriting,
+      outdir: isWriting ? bundleDirectory : undefined,
+      publicPath: isWriting ? bundlePath : undefined,
+      absWorkingDir: cwd,
+      define: {
+        'process.env.NODE_ENV': JSON.stringify(process.env.NODE_ENV),
+      },
+      plugins: [
+        globalExternals({
+          ...globals,
+          react: {
+            varName: 'React',
+            type: 'cjs',
+          },
+          'react-dom': {
+            varName: 'ReactDOM',
+            type: 'cjs',
+          },
+          'react/jsx-runtime': {
+            varName: '_jsx_runtime',
+            type: 'cjs',
+          },
         }),
-      ),
-    ],
-    bundle: true,
-    format: 'iife',
-    globalName: 'Component',
-    minify: true,
-  })
-
-  // Extract the front matter from the source or the entry point
-
-  /** @type grayMatter.GrayMatterFile<any> */
-  let matter
-
-  // We have to be a bit specific here to ensure type safety
-  if (
-    buildOptions.entryPoints &&
-    Array.isArray(buildOptions.entryPoints) &&
-    buildOptions.entryPoints[0] !== entryPath
-  ) {
-    //The user has replaced the entrypoint, we can assume this means `mdxSource` is empty
-
-    matter = grayMatter.read(buildOptions.entryPoints[0], grayMatterOptions({}))
-  } else {
-    matter = grayMatter(mdxSource, grayMatterOptions({}))
-  }
+        // eslint-disable-next-line @babel/new-cap
+        NodeResolvePlugin({
+          extensions: ['.js', '.ts', '.jsx', '.tsx'],
+          resolveOptions: {basedir: cwd},
+        }),
+        inMemoryPlugin,
+        xdmESBuild(
+          xdmOptions(
+            {
+              remarkPlugins: [
+                remarkFrontmatter,
+                [remarkMdxFrontmatter, {name: 'frontmatter'}],
+              ],
+            },
+            matter.data,
+          ),
+        ),
+      ],
+      bundle: true,
+      format: 'iife',
+      globalName: 'Component',
+      minify: true,
+    },
+    matter.data,
+  )
 
   const bundled = await esbuild.build(buildOptions)
 
   if (bundled.outputFiles) {
     const decoder = new StringDecoder('utf8')
 
-    const code = decoder.write(Buffer.from(bundled.outputFiles[0].contents))
-
-    return {
-      code: `${code};return Component;`,
-      frontmatter: matter.data,
-      errors: bundled.errors,
-      matter,
-    }
-  }
-
-  if (buildOptions.outdir && buildOptions.write) {
+    code = decoder.write(Buffer.from(bundled.outputFiles[0].contents))
+  } else if (buildOptions.outdir && buildOptions.write) {
     // We know that this has to be an array of entry point strings, with a single entry
     const entryFile = /** @type {{entryPoints: string[]}} */ (buildOptions)
       .entryPoints[0]
 
     const fileName = path.basename(entryFile).replace(/\.[^/.]+$/, '.js')
 
-    const code = await readFile(path.join(buildOptions.outdir, fileName))
+    code = (await readFile(path.join(buildOptions.outdir, fileName))).toString()
 
     await unlink(path.join(buildOptions.outdir, fileName))
-
-    return {
-      code: `${code};return Component`,
-      frontmatter: matter.data,
-      errors: bundled.errors,
-      matter,
-    }
+  } else {
+    throw new Error(
+      "You must either specify `write: false` or `write: true` and `outdir: '/path'` in your esbuild options",
+    )
   }
 
-  throw new Error(
-    "You must either specify `write: false` or `write: true` and `outdir: '/path'` in your esbuild options",
-  )
+  return {
+    code: `${code};return Component;`,
+    frontmatter: matter.data,
+    errors: bundled.errors,
+    matter,
+  }
 }
 
-/**
- *
- * @param {string} mdxPath - The file path to bundle.
- * @param {import('./types').BundleMDXOptions} options
- * @returns
- */
-async function bundleMDXFile(
-  mdxPath,
-  {
-    files = {},
-    xdmOptions = options => options,
-    esbuildOptions = options => options,
-    globals = {},
-    cwd,
-    grayMatterOptions = options => options,
-  } = {},
-) {
-  return bundleMDX('', {
-    files,
-    xdmOptions,
-    esbuildOptions: options => {
-      options.entryPoints = [mdxPath]
-
-      return esbuildOptions(options)
-    },
-    globals,
-    cwd: cwd ? cwd : path.dirname(mdxPath),
-    grayMatterOptions,
-  })
-}
-
-export {bundleMDX, bundleMDXFile}
+export {bundleMDX}

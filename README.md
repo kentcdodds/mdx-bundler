@@ -187,11 +187,13 @@ the esbuild version mdx-bundler uses.
 - [Installation](#installation)
 - [Usage](#usage)
   - [Options](#options)
+  - [Returns](#returns)
+  - [Types](#types)
   - [Component Substitution](#component-substitution)
   - [Frontmatter and const](#frontmatter-and-const)
   - [Accessing named exports](#accessing-named-exports)
   - [Image Bundling](#image-bundling)
-  - [bundleMDXFile](#bundlemdxfile)
+  - [Bundling a file.](#bundling-a-file)
   - [Known Issues](#known-issues)
 - [Inspiration](#inspiration)
 - [Other Solutions](#other-solutions)
@@ -236,7 +238,8 @@ Here's a **neat** demo:
 <Demo />
 `.trim()
 
-const result = await bundleMDX(mdxSource, {
+const result = await bundleMDX({
+  source: mdxSource,
   files: {
     './demo.tsx': `
 import * as React from 'react'
@@ -297,6 +300,19 @@ Ultimately, this gets rendered (basically):
 
 ### Options
 
+#### source
+
+The `string` source of your MDX.
+
+_Can not be set if `file` is set_
+
+#### file
+
+The path to the file on your disk with the MDX in. You will probabbly want to
+set [cwd](#cwd) as well.
+
+_Can not be set if `source` is set_
+
 #### files
 
 The `files` config is an object of all the files you're bundling. The key is the
@@ -311,9 +327,12 @@ This allows you to modify the built-in xdm configuration (passed to the xdm
 esbuild plugin). This can be helpful for specifying your own
 remarkPlugins/rehypePlugins.
 
+The function is passed the default xdmOptions and the frontmatter.
+
 ```ts
-bundleMDX(mdxString, {
-  xdmOptions(options) {
+bundleMDX({
+  source: mdxSource,
+  xdmOptions(options, frontmatter) {
     // this is the recommended way to add custom remark/rehype plugins:
     // The syntax might look weird, but it protects you in case we add/remove
     // plugins in the future.
@@ -328,12 +347,13 @@ bundleMDX(mdxString, {
 #### esbuildOptions
 
 You can customize any of esbuild options with the option `esbuildOptions`. This
-takes a function which is passed the default esbuild options and expects an
-options object to be returned.
+takes a function which is passed the default esbuild options and the frontmatter
+and expects an options object to be returned.
 
 ```typescript
-bundleMDX(mdxSource, {
-  esbuildOptions(options) {
+bundleMDX({
+  source: mdxSource,
+  esbuildOptions(options, frontmatter) {
     options.minify = false
     options.target = [
       'es2020',
@@ -366,7 +386,8 @@ and once for this MDX component). This is wasteful and you'd be better off just
 telling esbuild to _not_ bundle `d3` and you can pass it to the component
 yourself when you call `getMDXComponent`.
 
-Global external configuration options: https://www.npmjs.com/package/@fal-works/esbuild-plugin-global-externals
+Global external configuration options:
+https://www.npmjs.com/package/@fal-works/esbuild-plugin-global-externals
 
 Here's an example:
 
@@ -382,7 +403,8 @@ import leftPad from 'left-pad'
 <div>{leftPad("Neat demo!", 12, '!')}</div>
 `.trim()
 
-const result = await bundleMDX(mdxSource, {
+const result = await bundleMDX({
+  source: mdxSource,
   // NOTE: this is *only* necessary if you want to share deps between your MDX
   // file bundle and the host app. Otherwise, all deps will just be bundled.
   // So it'll work either way, this is just an optimization to avoid sending
@@ -449,7 +471,8 @@ Here's a **neat** demo:
 <Demo />
 `.trim()
 
-const result = await bundleMDX(mdxSource, {
+const result = await bundleMDX({
+  source: mdxSource,
   cwd: '/users/you/site/_content/pages',
 })
 
@@ -465,9 +488,49 @@ Your function is passed the current gray-matter configuration for you to modify.
 Return your modified configuration object for gray matter.
 
 ```js
-bundleMDX(mdxString, {
+bundleMDX({
   grayMatterOptions: options => {
     options.excerpt = true
+
+    return options
+  },
+})
+```
+
+#### bundleDirectory & bundlePath
+
+This allows you to set the output directory for the bundle and the public URL to
+the directory. If one option is set the other must be aswell.
+
+_The Javascript bundle is not written to this directory and is still returned as
+a string from `bundleMDX`._
+
+This feature is best used with tweaks to `xdmOptions` and `esbuildOptions`. In
+the example below and `.png` files are written to the disk and then served from
+`/file/`.
+
+This allows you to store assets with your MDX and then have esbuild process them
+like anything else.
+
+_It is reccomended that each bundle has its own `bundleDirectory` so that
+multiple bundles don't overwrite each others assets._
+
+```ts
+const {code} = await bundleMDX({
+  file: '/path/to/site/content/file.mdx',
+  cwd: '/path/to/site/content',
+  bundleDirectory: '/path/to/site/public/file,
+  bundlePath: '/file/',
+  xdmOptions: options => {
+    options.remarkPlugins = [remarkMdxImages]
+
+    return options
+  },
+  esbuildOptions: options => {
+    options.loader = {
+      ...options.loader,
+      '.png': 'file',
+    }
 
     return options
   },
@@ -482,6 +545,21 @@ bundleMDX(mdxString, {
 - `frontmatter` - The frontmatter `object` from gray-matter.
 - `matter` - The whole
   [object returned by gray-matter](https://github.com/jonschlinkert/gray-matter#returned-object)
+
+### Types
+
+`mdx-bundler` supplies complete typings within its own package.
+
+`bundleMDX` has a single type parameter which is the type of your frontmatter.
+It defaults to `{[key: string]: any}` and must be an object. This is then used
+to type the returned `frontmatter` and the frontmatter passed to
+`esbuildOptions` and `xdmOptions`.
+
+```ts
+const {frontmatter} = bundleMDX<{title: string}>({source})
+
+frontmatter.title // has type string
+```
 
 ### Component Substitution
 
@@ -532,17 +610,16 @@ export const exampleImage = 'https://example.com/image.jpg'
 
 ### Accessing named exports
 
-You can use `getMDXExport` instead of `getMDXComponent` to treat the mdx file as a module instead of just a component.
-It takes the same arguments that `getMDXComponent` does.
+You can use `getMDXExport` instead of `getMDXComponent` to treat the mdx file as
+a module instead of just a component. It takes the same arguments that
+`getMDXComponent` does.
 
 ```mdx
 ---
 title: Example Post
 ---
 
-export const toc = [
-  { depth: 1, value: 'The title' }
-]
+export const toc = [{depth: 1, value: 'The title'}]
 
 # The title
 ```
@@ -560,6 +637,7 @@ function MDXPage({code}: {code: string}) {
   return <Component />
 }
 ```
+
 ### Image Bundling
 
 With the [cwd](#cwd) and the remark plugin
@@ -572,7 +650,8 @@ which outputs the images as inline data urls in the returned code.
 ```js
 import {remarkMdxImages} from 'remark-mdx-images'
 
-const {code} = await bundleMDX(mdxSource, {
+const {code} = await bundleMDX({
+  source: mdxSource,
   cwd: '/users/you/site/_content/pages',
   xdmOptions: options => {
     options.remarkPlugins = [...(options.remarkPlugins ?? []), remarkMdxImages]
@@ -602,7 +681,8 @@ folder to be used in image sources.
 ```js
 // For the file `_content/pages/about.mdx`
 
-const {code} = await bundleMDX(mdxSource, {
+const {code} = await bundleMDX({
+  source: mdxSource,
   cwd: '/users/you/site/_content/pages',
   xdmOptions: options => {
     options.remarkPlugins = [...(options.remarkPlugins ?? []), remarkMdxImages]
@@ -628,23 +708,21 @@ const {code} = await bundleMDX(mdxSource, {
 })
 ```
 
-### bundleMDXFile
+### Bundling a file.
 
 If your MDX file is on your disk you can save some time and code by having
-`esbuild` read the file for you. To do this mdx-bundler provides the function
-`bundleMDXFile` which works the same as `bundleMDX` except it's first option is
-the path to the mdx file instead of the mdx source.
+`mdx-bundler` read the file for you. Instead of supplying a `source` string you
+can set `file` to the path of the MDX on disk. Set `cwd` to it's folder so that
+relative imports work.
 
 ```js
-import {bundleMDXFile} from 'mdx-bundler'
+import {bundleMDX} from 'mdx-bundler'
 
-const {code, frontmatter} = await bundleMDXFile(
-  '/users/you/site/content/file.mdx',
-)
+const {code, frontmatter} = await bundleMDX({
+  file: '/users/you/site/content/file.mdx',
+  cwd: '/users/you/site/content/',
+})
 ```
-
-`cwd` will be automatically set to the `dirname` of the given file path, you can
-still override this. All other options work the same as they do for `bundleMDX`.
 
 ### Known Issues
 

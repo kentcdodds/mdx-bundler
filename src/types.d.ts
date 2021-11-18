@@ -7,17 +7,38 @@
 import type {Plugin, BuildOptions, Loader} from 'esbuild'
 import type {ModuleInfo} from '@fal-works/esbuild-plugin-global-externals'
 import type {CoreProcessorOptions} from 'xdm/lib/compile'
-import type {GrayMatterOption, Input} from 'gray-matter'
+import type {GrayMatterOption, Input, GrayMatterFile} from 'gray-matter'
 
 type ESBuildOptions = BuildOptions
 
-type BundleMDXOptions = {
+export type BundleMDX<Frontmatter extends {[key: string]: any}> =
+  | BundleMDXSource<Frontmatter>
+  | BundleMDXFile<Frontmatter>
+
+export type BundleMDXSource<Frontmatter> = {
+  /**
+   * Your MDX source.
+   */
+  source: string
+  file?: undefined
+} & BundleMDXOptions<Frontmatter>
+
+export type BundleMDXFile<Frontmatter> = {
+  /**
+   * The path to the mdx file on disk.
+   */
+  file: string
+  source?: undefined
+} & BundleMDXOptions<Frontmatter>
+
+type BundleMDXOptions<Frontmatter> = {
   /**
    * The dependencies of the MDX code to be bundled
    *
    * @example
    * ```
-   * bundleMDX(mdxString, {
+   * bundleMDX({
+   *   source: mdxString,
    *   files: {
    *     './components.tsx': `
    *       import * as React from 'react'
@@ -45,7 +66,8 @@ type BundleMDXOptions = {
    *
    * @example
    * ```
-   * bundleMDX(mdxString, {
+   * bundleMDX({
+   *   source: mdxString,
    *   xdmOptions(options) {
    *     // this is the recommended way to add custom remark/rehype plugins:
    *     // The syntax might look weird, but it protects you in case we add/remove
@@ -58,14 +80,18 @@ type BundleMDXOptions = {
    * })
    * ```
    */
-  xdmOptions?: (options: CoreProcessorOptions) => CoreProcessorOptions
+  xdmOptions?: (
+    options: CoreProcessorOptions,
+    frontmatter: Frontmatter,
+  ) => CoreProcessorOptions
   /**
    * This allows you to modify the built-in esbuild configuration. This can be
    * especially helpful for specifying the compilation target.
    *
    * @example
    * ```
-   * bundleMDX(mdxString, {
+   * bundleMDX({
+   *   source: mdxString,
    *   esbuildOptions(options) {
    *     options.target = [
    *       'es2020',
@@ -80,7 +106,10 @@ type BundleMDXOptions = {
    * })
    * ```
    */
-  esbuildOptions?: (options: ESBuildOptions) => ESBuildOptions
+  esbuildOptions?: (
+    options: ESBuildOptions,
+    frontmatter: Frontmatter,
+  ) => ESBuildOptions
   /**
    * Any variables you want treated as global variables in the bundling.
    *
@@ -91,11 +120,12 @@ type BundleMDXOptions = {
    *
    * @example
    * ```
-   * bundlMDX(mdxString, {
+   * bundlMDX({
+   *   source: mdxString,
    *   globals: {'left-pad': 'myLeftPad'},
    * })
    *
-   * // then later
+   * // on the client side
    *
    * import leftPad from 'left-pad'
    *
@@ -112,7 +142,8 @@ type BundleMDXOptions = {
    *
    * @example
    * ```
-   * bundleMDX(mdxString, {
+   * bundleMDX({
+   *  source: mdxString
    *  cwd: '/users/you/site/mdx_root'
    * })
    * ```
@@ -123,7 +154,8 @@ type BundleMDXOptions = {
    *
    * @example
    * ```
-   * bundleMDX(mdxString, {
+   * bundleMDX({
+   *   source: mdxString,
    *   grayMatterOptions: (options) => {
    *     options.excerpt = true
    *
@@ -135,6 +167,27 @@ type BundleMDXOptions = {
   grayMatterOptions?: <I extends Input>(
     options: GrayMatterOption<I, any>,
   ) => GrayMatterOption<I, any>
+  /**
+   * This allows you to set the output directory of the bundle. You will need
+   * to set `bundlePath` as well to give esbuild the public url to the folder.
+   *
+   * *Note, the javascrpt bundle will not be placed here, only assets
+   * that can't be part of the main bundle.*
+   *
+   * @example
+   * ```
+   * bundleMDX({
+   *   file: '/path/to/file.mdx',
+   *   bundleDirectory: '/path/to/bundle'
+   *   bundlePath: '/path/to/public/bundle'
+   * })
+   * ```
+   */
+  bundleDirectory?: string
+  /**
+   * @see bundleDirectory
+   */
+  bundlePath?: string
 }
 
 type MDXExport<

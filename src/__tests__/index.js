@@ -1,13 +1,12 @@
 import './setup-tests.js'
 import path from 'path'
-import {fileURLToPath} from 'url'
 import {test} from 'uvu'
 import * as assert from 'uvu/assert'
 import React from 'react'
 import rtl from '@testing-library/react'
 import leftPad from 'left-pad'
 import {remarkMdxImages} from 'remark-mdx-images'
-import {bundleMDX, bundleMDXFile} from '../index.js'
+import {bundleMDX} from '../index.js'
 import {getMDXComponent, getMDXExport} from '../client.js'
 
 const {render} = rtl
@@ -29,7 +28,8 @@ Here's a **neat** demo:
 <Demo />
 `.trim()
 
-  const result = await bundleMDX(mdxSource, {
+  const result = await bundleMDX({
+    source: mdxSource,
     files: {
       './demo.tsx': `
 import * as React from 'react'
@@ -120,7 +120,8 @@ import Demo from './demo'
 <Demo />
   `.trim()
 
-  const result = await bundleMDX(mdxSource, {
+  const result = await bundleMDX({
+    source: mdxSource,
     files: {
       './demo.tsx': `
 import leftPad from 'left-pad'
@@ -144,7 +145,8 @@ import Demo from './demo'
   `.trim()
 
   const error = /** @type Error */ (
-    await bundleMDX(mdxSource, {
+    await bundleMDX({
+      source: mdxSource,
       files: {},
     }).catch(e => e)
   )
@@ -160,7 +162,8 @@ import Demo from './demo'
   `.trim()
 
   const error = /** @type Error */ (
-    await bundleMDX(mdxSource, {
+    await bundleMDX({
+      source: mdxSource,
       files: {
         './demo.tsx': `import './blah-blah'`,
       },
@@ -182,7 +185,8 @@ import Demo from './demo.blah'
   `.trim()
 
   const error = /** @type Error */ (
-    await bundleMDX(mdxSource, {
+    await bundleMDX({
+      source: mdxSource,
       files: {
         './demo.blah': `what even is this?`,
       },
@@ -196,7 +200,7 @@ import Demo from './demo.blah'
 })
 
 test('files is optional', async () => {
-  await bundleMDX('hello')
+  await bundleMDX({source: 'hello'})
 })
 
 test('uses the typescript loader where needed', async () => {
@@ -206,7 +210,8 @@ import Demo from './demo'
 <Demo />
   `.trim()
 
-  const {code} = await bundleMDX(mdxSource, {
+  const {code} = await bundleMDX({
+    source: mdxSource,
     files: {
       './demo.tsx': `
 import * as React from 'react'
@@ -241,7 +246,8 @@ import LeftPad from 'left-pad-js'
 <LeftPad padding={4} string="^">Hi</LeftPad>
   `.trim()
 
-  const {code} = await bundleMDX(mdxSource, {
+  const {code} = await bundleMDX({
+    source: mdxSource,
     files: {
       'left-pad-js': `export default () => <div>this is left pad</div>`,
     },
@@ -273,7 +279,8 @@ export const Demo: React.FC = () => {
     `.trim(),
   }
 
-  const {code} = await bundleMDX(mdxSource, {
+  const {code} = await bundleMDX({
+    source: mdxSource,
     files,
     esbuildOptions: options => {
       options.loader = {
@@ -303,7 +310,8 @@ import {Sample} from './sample-component'
 ![A Sample Image](./150.png)
 `.trim()
 
-  const {code} = await bundleMDX(mdxSource, {
+  const {code} = await bundleMDX({
+    source: mdxSource,
     cwd: path.join(process.cwd(), 'other'),
     xdmOptions: options => {
       options.remarkPlugins = [remarkMdxImages]
@@ -341,21 +349,21 @@ test('should output assets', async () => {
 ![Sample Image](./150.png)
   `.trim()
 
-  const {code} = await bundleMDX(mdxSource, {
+  const {code} = await bundleMDX({
+    source: mdxSource,
     cwd: path.join(process.cwd(), 'other'),
+    bundleDirectory: path.join(process.cwd(), 'output'),
+    bundlePath: '/img/',
     xdmOptions: options => {
       options.remarkPlugins = [remarkMdxImages]
 
       return options
     },
     esbuildOptions: options => {
-      options.outdir = path.join(process.cwd(), 'output')
       options.loader = {
         ...options.loader,
         '.png': 'file',
       }
-      options.publicPath = '/img/'
-      options.write = true
 
       return options
     },
@@ -367,8 +375,9 @@ test('should output assets', async () => {
 
   assert.match(container.innerHTML, 'src="/img/150')
 
-  const error = /** @type Error */ (
-    await bundleMDX(mdxSource, {
+  const writeError = /** @type Error */ (
+    await bundleMDX({
+      source: mdxSource,
       cwd: path.join(process.cwd(), 'other'),
       xdmOptions: options => {
         options.remarkPlugins = [remarkMdxImages]
@@ -389,8 +398,21 @@ test('should output assets', async () => {
   )
 
   assert.equal(
-    error.message,
+    writeError.message,
     "You must either specify `write: false` or `write: true` and `outdir: '/path'` in your esbuild options",
+  )
+
+  const optionError = /** @type Error */ (
+    await bundleMDX({
+      source: mdxSource,
+      cwd: path.join(process.cwd(), 'other'),
+      bundleDirectory: path.join(process.cwd(), 'output'),
+    }).catch(e => e)
+  )
+
+  assert.equal(
+    optionError.message,
+    'When using `bundleDirectory` or `bundlePath` the other must be set.',
   )
 })
 
@@ -407,7 +429,7 @@ export const uncle = 'Bob'
 # {uncle} was indeed the uncle
 `.trim()
 
-  const result = await bundleMDX(mdxSource)
+  const result = await bundleMDX({source: mdxSource})
 
   /** @type {import('../types').MDXExport<{uncle: string}, {title: string, published: Date, description: string}>} */
   const mdxExport = getMDXExport(result.code)
@@ -435,7 +457,7 @@ Local Content
 <MdxData />
   `.trim()
 
-  const {code} = await bundleMDX(mdxSource, {})
+  const {code} = await bundleMDX({source: mdxSource})
 
   const Component = getMDXComponent(code)
 
@@ -447,32 +469,6 @@ Local Content
   )
 })
 
-test('should support over-riding the entry point', async () => {
-  const {code} = await bundleMDX('', {
-    cwd: process.cwd(),
-    esbuildOptions: options => {
-      options.entryPoints = [
-        path.join(
-          path.dirname(fileURLToPath(import.meta.url)),
-          '..',
-          '..',
-          'CONTRIBUTING.md',
-        ),
-      ]
-      options.outdir = path.join(process.cwd(), 'output')
-      options.write = true
-
-      return options
-    },
-  })
-
-  const Component = getMDXComponent(code)
-
-  const {container} = render(React.createElement(Component))
-
-  assert.match(container.innerHTML, 'Thanks for being willing to contribute')
-})
-
 test('should work with react-dom api', async () => {
   const mdxSource = `
 import Demo from './demo'
@@ -480,7 +476,8 @@ import Demo from './demo'
 <Demo />
   `.trim()
 
-  const result = await bundleMDX(mdxSource, {
+  const result = await bundleMDX({
+    source: mdxSource,
     files: {
       './demo.tsx': `
 import * as ReactDOM from 'react-dom'
@@ -521,7 +518,8 @@ This is the rest of the content
 
   `.trim()
 
-  const {matter} = await bundleMDX(mdxSource, {
+  const {matter} = await bundleMDX({
+    source: mdxSource,
     grayMatterOptions: options => {
       options.excerpt = true
 
@@ -532,22 +530,38 @@ This is the rest of the content
   assert.equal((matter.excerpt ? matter.excerpt : '').trim(), 'Some excerpt')
 })
 
-test('specify a file using bundleMDXFile', async () => {
-  const {frontmatter} = await bundleMDXFile(
-    path.join(process.cwd(), 'other', 'sample.mdx'),
-    {
-      esbuildOptions: options => {
-        options.loader = {
-          ...options.loader,
-          '.png': 'dataurl',
-        }
+test('specify a file using bundleMDX', async () => {
+  const {frontmatter} = await bundleMDX({
+    file: path.join(process.cwd(), 'other', 'sample.mdx'),
+    cwd: path.join(process.cwd(), 'other'),
+    esbuildOptions: options => {
+      options.loader = {
+        ...options.loader,
+        '.png': 'dataurl',
+      }
 
-        return options
-      },
+      return options
     },
-  )
+  })
 
   assert.equal(frontmatter.title, 'Sample')
+})
+
+test('let you use the front matter in config', async () => {
+  await bundleMDX({
+    file: path.join(process.cwd(), 'other', 'sample.mdx'),
+    cwd: path.join(process.cwd(), 'other'),
+    esbuildOptions: (options, frontmatter) => {
+      assert.equal(frontmatter.title, 'Sample')
+
+      options.loader = {
+        ...options.loader,
+        '.png': 'dataurl',
+      }
+
+      return options
+    },
+  })
 })
 
 test.run()
