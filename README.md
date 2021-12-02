@@ -519,7 +519,7 @@ multiple bundles don't overwrite each others assets._
 const {code} = await bundleMDX({
   file: '/path/to/site/content/file.mdx',
   cwd: '/path/to/site/content',
-  bundleDirectory: '/path/to/site/public/file,
+  bundleDirectory: '/path/to/site/public/file',
   bundlePath: '/file/',
   xdmOptions: options => {
     options.remarkPlugins = [remarkMdxImages]
