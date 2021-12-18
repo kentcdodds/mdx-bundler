@@ -50,7 +50,7 @@
     "xdm": "^3.3.0"
   },
   "peerDependencies": {
-    "esbuild": "0.11.x || 0.12.x || 0.13.x"
+    "esbuild": "0.11.x || 0.12.x || 0.13.x || 0.14.x"
   },
   "devDependencies": {
     "@testing-library/react": "^12.1.2",
