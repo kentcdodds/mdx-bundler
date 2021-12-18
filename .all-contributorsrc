@@ -156,6 +156,15 @@
       "contributions": [
         "code"
       ]
+    },
+    {
+      "login": "yasinmiran",
+      "name": "Yasin",
+      "avatar_url": "https://avatars.githubusercontent.com/u/25561152?v=4",
+      "profile": "http://yasint.dev",
+      "contributions": [
+        "code"
+      ]
     }
   ],
   "commitConvention": "none"
