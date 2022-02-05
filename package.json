@@ -9,8 +9,7 @@
     "mdx",
     "bundler",
     "mdx-bundler",
-    "esbuild",
-    "xdm"
+    "esbuild"
   ],
   "author": "Kent C. Dodds <me@kentcdodds.com> (https://kentcdodds.com)",
   "license": "MIT",
@@ -43,11 +42,11 @@
     "@babel/runtime": "^7.16.3",
     "@esbuild-plugins/node-resolve": "^0.1.4",
     "@fal-works/esbuild-plugin-global-externals": "^2.1.2",
+    "@mdx-js/esbuild": "^2.0.0",
     "gray-matter": "^4.0.3",
     "remark-frontmatter": "^4.0.1",
     "remark-mdx-frontmatter": "^1.1.1",
-    "uuid": "^8.3.2",
-    "xdm": "^3.3.0"
+    "uuid": "^8.3.2"
   },
   "peerDependencies": {
     "esbuild": "0.11.x || 0.12.x || 0.13.x || 0.14.x"
