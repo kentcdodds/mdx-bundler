@@ -1,5 +1,5 @@
 import * as React from 'react'
-import * as _jsx_runtime from 'react/jsx-runtime.js'
+import * as _jsx_runtime from 'react/jsx-runtime'
 import * as ReactDOM from 'react-dom'
 
 /**
