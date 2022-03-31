@@ -151,7 +151,7 @@ import Demo from './demo'
     }).catch(e => e)
   )
 
-  assert.match(error.message, `error: Could not resolve "./demo"`)
+  assert.match(error.message, `ERROR: Could not resolve "./demo"`)
 })
 
 test('gives a handy error when importing a module that cannot be found', async () => {
@@ -173,7 +173,7 @@ import Demo from './demo'
   assert.equal(
     error.message,
     `Build failed with 1 error:
-demo.tsx:1:7: error: Could not resolve "./blah-blah"`,
+demo.tsx:1:7: ERROR: Could not resolve "./blah-blah"`,
   )
 })
 
@@ -195,7 +195,7 @@ import Demo from './demo.blah'
 
   assert.match(
     error.message,
-    `error: [plugin: inMemory] Invalid loader: "blah" (valid: js, jsx, ts, tsx, css, json, text, base64, dataurl, file, binary)`,
+    `ERROR: [plugin: inMemory] Invalid loader value: "blah"`,
   )
 })
 
