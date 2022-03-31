@@ -6,8 +6,8 @@ import React from 'react'
 import rtl from '@testing-library/react'
 import leftPad from 'left-pad'
 import {remarkMdxImages} from 'remark-mdx-images'
-import {bundleMDX} from '../index.js'
-import {getMDXComponent, getMDXExport} from '../client.js'
+import {bundleMDX} from '../index'
+import {getMDXComponent, getMDXExport} from '../client'
 
 const {render} = rtl
 
