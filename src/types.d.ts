@@ -6,7 +6,7 @@
 
 import type {Plugin, BuildOptions, Loader} from 'esbuild'
 import type {ModuleInfo} from '@fal-works/esbuild-plugin-global-externals'
-import type {CoreProcessorOptions} from 'xdm/lib/compile'
+import type {ProcessorOptions} from '@mdx-js/esbuild/lib'
 import type {GrayMatterOption, Input, GrayMatterFile} from 'gray-matter'
 
 type ESBuildOptions = BuildOptions
@@ -57,18 +57,18 @@ type BundleMDXOptions<Frontmatter> = {
    */
   files?: Record<string, string>
   /**
-   * This allows you to modify the built-in xdm configuration (passed to xdm.compile).
+   * This allows you to modify the built-in MDX configuration (passed to @mdx-js/mdx compile).
    * This can be helpful for specifying your own remarkPlugins/rehypePlugins.
    *
    * @param vfileCompatible the path and contents of the mdx file being compiled
    * @param options the default options which you are expected to modify and return
-   * @returns the options to be passed to xdm.compile
+   * @returns the options to be passed to @mdx-js/mdx compile
    *
    * @example
    * ```
    * bundleMDX({
    *   source: mdxString,
-   *   xdmOptions(options) {
+   *   mdxOptions(options) {
    *     // this is the recommended way to add custom remark/rehype plugins:
    *     // The syntax might look weird, but it protects you in case we add/remove
    *     // plugins in the future.
@@ -80,10 +80,10 @@ type BundleMDXOptions<Frontmatter> = {
    * })
    * ```
    */
-  xdmOptions?: (
-    options: CoreProcessorOptions,
+  mdxOptions?: (
+    options: ProcessorOptions,
     frontmatter: Frontmatter,
-  ) => CoreProcessorOptions
+  ) => ProcessorOptions
   /**
    * This allows you to modify the built-in esbuild configuration. This can be
    * especially helpful for specifying the compilation target.

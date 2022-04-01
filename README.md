@@ -25,11 +25,9 @@ get a bundled version of these files to eval in the browser.
 ## This solution
 
 This is an async function that will compile and bundle your MDX files and their
-dependencies. It uses [esbuild](https://esbuild.github.io/), so it's VERY fast
-and supports TypeScript files (for the dependencies of your MDX files). It also
-uses [xdm](https://github.com/wooorm/xdm) which is a more modern and powerful
-MDX compiler with fewer bugs and more features (and no extra runtime
-requirements).
+dependencies. It uses [MDX v2](https://mdxjs.com/blog/v2/) and
+[esbuild](https://esbuild.github.io/), so it's VERY fast and supports TypeScript
+files (for the dependencies of your MDX files).
 
 Your source files could be local, in a remote github repo, in a CMS, or wherever
 else and it doesn't matter. All `mdx-bundler` cares about is that you pass it
@@ -151,17 +149,6 @@ bundling. So it's best suited for SSR frameworks like Remix/Next.
   </summary>
 
 Why not?
-
-</details>
-
-<details>
-  <summary>
-    <strong>
-      "Why does this use XDM instead of @mdx-js?"
-    </strong>
-  </summary>
-
-It has more features, fewer bugs, and no runtime!
 
 </details>
 
@@ -321,18 +308,18 @@ file source code. You could get these from the filesystem or from a remote
 database. If your MDX doesn't reference other files (or only imports things from
 `node_modules`), then you can omit this entirely.
 
-#### xdmOptions
+#### mdxOptions
 
-This allows you to modify the built-in xdm configuration (passed to the xdm
-esbuild plugin). This can be helpful for specifying your own
+This allows you to modify the built-in MDX configuration (passed to
+`@mdx-js/esbuild`). This can be helpful for specifying your own
 remarkPlugins/rehypePlugins.
 
-The function is passed the default xdmOptions and the frontmatter.
+The function is passed the default mdxOptions and the frontmatter.
 
 ```ts
 bundleMDX({
   source: mdxSource,
-  xdmOptions(options, frontmatter) {
+  mdxOptions(options, frontmatter) {
     // this is the recommended way to add custom remark/rehype plugins:
     // The syntax might look weird, but it protects you in case we add/remove
     // plugins in the future.
@@ -505,7 +492,7 @@ the directory. If one option is set the other must be aswell.
 _The Javascript bundle is not written to this directory and is still returned as
 a string from `bundleMDX`._
 
-This feature is best used with tweaks to `xdmOptions` and `esbuildOptions`. In
+This feature is best used with tweaks to `mdxOptions` and `esbuildOptions`. In
 the example below and `.png` files are written to the disk and then served from
 `/file/`.
 
@@ -521,7 +508,7 @@ const {code} = await bundleMDX({
   cwd: '/path/to/site/content',
   bundleDirectory: '/path/to/site/public/file,
   bundlePath: '/file/',
-  xdmOptions: options => {
+  mdxOptions: options => {
     options.remarkPlugins = [remarkMdxImages]
 
     return options
@@ -553,7 +540,7 @@ const {code} = await bundleMDX({
 `bundleMDX` has a single type parameter which is the type of your frontmatter.
 It defaults to `{[key: string]: any}` and must be an object. This is then used
 to type the returned `frontmatter` and the frontmatter passed to
-`esbuildOptions` and `xdmOptions`.
+`esbuildOptions` and `mdxOptions`.
 
 ```ts
 const {frontmatter} = bundleMDX<{title: string}>({source})
@@ -564,7 +551,7 @@ frontmatter.title // has type string
 ### Component Substitution
 
 MDX Bundler passes on
-[XDM's ability to substitute components](https://github.com/wooorm/xdm#mdx-content)
+[MDX's ability to substitute components](https://mdxjs.com/docs/using-mdx/#components)
 through the `components` prop on the component returned by `getMDXComponent`.
 
 Here's an example that removes _p_ tags from around images.
@@ -653,7 +640,7 @@ import {remarkMdxImages} from 'remark-mdx-images'
 const {code} = await bundleMDX({
   source: mdxSource,
   cwd: '/users/you/site/_content/pages',
-  xdmOptions: options => {
+  mdxOptions: options => {
     options.remarkPlugins = [...(options.remarkPlugins ?? []), remarkMdxImages]
 
     return options
@@ -684,7 +671,7 @@ folder to be used in image sources.
 const {code} = await bundleMDX({
   source: mdxSource,
   cwd: '/users/you/site/_content/pages',
-  xdmOptions: options => {
+  mdxOptions: options => {
     options.remarkPlugins = [...(options.remarkPlugins ?? []), remarkMdxImages]
 
     return options

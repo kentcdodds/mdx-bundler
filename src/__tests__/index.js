@@ -217,7 +217,7 @@ import Demo from './demo'
 import * as React from 'react'
 import {left} from './left'
 
-const Demo: React.FC = () => { 
+const Demo: React.FC = () => {
 return <p>{left("TypeScript")}</p>
 }
 
@@ -273,7 +273,7 @@ import {Demo} from './demo'
     './demo.ts': `
 import React from 'react'
 
-export const Demo: React.FC = () => { 
+export const Demo: React.FC = () => {
   return <p>Sample</p>
 }
     `.trim(),
@@ -313,7 +313,7 @@ import {Sample} from './sample-component'
   const {code} = await bundleMDX({
     source: mdxSource,
     cwd: path.join(process.cwd(), 'other'),
-    xdmOptions: options => {
+    mdxOptions: options => {
       options.remarkPlugins = [remarkMdxImages]
 
       return options
@@ -354,7 +354,7 @@ test('should output assets', async () => {
     cwd: path.join(process.cwd(), 'other'),
     bundleDirectory: path.join(process.cwd(), 'output'),
     bundlePath: '/img/',
-    xdmOptions: options => {
+    mdxOptions: options => {
       options.remarkPlugins = [remarkMdxImages]
 
       return options
@@ -379,7 +379,7 @@ test('should output assets', async () => {
     await bundleMDX({
       source: mdxSource,
       cwd: path.join(process.cwd(), 'other'),
-      xdmOptions: options => {
+      mdxOptions: options => {
         options.remarkPlugins = [remarkMdxImages]
 
         return options
