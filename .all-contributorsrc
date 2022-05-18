@@ -165,6 +165,15 @@
       "contributions": [
         "code"
       ]
+    },
+    {
+      "login": "moniac",
+      "name": "Mohammed 'Mo' Mulazada",
+      "avatar_url": "https://avatars.githubusercontent.com/u/22095656?v=4",
+      "profile": "https://moweb.dev",
+      "contributions": [
+        "doc"
+      ]
     }
   ],
   "commitConvention": "none"
