@@ -295,7 +295,7 @@ _Can not be set if `file` is set_
 
 #### file
 
-The path to the file on your disk with the MDX in. You will probabbly want to
+The path to the file on your disk with the MDX in. You will probably want to
 set [cwd](#cwd) as well.
 
 _Can not be set if `source` is set_
