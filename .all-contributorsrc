@@ -174,6 +174,15 @@
       "contributions": [
         "doc"
       ]
+    },
+    {
+      "login": "CanRau",
+      "name": "Can Rau",
+      "avatar_url": "https://avatars.githubusercontent.com/u/5196971?v=4",
+      "profile": "https://www.canrau.com",
+      "contributions": [
+        "doc"
+      ]
     }
   ],
   "commitConvention": "none"
