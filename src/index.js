@@ -20,7 +20,7 @@ async function bundleMDX({
   file,
   source,
   files = {},
-  xdmOptions = options => options,
+  mdxOptions = options => options,
   esbuildOptions = options => options,
   globals = {},
   cwd = path.join(process.cwd(), `__mdx_bundler_fake_dir__`),
@@ -36,10 +36,10 @@ async function bundleMDX({
   }
   /* c8 ignore stop */
 
-  // xdm is a native ESM, and we're running in a CJS context. This is the
+  // @mdx-js/esbuild is a native ESM, and we're running in a CJS context. This is the
   // only way to import ESM within CJS
-  const [{default: xdmESBuild}, {default: remarkFrontmatter}] =
-    await Promise.all([import('xdm/esbuild.js'), import('remark-frontmatter')])
+  const [{default: mdxESBuild}, {default: remarkFrontmatter}] =
+    await Promise.all([import('@mdx-js/esbuild'), import('remark-frontmatter')])
 
   let /** @type string */ code,
     /** @type string */ entryPath,
@@ -184,8 +184,8 @@ async function bundleMDX({
           resolveOptions: {basedir: cwd},
         }),
         inMemoryPlugin,
-        xdmESBuild(
-          xdmOptions(
+        mdxESBuild(
+          mdxOptions(
             {
               remarkPlugins: [
                 remarkFrontmatter,
