@@ -14,7 +14,7 @@ type ESBuildOptions = BuildOptions
 
 export type MDXContentProps = {
   [props: string]: unknown
-  components?: MDXComponents | undefined
+  components?: MDXComponents
 }
 
 export type BundleMDX<Frontmatter extends {[key: string]: any}> =
