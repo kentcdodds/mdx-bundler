@@ -3,11 +3,7 @@ import * as _jsx_runtime from 'react/jsx-runtime'
 import * as ReactDOM from 'react-dom'
 
 /**
- * @typedef {import('mdx/types').MDXComponents} ComponentMap
- */
-
-/**
- * @typedef {{[props: string]: unknown, components?: ComponentMap}} MDXContentProps
+ * @typedef {import('./types').MDXContentProps} MDXContentProps
  */
 
 /**

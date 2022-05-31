@@ -8,8 +8,14 @@ import type {Plugin, BuildOptions, Loader} from 'esbuild'
 import type {ModuleInfo} from '@fal-works/esbuild-plugin-global-externals'
 import type {ProcessorOptions} from '@mdx-js/esbuild/lib'
 import type {GrayMatterOption, Input, GrayMatterFile} from 'gray-matter'
+import type {MDXComponents} from 'mdx/types'
 
 type ESBuildOptions = BuildOptions
+
+export type MDXContentProps = {
+  [props: string]: unknown
+  components?: MDXComponents | undefined
+}
 
 export type BundleMDX<Frontmatter extends {[key: string]: any}> =
   | BundleMDXSource<Frontmatter>
