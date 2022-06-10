@@ -8,7 +8,7 @@ import type {Plugin, BuildOptions, Loader} from 'esbuild'
 import type {ModuleInfo} from '@fal-works/esbuild-plugin-global-externals'
 import type {ProcessorOptions} from '@mdx-js/esbuild/lib'
 import type {GrayMatterOption, Input, GrayMatterFile} from 'gray-matter'
-import type {VFile} from 'vfile'
+import type {VFile,VFileOptions} from 'vfile'
 
 type ESBuildOptions = BuildOptions
 
@@ -20,7 +20,7 @@ export type BundleMDXSource<Frontmatter> = {
   /**
    * Your MDX source.
    */
-  source: string | VFile
+  source: string | VFile | VFileOptions
   file?: undefined
 } & BundleMDXOptions<Frontmatter>
 
