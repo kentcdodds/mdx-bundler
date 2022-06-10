@@ -484,6 +484,20 @@ test('should support mdx from VFile', async () => {
   assert.is(container.innerHTML, '<h1>Heading</h1>')
 })
 
+test('should support mdx from VFile without path', async () => {
+  const mdxSource = `# Heading`
+
+  const vfile = new VFile({value: mdxSource})
+
+  const {code} = await bundleMDX({source: vfile})
+
+  const Component = getMDXComponent(code)
+
+  const {container} = render(React.createElement(Component))
+
+  assert.is(container.innerHTML, '<h1>Heading</h1>')
+})
+
 test('should provide VFile path to plugins', async () => {
   const mdxSource = `# Heading`
 

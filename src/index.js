@@ -58,7 +58,7 @@ async function bundleMDX({
 
   /** @type {(vfile: unknown) => vfile is import('vfile').VFile} */
   function isVFile(vfile) {
-    return vfile !== null && typeof vfile === 'object' && 'value' in vfile && 'path' in vfile
+    return typeof vfile === 'object' && vfile !== null && 'value' in vfile
   }
 
   if (typeof source === 'string') {
@@ -73,7 +73,7 @@ async function bundleMDX({
     /** @type any */ // Slight type hack to get the graymatter front matter typed correctly.
     const gMatter = grayMatter(value, grayMatterOptions({}))
     matter = gMatter
-    entryPath = source.path
+    entryPath = source.path ?? path.join(cwd, `./_mdx_bundler_entry_point-${uuid()}.mdx`)
     absoluteFiles[entryPath] = value
   } else if (typeof file === 'string') {
     // The user has supplied a file.
