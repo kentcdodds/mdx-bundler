@@ -6,6 +6,7 @@ import React from 'react'
 import rtl from '@testing-library/react'
 import leftPad from 'left-pad'
 import {remarkMdxImages} from 'remark-mdx-images'
+import {VFile} from 'vfile'
 import {bundleMDX} from '../index.js'
 import {getMDXComponent, getMDXExport} from '../client.js'
 
@@ -467,6 +468,47 @@ Local Content
     container.innerHTML,
     'Mdx file published as an npm package, for testing purposes.',
   )
+})
+
+test('should support mdx from VFile', async () => {
+  const mdxSource = `# Heading`
+
+  const vfile = new VFile({value: mdxSource, path: '/data/mdx/my-post.mdx'})
+
+  const {code} = await bundleMDX({source: vfile})
+
+  const Component = getMDXComponent(code)
+
+  const {container} = render(React.createElement(Component))
+
+  assert.is(container.innerHTML, '<h1>Heading</h1>')
+})
+
+test('should provide VFile path to plugins', async () => {
+  const mdxSource = `# Heading`
+
+  const vfile = new VFile({value: mdxSource, path: '/data/mdx/my-post.mdx'})
+
+  /** @type {import('unified').Plugin} */
+  function plugin() {
+    return function transformer(tree, file) {
+      assert.is(file.path, '/data/mdx/my-post.mdx' )
+    }
+  }
+
+  const {code} = await bundleMDX({
+    source: vfile,
+    mdxOptions(options) {
+      options.remarkPlugins = [plugin]
+      return options
+    },
+  })
+
+  const Component = getMDXComponent(code)
+
+  const {container} = render(React.createElement(Component))
+
+  assert.is(container.innerHTML, '<h1>Heading</h1>')
 })
 
 test('should work with react-dom api', async () => {

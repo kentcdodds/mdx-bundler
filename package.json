@@ -46,7 +46,8 @@
     "gray-matter": "^4.0.3",
     "remark-frontmatter": "^4.0.1",
     "remark-mdx-frontmatter": "^1.1.1",
-    "uuid": "^8.3.2"
+    "uuid": "^8.3.2",
+    "vfile": "^5.3.2"
   },
   "peerDependencies": {
     "esbuild": "0.11.x || 0.12.x || 0.13.x || 0.14.x"
