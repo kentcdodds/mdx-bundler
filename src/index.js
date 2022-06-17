@@ -73,7 +73,11 @@ async function bundleMDX({
     /** @type any */ // Slight type hack to get the graymatter front matter typed correctly.
     const gMatter = grayMatter(value, grayMatterOptions({}))
     matter = gMatter
-    entryPath = source.path ?? path.join(cwd, `./_mdx_bundler_entry_point-${uuid()}.mdx`)
+    entryPath = source.path
+      ? path.isAbsolute(source.path)
+        ? source.path
+        : path.join(source.cwd, source.path)
+      : path.join(cwd, `./_mdx_bundler_entry_point-${uuid()}.mdx`)
     absoluteFiles[entryPath] = value
   } else if (typeof file === 'string') {
     // The user has supplied a file.
