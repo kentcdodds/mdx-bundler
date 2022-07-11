@@ -493,7 +493,7 @@ _The Javascript bundle is not written to this directory and is still returned as
 a string from `bundleMDX`._
 
 This feature is best used with tweaks to `mdxOptions` and `esbuildOptions`. In
-the example below and `.png` files are written to the disk and then served from
+the example below `.png` files are written to the disk and then served from
 `/file/`.
 
 This allows you to store assets with your MDX and then have esbuild process them
