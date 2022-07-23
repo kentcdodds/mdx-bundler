@@ -766,6 +766,8 @@ if (process.platform === 'win32') {
 }
 ```
 
+Worthy to mention is that the main `esbuild` package contains an install script that installs the corresponding secondary package for the current OS and architecture. Becouse of that, path to executable file can be different depends on platform, so you should check what is a correct path to `esbuild` executable file in your project and replace in code above.
+
 More information on this issue can be found
 [in this article](https://www.arcath.net/2021/03/mdx-bundler#esbuild-executable).
 
