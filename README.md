@@ -201,7 +201,7 @@ should be installed as one of your project's `dependencies`:
 npm install --save mdx-bundler esbuild
 ```
 
-One of mdx-bundler's dependancies requires a working [node-gyp][node-gyp] setup
+One of mdx-bundler's dependencies requires a working [node-gyp][node-gyp] setup
 to be able to install correctly.
 
 ## Usage
