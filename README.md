@@ -201,7 +201,7 @@ should be installed as one of your project's `dependencies`:
 npm install --save mdx-bundler esbuild
 ```
 
-One of mdx-bundler's dependancies requires a working [node-gyp][node-gyp] setup
+One of mdx-bundler's dependencies requires a working [node-gyp][node-gyp] setup
 to be able to install correctly.
 
 ## Usage
@@ -832,6 +832,7 @@ Thanks goes to these people ([emoji key][emojis]):
     <td align="center"><a href="http://yasint.dev"><img src="https://avatars.githubusercontent.com/u/25561152?v=4?s=100" width="100px;" alt=""/><br /><sub><b>Yasin</b></sub></a><br /><a href="https://github.com/kentcdodds/mdx-bundler/commits?author=yasinmiran" title="Code">💻</a></td>
     <td align="center"><a href="https://moweb.dev"><img src="https://avatars.githubusercontent.com/u/22095656?v=4?s=100" width="100px;" alt=""/><br /><sub><b>Mohammed 'Mo' Mulazada</b></sub></a><br /><a href="https://github.com/kentcdodds/mdx-bundler/commits?author=moniac" title="Documentation">📖</a></td>
     <td align="center"><a href="https://www.canrau.com"><img src="https://avatars.githubusercontent.com/u/5196971?v=4?s=100" width="100px;" alt=""/><br /><sub><b>Can Rau</b></sub></a><br /><a href="https://github.com/kentcdodds/mdx-bundler/commits?author=CanRau" title="Documentation">📖</a></td>
+    <td align="center"><a href="http://hosenur.dev"><img src="https://avatars.githubusercontent.com/u/50978981?v=4?s=100" width="100px;" alt=""/><br /><sub><b>Hosenur Rahaman</b></sub></a><br /><a href="https://github.com/kentcdodds/mdx-bundler/commits?author=HOSENUR" title="Documentation">📖</a></td>
   </tr>
 </table>
 

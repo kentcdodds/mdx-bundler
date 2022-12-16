@@ -183,6 +183,15 @@
       "contributions": [
         "doc"
       ]
+    },
+    {
+      "login": "HOSENUR",
+      "name": "Hosenur Rahaman",
+      "avatar_url": "https://avatars.githubusercontent.com/u/50978981?v=4",
+      "profile": "http://hosenur.dev",
+      "contributions": [
+        "doc"
+      ]
     }
   ],
   "commitConvention": "none"
