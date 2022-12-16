@@ -49,7 +49,7 @@
     "uuid": "^8.3.2"
   },
   "peerDependencies": {
-    "esbuild": "0.11.x || 0.12.x || 0.13.x || 0.14.x"
+    "esbuild": "0.*"
   },
   "devDependencies": {
     "@testing-library/react": "^13.0.0",

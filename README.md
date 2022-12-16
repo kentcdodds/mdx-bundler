@@ -155,7 +155,7 @@ Why not?
 <details>
   <summary>
     <strong>
-      "Why is esbuild a peer dependancy?"
+      "Why is esbuild a peer dependency?"
     </strong>
   </summary>
 
@@ -201,7 +201,7 @@ should be installed as one of your project's `dependencies`:
 npm install --save mdx-bundler esbuild
 ```
 
-One of mdx-bundler's dependancies requires a working [node-gyp][node-gyp] setup
+One of mdx-bundler's dependencies requires a working [node-gyp][node-gyp] setup
 to be able to install correctly.
 
 ## Usage
@@ -487,7 +487,7 @@ bundleMDX({
 #### bundleDirectory & bundlePath
 
 This allows you to set the output directory for the bundle and the public URL to
-the directory. If one option is set the other must be aswell.
+the directory. If one option is set the other must be as well.
 
 _The Javascript bundle is not written to this directory and is still returned as
 a string from `bundleMDX`._
@@ -499,7 +499,7 @@ the example below and `.png` files are written to the disk and then served from
 This allows you to store assets with your MDX and then have esbuild process them
 like anything else.
 
-_It is reccomended that each bundle has its own `bundleDirectory` so that
+_It is recommended that each bundle has its own `bundleDirectory` so that
 multiple bundles don't overwrite each others assets._
 
 ```ts
@@ -661,7 +661,7 @@ The `file` loader requires a little more configuration to get working. With the
 be set to write files and needs to know where to put them plus the url of the
 folder to be used in image sources.
 
-> Each call to `bundleMDX` is isloated from the others. If you set the directory
+> Each call to `bundleMDX` is isolated from the others. If you set the directory
 > the same for everything `bundleMDX` will overwrite images without warning. As
 > a result each _bundle_ needs its own output directory.
 
@@ -699,7 +699,7 @@ const {code} = await bundleMDX({
 
 If your MDX file is on your disk you can save some time and code by having
 `mdx-bundler` read the file for you. Instead of supplying a `source` string you
-can set `file` to the path of the MDX on disk. Set `cwd` to it's folder so that
+can set `file` to the path of the MDX on disk. Set `cwd` to its folder so that
 relative imports work.
 
 ```js
@@ -832,6 +832,7 @@ Thanks goes to these people ([emoji key][emojis]):
     <td align="center"><a href="http://yasint.dev"><img src="https://avatars.githubusercontent.com/u/25561152?v=4?s=100" width="100px;" alt=""/><br /><sub><b>Yasin</b></sub></a><br /><a href="https://github.com/kentcdodds/mdx-bundler/commits?author=yasinmiran" title="Code">💻</a></td>
     <td align="center"><a href="https://moweb.dev"><img src="https://avatars.githubusercontent.com/u/22095656?v=4?s=100" width="100px;" alt=""/><br /><sub><b>Mohammed 'Mo' Mulazada</b></sub></a><br /><a href="https://github.com/kentcdodds/mdx-bundler/commits?author=moniac" title="Documentation">📖</a></td>
     <td align="center"><a href="https://www.canrau.com"><img src="https://avatars.githubusercontent.com/u/5196971?v=4?s=100" width="100px;" alt=""/><br /><sub><b>Can Rau</b></sub></a><br /><a href="https://github.com/kentcdodds/mdx-bundler/commits?author=CanRau" title="Documentation">📖</a></td>
+    <td align="center"><a href="http://hosenur.dev"><img src="https://avatars.githubusercontent.com/u/50978981?v=4?s=100" width="100px;" alt=""/><br /><sub><b>Hosenur Rahaman</b></sub></a><br /><a href="https://github.com/kentcdodds/mdx-bundler/commits?author=HOSENUR" title="Documentation">📖</a></td>
   </tr>
 </table>
 
