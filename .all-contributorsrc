@@ -201,6 +201,16 @@
       "contributions": [
         "doc"
       ]
+    },
+    {
+      "login": "priyang12",
+      "name": "Priyang",
+      "avatar_url": "https://avatars.githubusercontent.com/u/72823974?v=4",
+      "profile": "https://github.com/priyang12",
+      "contributions": [
+        "code",
+        "doc"
+      ]
     }
   ],
   "commitConvention": "none"
