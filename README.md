@@ -155,7 +155,7 @@ Why not?
 <details>
   <summary>
     <strong>
-      "Why is esbuild a peer dependancy?"
+      "Why is esbuild a peer dependency?"
     </strong>
   </summary>
 
@@ -487,19 +487,19 @@ bundleMDX({
 #### bundleDirectory & bundlePath
 
 This allows you to set the output directory for the bundle and the public URL to
-the directory. If one option is set the other must be aswell.
+the directory. If one option is set the other must be as well.
 
 _The Javascript bundle is not written to this directory and is still returned as
 a string from `bundleMDX`._
 
 This feature is best used with tweaks to `mdxOptions` and `esbuildOptions`. In
-the example below and `.png` files are written to the disk and then served from
+the example below `.png` files are written to the disk and then served from
 `/file/`.
 
 This allows you to store assets with your MDX and then have esbuild process them
 like anything else.
 
-_It is reccomended that each bundle has its own `bundleDirectory` so that
+_It is recommended that each bundle has its own `bundleDirectory` so that
 multiple bundles don't overwrite each others assets._
 
 ```ts
@@ -661,7 +661,7 @@ The `file` loader requires a little more configuration to get working. With the
 be set to write files and needs to know where to put them plus the url of the
 folder to be used in image sources.
 
-> Each call to `bundleMDX` is isloated from the others. If you set the directory
+> Each call to `bundleMDX` is isolated from the others. If you set the directory
 > the same for everything `bundleMDX` will overwrite images without warning. As
 > a result each _bundle_ needs its own output directory.
 
@@ -699,7 +699,7 @@ const {code} = await bundleMDX({
 
 If your MDX file is on your disk you can save some time and code by having
 `mdx-bundler` read the file for you. Instead of supplying a `source` string you
-can set `file` to the path of the MDX on disk. Set `cwd` to it's folder so that
+can set `file` to the path of the MDX on disk. Set `cwd` to its folder so that
 relative imports work.
 
 ```js
@@ -809,31 +809,38 @@ Thanks goes to these people ([emoji key][emojis]):
 <!-- prettier-ignore-start -->
 <!-- markdownlint-disable -->
 <table>
-  <tr>
-    <td align="center"><a href="https://kentcdodds.com"><img src="https://avatars.githubusercontent.com/u/1500684?v=3?s=100" width="100px;" alt=""/><br /><sub><b>Kent C. Dodds</b></sub></a><br /><a href="https://github.com/kentcdodds/mdx-bundler/commits?author=kentcdodds" title="Code">💻</a> <a href="https://github.com/kentcdodds/mdx-bundler/commits?author=kentcdodds" title="Documentation">📖</a> <a href="#infra-kentcdodds" title="Infrastructure (Hosting, Build-Tools, etc)">🚇</a> <a href="https://github.com/kentcdodds/mdx-bundler/commits?author=kentcdodds" title="Tests">⚠️</a></td>
-    <td align="center"><a href="https://github.com/benwis"><img src="https://avatars.githubusercontent.com/u/6953353?v=4?s=100" width="100px;" alt=""/><br /><sub><b>benwis</b></sub></a><br /><a href="https://github.com/kentcdodds/mdx-bundler/issues?q=author%3Abenwis" title="Bug reports">🐛</a> <a href="https://github.com/kentcdodds/mdx-bundler/pulls?q=is%3Apr+reviewed-by%3Abenwis" title="Reviewed Pull Requests">👀</a></td>
-    <td align="center"><a href="https://www.arcath.net"><img src="https://avatars.githubusercontent.com/u/19609?v=4?s=100" width="100px;" alt=""/><br /><sub><b>Adam Laycock</b></sub></a><br /><a href="https://github.com/kentcdodds/mdx-bundler/commits?author=Arcath" title="Code">💻</a> <a href="https://github.com/kentcdodds/mdx-bundler/commits?author=Arcath" title="Tests">⚠️</a> <a href="#ideas-Arcath" title="Ideas, Planning, & Feedback">🤔</a> <a href="https://github.com/kentcdodds/mdx-bundler/pulls?q=is%3Apr+reviewed-by%3AArcath" title="Reviewed Pull Requests">👀</a> <a href="https://github.com/kentcdodds/mdx-bundler/commits?author=Arcath" title="Documentation">📖</a></td>
-    <td align="center"><a href="http://wooorm.com"><img src="https://avatars.githubusercontent.com/u/944406?v=4?s=100" width="100px;" alt=""/><br /><sub><b>Titus</b></sub></a><br /><a href="#ideas-wooorm" title="Ideas, Planning, & Feedback">🤔</a> <a href="https://github.com/kentcdodds/mdx-bundler/pulls?q=is%3Apr+reviewed-by%3Awooorm" title="Reviewed Pull Requests">👀</a> <a href="https://github.com/kentcdodds/mdx-bundler/commits?author=wooorm" title="Code">💻</a></td>
-    <td align="center"><a href="https://github.com/ChristianMurphy"><img src="https://avatars.githubusercontent.com/u/3107513?v=4?s=100" width="100px;" alt=""/><br /><sub><b>Christian Murphy</b></sub></a><br /><a href="#ideas-ChristianMurphy" title="Ideas, Planning, & Feedback">🤔</a></td>
-    <td align="center"><a href="https://ped.ro"><img src="https://avatars.githubusercontent.com/u/372831?v=4?s=100" width="100px;" alt=""/><br /><sub><b>Pedro Duarte</b></sub></a><br /><a href="https://github.com/kentcdodds/mdx-bundler/commits?author=peduarte" title="Documentation">📖</a></td>
-    <td align="center"><a href="https://keybase.io/erikras"><img src="https://avatars.githubusercontent.com/u/4396759?v=4?s=100" width="100px;" alt=""/><br /><sub><b>Erik Rasmussen</b></sub></a><br /><a href="https://github.com/kentcdodds/mdx-bundler/commits?author=erikras" title="Documentation">📖</a></td>
-  </tr>
-  <tr>
-    <td align="center"><a href="https://github.com/ozyxdev"><img src="https://avatars.githubusercontent.com/u/83309085?v=4?s=100" width="100px;" alt=""/><br /><sub><b>Omar Syx</b></sub></a><br /><a href="https://github.com/kentcdodds/mdx-bundler/issues?q=author%3Aozyxdev" title="Bug reports">🐛</a></td>
-    <td align="center"><a href="https://github.com/gaelhameon"><img src="https://avatars.githubusercontent.com/u/17253950?v=4?s=100" width="100px;" alt=""/><br /><sub><b>Gaël Haméon</b></sub></a><br /><a href="https://github.com/kentcdodds/mdx-bundler/commits?author=gaelhameon" title="Documentation">📖</a></td>
-    <td align="center"><a href="https://github.com/loiacon"><img src="https://avatars.githubusercontent.com/u/32134586?v=4?s=100" width="100px;" alt=""/><br /><sub><b>Gabriel Loiácono</b></sub></a><br /><a href="https://github.com/kentcdodds/mdx-bundler/commits?author=loiacon" title="Code">💻</a> <a href="https://github.com/kentcdodds/mdx-bundler/commits?author=loiacon" title="Tests">⚠️</a></td>
-    <td align="center"><a href="https://skovy.dev"><img src="https://avatars.githubusercontent.com/u/5247455?v=4?s=100" width="100px;" alt=""/><br /><sub><b>Spencer Miskoviak</b></sub></a><br /><a href="https://github.com/kentcdodds/mdx-bundler/commits?author=skovy" title="Documentation">📖</a></td>
-    <td align="center"><a href="https://caspertheghost.me"><img src="https://avatars.githubusercontent.com/u/53900565?v=4?s=100" width="100px;" alt=""/><br /><sub><b>Casper</b></sub></a><br /><a href="https://github.com/kentcdodds/mdx-bundler/commits?author=Dev-CasperTheGhost" title="Code">💻</a></td>
-    <td align="center"><a href="http://a7sc11u.dev"><img src="https://avatars.githubusercontent.com/u/803868?v=4?s=100" width="100px;" alt=""/><br /><sub><b>Apostolos Christodoulou</b></sub></a><br /><a href="https://github.com/kentcdodds/mdx-bundler/commits?author=a7sc11u" title="Documentation">📖</a></td>
-    <td align="center"><a href="https://github.com/yordis"><img src="https://avatars.githubusercontent.com/u/4237280?v=4?s=100" width="100px;" alt=""/><br /><sub><b>Yordis Prieto</b></sub></a><br /><a href="https://github.com/kentcdodds/mdx-bundler/commits?author=yordis" title="Code">💻</a></td>
-  </tr>
-  <tr>
-    <td align="center"><a href="https://github.com/xoumi"><img src="https://avatars.githubusercontent.com/u/24864287?v=4?s=100" width="100px;" alt=""/><br /><sub><b>xoumi</b></sub></a><br /><a href="https://github.com/kentcdodds/mdx-bundler/commits?author=xoumi" title="Code">💻</a></td>
-    <td align="center"><a href="http://yasint.dev"><img src="https://avatars.githubusercontent.com/u/25561152?v=4?s=100" width="100px;" alt=""/><br /><sub><b>Yasin</b></sub></a><br /><a href="https://github.com/kentcdodds/mdx-bundler/commits?author=yasinmiran" title="Code">💻</a></td>
-    <td align="center"><a href="https://moweb.dev"><img src="https://avatars.githubusercontent.com/u/22095656?v=4?s=100" width="100px;" alt=""/><br /><sub><b>Mohammed 'Mo' Mulazada</b></sub></a><br /><a href="https://github.com/kentcdodds/mdx-bundler/commits?author=moniac" title="Documentation">📖</a></td>
-    <td align="center"><a href="https://www.canrau.com"><img src="https://avatars.githubusercontent.com/u/5196971?v=4?s=100" width="100px;" alt=""/><br /><sub><b>Can Rau</b></sub></a><br /><a href="https://github.com/kentcdodds/mdx-bundler/commits?author=CanRau" title="Documentation">📖</a></td>
-    <td align="center"><a href="http://hosenur.dev"><img src="https://avatars.githubusercontent.com/u/50978981?v=4?s=100" width="100px;" alt=""/><br /><sub><b>Hosenur Rahaman</b></sub></a><br /><a href="https://github.com/kentcdodds/mdx-bundler/commits?author=HOSENUR" title="Documentation">📖</a></td>
-  </tr>
+  <tbody>
+    <tr>
+      <td align="center"><a href="https://kentcdodds.com"><img src="https://avatars.githubusercontent.com/u/1500684?v=3?s=100" width="100px;" alt="Kent C. Dodds"/><br /><sub><b>Kent C. Dodds</b></sub></a><br /><a href="https://github.com/kentcdodds/mdx-bundler/commits?author=kentcdodds" title="Code">💻</a> <a href="https://github.com/kentcdodds/mdx-bundler/commits?author=kentcdodds" title="Documentation">📖</a> <a href="#infra-kentcdodds" title="Infrastructure (Hosting, Build-Tools, etc)">🚇</a> <a href="https://github.com/kentcdodds/mdx-bundler/commits?author=kentcdodds" title="Tests">⚠️</a></td>
+      <td align="center"><a href="https://github.com/benwis"><img src="https://avatars.githubusercontent.com/u/6953353?v=4?s=100" width="100px;" alt="benwis"/><br /><sub><b>benwis</b></sub></a><br /><a href="https://github.com/kentcdodds/mdx-bundler/issues?q=author%3Abenwis" title="Bug reports">🐛</a> <a href="https://github.com/kentcdodds/mdx-bundler/pulls?q=is%3Apr+reviewed-by%3Abenwis" title="Reviewed Pull Requests">👀</a></td>
+      <td align="center"><a href="https://www.arcath.net"><img src="https://avatars.githubusercontent.com/u/19609?v=4?s=100" width="100px;" alt="Adam Laycock"/><br /><sub><b>Adam Laycock</b></sub></a><br /><a href="https://github.com/kentcdodds/mdx-bundler/commits?author=Arcath" title="Code">💻</a> <a href="https://github.com/kentcdodds/mdx-bundler/commits?author=Arcath" title="Tests">⚠️</a> <a href="#ideas-Arcath" title="Ideas, Planning, & Feedback">🤔</a> <a href="https://github.com/kentcdodds/mdx-bundler/pulls?q=is%3Apr+reviewed-by%3AArcath" title="Reviewed Pull Requests">👀</a> <a href="https://github.com/kentcdodds/mdx-bundler/commits?author=Arcath" title="Documentation">📖</a></td>
+      <td align="center"><a href="http://wooorm.com"><img src="https://avatars.githubusercontent.com/u/944406?v=4?s=100" width="100px;" alt="Titus"/><br /><sub><b>Titus</b></sub></a><br /><a href="#ideas-wooorm" title="Ideas, Planning, & Feedback">🤔</a> <a href="https://github.com/kentcdodds/mdx-bundler/pulls?q=is%3Apr+reviewed-by%3Awooorm" title="Reviewed Pull Requests">👀</a> <a href="https://github.com/kentcdodds/mdx-bundler/commits?author=wooorm" title="Code">💻</a></td>
+      <td align="center"><a href="https://github.com/ChristianMurphy"><img src="https://avatars.githubusercontent.com/u/3107513?v=4?s=100" width="100px;" alt="Christian Murphy"/><br /><sub><b>Christian Murphy</b></sub></a><br /><a href="#ideas-ChristianMurphy" title="Ideas, Planning, & Feedback">🤔</a></td>
+      <td align="center"><a href="https://ped.ro"><img src="https://avatars.githubusercontent.com/u/372831?v=4?s=100" width="100px;" alt="Pedro Duarte"/><br /><sub><b>Pedro Duarte</b></sub></a><br /><a href="https://github.com/kentcdodds/mdx-bundler/commits?author=peduarte" title="Documentation">📖</a></td>
+      <td align="center"><a href="https://keybase.io/erikras"><img src="https://avatars.githubusercontent.com/u/4396759?v=4?s=100" width="100px;" alt="Erik Rasmussen"/><br /><sub><b>Erik Rasmussen</b></sub></a><br /><a href="https://github.com/kentcdodds/mdx-bundler/commits?author=erikras" title="Documentation">📖</a></td>
+    </tr>
+    <tr>
+      <td align="center"><a href="https://github.com/ozyxdev"><img src="https://avatars.githubusercontent.com/u/83309085?v=4?s=100" width="100px;" alt="Omar Syx"/><br /><sub><b>Omar Syx</b></sub></a><br /><a href="https://github.com/kentcdodds/mdx-bundler/issues?q=author%3Aozyxdev" title="Bug reports">🐛</a></td>
+      <td align="center"><a href="https://github.com/gaelhameon"><img src="https://avatars.githubusercontent.com/u/17253950?v=4?s=100" width="100px;" alt="Gaël Haméon"/><br /><sub><b>Gaël Haméon</b></sub></a><br /><a href="https://github.com/kentcdodds/mdx-bundler/commits?author=gaelhameon" title="Documentation">📖</a></td>
+      <td align="center"><a href="https://github.com/loiacon"><img src="https://avatars.githubusercontent.com/u/32134586?v=4?s=100" width="100px;" alt="Gabriel Loiácono"/><br /><sub><b>Gabriel Loiácono</b></sub></a><br /><a href="https://github.com/kentcdodds/mdx-bundler/commits?author=loiacon" title="Code">💻</a> <a href="https://github.com/kentcdodds/mdx-bundler/commits?author=loiacon" title="Tests">⚠️</a></td>
+      <td align="center"><a href="https://skovy.dev"><img src="https://avatars.githubusercontent.com/u/5247455?v=4?s=100" width="100px;" alt="Spencer Miskoviak"/><br /><sub><b>Spencer Miskoviak</b></sub></a><br /><a href="https://github.com/kentcdodds/mdx-bundler/commits?author=skovy" title="Documentation">📖</a></td>
+      <td align="center"><a href="https://caspertheghost.me"><img src="https://avatars.githubusercontent.com/u/53900565?v=4?s=100" width="100px;" alt="Casper"/><br /><sub><b>Casper</b></sub></a><br /><a href="https://github.com/kentcdodds/mdx-bundler/commits?author=Dev-CasperTheGhost" title="Code">💻</a></td>
+      <td align="center"><a href="http://a7sc11u.dev"><img src="https://avatars.githubusercontent.com/u/803868?v=4?s=100" width="100px;" alt="Apostolos Christodoulou"/><br /><sub><b>Apostolos Christodoulou</b></sub></a><br /><a href="https://github.com/kentcdodds/mdx-bundler/commits?author=a7sc11u" title="Documentation">📖</a></td>
+      <td align="center"><a href="https://github.com/yordis"><img src="https://avatars.githubusercontent.com/u/4237280?v=4?s=100" width="100px;" alt="Yordis Prieto"/><br /><sub><b>Yordis Prieto</b></sub></a><br /><a href="https://github.com/kentcdodds/mdx-bundler/commits?author=yordis" title="Code">💻</a></td>
+    </tr>
+    <tr>
+      <td align="center"><a href="https://github.com/xoumi"><img src="https://avatars.githubusercontent.com/u/24864287?v=4?s=100" width="100px;" alt="xoumi"/><br /><sub><b>xoumi</b></sub></a><br /><a href="https://github.com/kentcdodds/mdx-bundler/commits?author=xoumi" title="Code">💻</a></td>
+      <td align="center"><a href="http://yasint.dev"><img src="https://avatars.githubusercontent.com/u/25561152?v=4?s=100" width="100px;" alt="Yasin"/><br /><sub><b>Yasin</b></sub></a><br /><a href="https://github.com/kentcdodds/mdx-bundler/commits?author=yasinmiran" title="Code">💻</a></td>
+      <td align="center"><a href="https://moweb.dev"><img src="https://avatars.githubusercontent.com/u/22095656?v=4?s=100" width="100px;" alt="Mohammed 'Mo' Mulazada"/><br /><sub><b>Mohammed 'Mo' Mulazada</b></sub></a><br /><a href="https://github.com/kentcdodds/mdx-bundler/commits?author=moniac" title="Documentation">📖</a></td>
+      <td align="center"><a href="https://www.canrau.com"><img src="https://avatars.githubusercontent.com/u/5196971?v=4?s=100" width="100px;" alt="Can Rau"/><br /><sub><b>Can Rau</b></sub></a><br /><a href="https://github.com/kentcdodds/mdx-bundler/commits?author=CanRau" title="Documentation">📖</a></td>
+      <td align="center"><a href="http://hosenur.dev"><img src="https://avatars.githubusercontent.com/u/50978981?v=4?s=100" width="100px;" alt="Hosenur Rahaman"/><br /><sub><b>Hosenur Rahaman</b></sub></a><br /><a href="https://github.com/kentcdodds/mdx-bundler/commits?author=HOSENUR" title="Documentation">📖</a></td>
+      <td align="center"><a href="https://macieksitkowski.com"><img src="https://avatars.githubusercontent.com/u/58401630?v=4?s=100" width="100px;" alt="Maciek Sitkowski"/><br /><sub><b>Maciek Sitkowski</b></sub></a><br /><a href="https://github.com/kentcdodds/mdx-bundler/commits?author=sitek94" title="Documentation">📖</a></td>
+      <td align="center"><a href="https://github.com/priyang12"><img src="https://avatars.githubusercontent.com/u/72823974?v=4?s=100" width="100px;" alt="Priyang"/><br /><sub><b>Priyang</b></sub></a><br /><a href="https://github.com/kentcdodds/mdx-bundler/commits?author=priyang12" title="Code">💻</a> <a href="https://github.com/kentcdodds/mdx-bundler/commits?author=priyang12" title="Documentation">📖</a></td>
+    </tr>
+    <tr>
+      <td align="center"><a href="https://github.com/theMosaad"><img src="https://avatars.githubusercontent.com/u/48773133?v=4?s=100" width="100px;" alt="Mosaad"/><br /><sub><b>Mosaad</b></sub></a><br /><a href="https://github.com/kentcdodds/mdx-bundler/commits?author=theMosaad" title="Documentation">📖</a></td>
+    </tr>
+  </tbody>
 </table>
 
 <!-- markdownlint-restore -->
