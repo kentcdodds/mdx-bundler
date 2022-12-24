@@ -220,6 +220,16 @@
       "contributions": [
         "doc"
       ]
+    },
+    {
+      "login": "stefanprobst",
+      "name": "stefanprobst",
+      "avatar_url": "https://avatars.githubusercontent.com/u/20753323?v=4",
+      "profile": "https://github.com/stefanprobst",
+      "contributions": [
+        "code",
+        "test"
+      ]
     }
   ],
   "commitConvention": "none"
