@@ -493,7 +493,7 @@ _The Javascript bundle is not written to this directory and is still returned as
 a string from `bundleMDX`._
 
 This feature is best used with tweaks to `mdxOptions` and `esbuildOptions`. In
-the example below and `.png` files are written to the disk and then served from
+the example below `.png` files are written to the disk and then served from
 `/file/`.
 
 This allows you to store assets with your MDX and then have esbuild process them
@@ -835,6 +835,10 @@ Thanks goes to these people ([emoji key][emojis]):
       <td align="center"><a href="https://www.canrau.com"><img src="https://avatars.githubusercontent.com/u/5196971?v=4?s=100" width="100px;" alt="Can Rau"/><br /><sub><b>Can Rau</b></sub></a><br /><a href="https://github.com/kentcdodds/mdx-bundler/commits?author=CanRau" title="Documentation">📖</a></td>
       <td align="center"><a href="http://hosenur.dev"><img src="https://avatars.githubusercontent.com/u/50978981?v=4?s=100" width="100px;" alt="Hosenur Rahaman"/><br /><sub><b>Hosenur Rahaman</b></sub></a><br /><a href="https://github.com/kentcdodds/mdx-bundler/commits?author=HOSENUR" title="Documentation">📖</a></td>
       <td align="center"><a href="https://macieksitkowski.com"><img src="https://avatars.githubusercontent.com/u/58401630?v=4?s=100" width="100px;" alt="Maciek Sitkowski"/><br /><sub><b>Maciek Sitkowski</b></sub></a><br /><a href="https://github.com/kentcdodds/mdx-bundler/commits?author=sitek94" title="Documentation">📖</a></td>
+      <td align="center"><a href="https://github.com/priyang12"><img src="https://avatars.githubusercontent.com/u/72823974?v=4?s=100" width="100px;" alt="Priyang"/><br /><sub><b>Priyang</b></sub></a><br /><a href="https://github.com/kentcdodds/mdx-bundler/commits?author=priyang12" title="Code">💻</a> <a href="https://github.com/kentcdodds/mdx-bundler/commits?author=priyang12" title="Documentation">📖</a></td>
+    </tr>
+    <tr>
+      <td align="center"><a href="https://github.com/theMosaad"><img src="https://avatars.githubusercontent.com/u/48773133?v=4?s=100" width="100px;" alt="Mosaad"/><br /><sub><b>Mosaad</b></sub></a><br /><a href="https://github.com/kentcdodds/mdx-bundler/commits?author=theMosaad" title="Documentation">📖</a></td>
     </tr>
   </tbody>
 </table>

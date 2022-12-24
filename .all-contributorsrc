@@ -201,6 +201,25 @@
       "contributions": [
         "doc"
       ]
+    },
+    {
+      "login": "priyang12",
+      "name": "Priyang",
+      "avatar_url": "https://avatars.githubusercontent.com/u/72823974?v=4",
+      "profile": "https://github.com/priyang12",
+      "contributions": [
+        "code",
+        "doc"
+      ]
+    },
+    {
+      "login": "theMosaad",
+      "name": "Mosaad",
+      "avatar_url": "https://avatars.githubusercontent.com/u/48773133?v=4",
+      "profile": "https://github.com/theMosaad",
+      "contributions": [
+        "doc"
+      ]
     }
   ],
   "commitConvention": "none"
