@@ -230,6 +230,15 @@
         "code",
         "test"
       ]
+    },
+    {
+      "login": "vladmoroz",
+      "name": "Vlad Moroz",
+      "avatar_url": "https://avatars.githubusercontent.com/u/8441036?v=4",
+      "profile": "https://vladmoroz.com",
+      "contributions": [
+        "code"
+      ]
     }
   ],
   "commitConvention": "none"
