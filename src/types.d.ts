@@ -204,4 +204,4 @@ type MDXExportFunction<
 > = (
   code: string,
   globals?: Record<string, unknown>,
-) => MDXExport<ExportedObject, Frontmatter>
+) => ReturnType<MDXExport<ExportedObject, Frontmatter>>
