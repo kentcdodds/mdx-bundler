@@ -839,6 +839,7 @@ Thanks goes to these people ([emoji key][emojis]):
     </tr>
     <tr>
       <td align="center"><a href="https://github.com/theMosaad"><img src="https://avatars.githubusercontent.com/u/48773133?v=4?s=100" width="100px;" alt="Mosaad"/><br /><sub><b>Mosaad</b></sub></a><br /><a href="https://github.com/kentcdodds/mdx-bundler/commits?author=theMosaad" title="Documentation">📖</a></td>
+      <td align="center"><a href="https://github.com/stefanprobst"><img src="https://avatars.githubusercontent.com/u/20753323?v=4?s=100" width="100px;" alt="stefanprobst"/><br /><sub><b>stefanprobst</b></sub></a><br /><a href="https://github.com/kentcdodds/mdx-bundler/commits?author=stefanprobst" title="Code">💻</a> <a href="https://github.com/kentcdodds/mdx-bundler/commits?author=stefanprobst" title="Tests">⚠️</a></td>
     </tr>
   </tbody>
 </table>
