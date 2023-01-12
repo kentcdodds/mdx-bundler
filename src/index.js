@@ -168,6 +168,12 @@ async function bundleMDX({
     },
   }
 
+  /** @type import('esbuild').BuildOptions["define"] */
+  const define = {}
+  if (process.env.NODE_ENV !== undefined) {
+    define['process.env.NODE_ENV'] = JSON.stringify(process.env.NODE_ENV)
+  }
+
   const buildOptions = esbuildOptions(
     {
       entryPoints: [entryPath],
@@ -175,9 +181,7 @@ async function bundleMDX({
       outdir: isWriting ? bundleDirectory : undefined,
       publicPath: isWriting ? bundlePath : undefined,
       absWorkingDir: cwd,
-      define: {
-        'process.env.NODE_ENV': JSON.stringify(process.env.NODE_ENV),
-      },
+      define,
       plugins: [
         globalExternals({
           ...globals,
