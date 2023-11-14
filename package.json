@@ -14,7 +14,7 @@
   "author": "Kent C. Dodds <me@kentcdodds.com> (https://kentcdodds.com)",
   "license": "MIT",
   "engines": {
-    "node": ">=14",
+    "node": ">=18",
     "npm": ">=6"
   },
   "repository": {
