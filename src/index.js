@@ -1,7 +1,7 @@
 import fs from 'fs'
 import path from 'path'
 import {StringDecoder} from 'string_decoder'
-import {remarkMdxFrontmatter} from 'remark-mdx-frontmatter'
+import remarkMdxFrontmatter from 'remark-mdx-frontmatter'
 import grayMatter from 'gray-matter'
 import * as esbuild from 'esbuild'
 import {NodeResolvePlugin} from '@esbuild-plugins/node-resolve'
@@ -194,7 +194,7 @@ async function bundleMDX({
             type: 'cjs',
           },
         }),
-        // eslint-disable-next-line @babel/new-cap
+        // eslint-disable-next-line new-cap
         NodeResolvePlugin({
           extensions: ['.js', '.ts', '.jsx', '.tsx'],
           resolveOptions: {basedir: cwd},

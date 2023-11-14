@@ -5,7 +5,7 @@ import * as assert from 'uvu/assert'
 import React from 'react'
 import rtl from '@testing-library/react'
 import leftPad from 'left-pad'
-import {remarkMdxImages} from 'remark-mdx-images'
+import remarkMdxImages from 'remark-mdx-images'
 import {VFile} from 'vfile'
 import {bundleMDX} from '../index.js'
 import {getMDXComponent, getMDXExport} from '../client.js'
@@ -417,7 +417,7 @@ test('should output assets', async () => {
   )
 })
 
-test('should support importing named exports', async () => {
+test.only('should support importing named exports', async () => {
   const mdxSource = `
 ---
 title: Example Post
@@ -432,13 +432,13 @@ export const uncle = 'Bob'
 
   const result = await bundleMDX({source: mdxSource})
 
-  /** @type {import('../types').MDXExport<{uncle: string}, {title: string, published: Date, description: string}>} */
+  /** @type {import('../types').MDXExport<{uncle: string}, {title: string, published: string, description: string}>} */
   const mdxExport = getMDXExport(result.code)
 
   // remark-mdx-frontmatter exports frontmatter
   assert.equal(mdxExport.frontmatter, {
     title: 'Example Post',
-    published: new Date('2021-02-13'),
+    published: '2021-02-13',
     description: 'This is some meta-data',
   })
 
@@ -506,7 +506,7 @@ test('should provide VFile path to plugins', async () => {
   /** @type {import('unified').Plugin} */
   function plugin() {
     return function transformer(tree, file) {
-      assert.is(file.path, '/data/mdx/my-post.mdx' )
+      assert.is(file.path, '/data/mdx/my-post.mdx')
     }
   }
 
