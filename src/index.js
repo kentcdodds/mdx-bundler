@@ -1,7 +1,6 @@
 import fs from 'fs'
 import path from 'path'
 import {StringDecoder} from 'string_decoder'
-import remarkMdxFrontmatter from 'remark-mdx-frontmatter'
 import grayMatter from 'gray-matter'
 import * as esbuild from 'esbuild'
 import {NodeResolvePlugin} from '@esbuild-plugins/node-resolve'
@@ -38,8 +37,15 @@ async function bundleMDX({
 
   // @mdx-js/esbuild is a native ESM, and we're running in a CJS context. This is the
   // only way to import ESM within CJS
-  const [{default: mdxESBuild}, {default: remarkFrontmatter}] =
-    await Promise.all([import('@mdx-js/esbuild'), import('remark-frontmatter')])
+  const [
+    {default: mdxESBuild},
+    {default: remarkFrontmatter},
+    {default: remarkMdxFrontmatter},
+  ] = await Promise.all([
+    import('@mdx-js/esbuild'),
+    import('remark-frontmatter'),
+    import('remark-mdx-frontmatter'),
+  ])
 
   let /** @type string */ code,
     /** @type string */ entryPath,
