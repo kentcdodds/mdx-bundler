@@ -6,7 +6,7 @@
 
 import type {Plugin, BuildOptions, Loader} from 'esbuild'
 import type {ModuleInfo} from '@fal-works/esbuild-plugin-global-externals'
-import type {Options} from '@mdx-js/esbuild/lib'
+import type {ProcessorOptions} from '@mdx-js/esbuild/lib'
 import type {GrayMatterOption, Input, GrayMatterFile} from 'gray-matter'
 import type {MDXComponents} from 'mdx/types'
 import type {VFile,VFileOptions} from 'vfile'
@@ -88,9 +88,9 @@ type BundleMDXOptions<Frontmatter> = {
    * ```
    */
   mdxOptions?: (
-    options: Options,
+    options: ProcessorOptions,
     frontmatter: Frontmatter,
-  ) => Options
+  ) => ProcessorOptions
   /**
    * This allows you to modify the built-in esbuild configuration. This can be
    * especially helpful for specifying the compilation target.
