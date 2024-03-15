@@ -25,7 +25,7 @@ get a bundled version of these files to eval in the browser.
 ## This solution
 
 This is an async function that will compile and bundle your MDX files and their
-dependencies. It uses [MDX v2](https://mdxjs.com/blog/v2/) and
+dependencies. It uses [MDX v3](https://mdxjs.com/blog/v3/) and
 [esbuild](https://esbuild.github.io/), so it's VERY fast and supports TypeScript
 files (for the dependencies of your MDX files).
 
