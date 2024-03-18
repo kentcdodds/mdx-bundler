@@ -285,6 +285,62 @@ Ultimately, this gets rendered (basically):
 </main>
 ```
 
+### Custom Components in Downstream Files
+
+To make sure custom components are accessible in downstream MDX files, you 
+can use the `MDXProvider` from `@mdx-js/react` to pass custom components
+to your nested imports.
+
+```
+npm install --save @mdx-js/react
+```
+
+```tsx
+const globals = {
+  '@mdx-js/react': {
+    varName: 'MdxJsReact',
+    namedExports: ['useMDXComponents'],
+    defaultExport: false,
+  },
+};
+const { code } = bundleMDX({
+  source,
+  globals,
+  mdxOptions(options: Record<string, any>) {
+      return {
+        ...options,
+        providerImportSource: '@mdx-js/react',
+      };
+  }
+});
+```
+
+From there, you send the `code` to your client, and then:
+
+```tsx
+import { MDXProvider, useMDXComponents } from '@mdx-js/react';
+const MDX_GLOBAL_CONFIG = {
+  MdxJsReact: {
+    useMDXComponents,
+  },
+};
+export const MDXComponent: React.FC<{
+  code: string;
+  frontmatter: Record<string, any>;
+}> = ({ code }) => {
+  const Component = useMemo(
+    () => getMDXComponent(code, MDX_GLOBAL_CONFIG),
+    [code],
+  );
+
+  return (
+    <MDXProvider components={{ Text: ({ children }) => <p>{children}</p> }}>
+      <Component />
+    </MDXProvider>
+  );
+};
+```
+
 ### Options
 
 #### source
