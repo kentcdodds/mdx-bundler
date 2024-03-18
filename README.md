@@ -173,6 +173,7 @@ the esbuild version mdx-bundler uses.
 
 - [Installation](#installation)
 - [Usage](#usage)
+  - [Custom Components in Downstream Files](#custom-components-in-downstream-files)
   - [Options](#options)
   - [Returns](#returns)
   - [Types](#types)
