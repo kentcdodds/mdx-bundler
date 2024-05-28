@@ -199,6 +199,14 @@ async function bundleMDX({
             varName: '_jsx_runtime',
             type: 'cjs',
           },
+          'react/jsx-dev-runtime': {
+            varName: '_jsx_runtime',
+            type: 'cjs'
+          },
+          'react/compiler-runtime': {
+            varName: '_react_compiler_runtime',
+            type: 'cjs'
+          }
         }),
         // eslint-disable-next-line new-cap
         NodeResolvePlugin({
