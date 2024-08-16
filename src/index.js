@@ -182,7 +182,7 @@ async function bundleMDX({
       publicPath: isWriting ? bundlePath : undefined,
       absWorkingDir: cwd,
       define: {
-        'process.env.NODE_ENV': JSON.stringify(process.env.NODE_ENV),
+        'process.env.NODE_ENV': JSON.stringify(process.env.NODE_ENV ?? 'production'),
       },
       plugins: [
         globalExternals({
