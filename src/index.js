@@ -203,7 +203,6 @@ async function bundleMDX({
         // eslint-disable-next-line new-cap
         NodeResolvePlugin({
           extensions: ['.js', '.ts', '.jsx', '.tsx'],
-          resolveOptions: {basedir: cwd},
         }),
         inMemoryPlugin,
         mdxESBuild(
