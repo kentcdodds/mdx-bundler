@@ -195,6 +195,52 @@ type BundleMDXOptions<Frontmatter> = {
    * @see bundleDirectory
    */
   bundlePath?: string
+  /**
+   * Allows this to output code other than react.
+   * Follow https://mdxjs.com/docs/getting-started/#jsx and JSX library's documentation to use
+   * 
+   * @example
+   * ```
+   * bundleMDX({
+   *   jsxConfig: {
+   *     JsxLib: {
+   *       varName: 'HonoJSX',
+   *       package: 'hono/jsx',
+   *     },
+   *     JsxDom: {
+   *       varName: 'HonoDOM',
+   *       package: 'hono/jsx/dom',
+   *     },
+   *     jsxRuntime: {
+   *       varName: '_jsx_runtime',
+   *       package: 'hono/jsx/jsx-runtime',
+   *     },
+   *   }
+   * })
+   * ```
+   */
+  jsxConfig?: JsxConfig;
+};
+
+export type JsxConfig = {
+  JsxLib: {
+    /** @default 'React' */
+    varName: string;
+    /** @default 'react' */
+    package: string;
+  }
+  JsxDom: {
+    /** @default 'ReactDOM' */
+    varName: string;
+    /** @default 'react-dom' */
+    package: string;
+  }
+  JsxRuntime: {
+    /** @default '_jsx_runtime' */
+    varName: string;
+    /** @default 'react/jsx-runtime' */
+    package: string;
+  }
 }
 
 type MDXExport<
