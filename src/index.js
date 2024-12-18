@@ -14,15 +14,15 @@ const {readFile, unlink} = fs.promises
  * @type {import('./types').JsxConfig} 
  */
 const defaultJSXConfig = {
-  JsxLib: {
+  jsxLib: {
     varName: 'React',
     package: 'react',
   },
-  JsxDom: {
+  jsxDom: {
     varName: 'ReactDOM',
     package: 'react-dom'
   },
-  JsxRuntime: {
+  jsxRuntime: {
     varName: '_jsx_runtime',
     package: 'react/jsx-runtime'
   }
@@ -206,16 +206,16 @@ async function bundleMDX({
       plugins: [
         globalExternals({
           ...globals,
-          [jsxConfig.JsxLib.package]: {
-            varName: jsxConfig.JsxLib.varName,
+          [jsxConfig.jsxLib.package]: {
+            varName: jsxConfig.jsxLib.varName,
             type: 'cjs',
           },
-          [jsxConfig.JsxDom.package]: {
-            varName: jsxConfig.JsxDom.varName,
+          [jsxConfig.jsxDom.package]: {
+            varName: jsxConfig.jsxDom.varName,
             type: 'cjs',
           },
-          [jsxConfig.JsxRuntime.package]: {
-            varName: jsxConfig.JsxRuntime.varName,
+          [jsxConfig.jsxRuntime.package]: {
+            varName: jsxConfig.jsxRuntime.varName,
             type: 'cjs',
           },
         }),
@@ -232,7 +232,7 @@ async function bundleMDX({
                 remarkFrontmatter,
                 [remarkMdxFrontmatter, {name: 'frontmatter'}],
               ],
-              jsxImportSource: jsxConfig.JsxLib.package
+              jsxImportSource: jsxConfig.jsxLib.package
             },
             matter.data,
           ),
