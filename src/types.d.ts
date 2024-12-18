@@ -203,11 +203,11 @@ type BundleMDXOptions<Frontmatter> = {
    * ```
    * bundleMDX({
    *   jsxConfig: {
-   *     JsxLib: {
+   *     jsxLib: {
    *       varName: 'HonoJSX',
    *       package: 'hono/jsx',
    *     },
-   *     JsxDom: {
+   *     jsxDom: {
    *       varName: 'HonoDOM',
    *       package: 'hono/jsx/dom',
    *     },
@@ -223,19 +223,19 @@ type BundleMDXOptions<Frontmatter> = {
 };
 
 export type JsxConfig = {
-  JsxLib: {
+  jsxLib: {
     /** @default 'React' */
     varName: string;
     /** @default 'react' */
     package: string;
   }
-  JsxDom: {
+  jsxDom: {
     /** @default 'ReactDOM' */
     varName: string;
     /** @default 'react-dom' */
     package: string;
   }
-  JsxRuntime: {
+  jsxRuntime: {
     /** @default '_jsx_runtime' */
     varName: string;
     /** @default 'react/jsx-runtime' */
