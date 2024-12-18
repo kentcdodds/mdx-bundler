@@ -417,7 +417,7 @@ test('should output assets', async () => {
   )
 })
 
-test.only('should support importing named exports', async () => {
+test('should support importing named exports', async () => {
   const mdxSource = `
 ---
 title: Example Post
