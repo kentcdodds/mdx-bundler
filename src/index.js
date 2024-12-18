@@ -268,7 +268,6 @@ async function bundleMDX({
     )
   }
 
-  console.log(code);
   return {
     code: `${code};return Component;`,
     frontmatter: matter.data,
