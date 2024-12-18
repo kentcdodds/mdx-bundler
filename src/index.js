@@ -11,6 +11,24 @@ import dirnameMessedUp from './dirname-messed-up.cjs'
 const {readFile, unlink} = fs.promises
 
 /**
+ * @type {import('./types').JsxConfig} 
+ */
+const defaultJSXConfig = {
+  jsxLib: {
+    varName: 'React',
+    package: 'react',
+  },
+  jsxDom: {
+    varName: 'ReactDOM',
+    package: 'react-dom'
+  },
+  jsxRuntime: {
+    varName: '_jsx_runtime',
+    package: 'react/jsx-runtime'
+  }
+}
+
+/**
  * @template {{[key: string]: any}} Frontmatter
  * @param {import('./types').BundleMDX<Frontmatter>} options
  * @returns
@@ -26,6 +44,7 @@ async function bundleMDX({
   grayMatterOptions = options => options,
   bundleDirectory,
   bundlePath,
+  jsxConfig = defaultJSXConfig
 }) {
   /* c8 ignore start */
   if (dirnameMessedUp && !process.env.ESBUILD_BINARY_PATH) {
@@ -187,16 +206,16 @@ async function bundleMDX({
       plugins: [
         globalExternals({
           ...globals,
-          react: {
-            varName: 'React',
+          [jsxConfig.jsxLib.package]: {
+            varName: jsxConfig.jsxLib.varName,
             type: 'cjs',
           },
-          'react-dom': {
-            varName: 'ReactDOM',
+          [jsxConfig.jsxDom.package]: {
+            varName: jsxConfig.jsxDom.varName,
             type: 'cjs',
           },
-          'react/jsx-runtime': {
-            varName: '_jsx_runtime',
+          [jsxConfig.jsxRuntime.package]: {
+            varName: jsxConfig.jsxRuntime.varName,
             type: 'cjs',
           },
         }),
@@ -213,6 +232,7 @@ async function bundleMDX({
                 remarkFrontmatter,
                 [remarkMdxFrontmatter, {name: 'frontmatter'}],
               ],
+              jsxImportSource: jsxConfig.jsxLib.package
             },
             matter.data,
           ),
