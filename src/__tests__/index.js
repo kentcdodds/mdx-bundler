@@ -8,7 +8,7 @@ import leftPad from 'left-pad'
 import remarkMdxImages from 'remark-mdx-images'
 import {VFile} from 'vfile'
 import {bundleMDX} from '../index.js'
-import {getMDXComponent, getMDXExport} from '../client.js'
+import {getMDXComponent, getMDXExport} from '../client/react.js'
 
 const {render} = rtl
 
