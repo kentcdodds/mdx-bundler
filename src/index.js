@@ -203,6 +203,8 @@ async function bundleMDX({
       define: {
         'process.env.NODE_ENV': JSON.stringify(process.env.NODE_ENV ?? 'production'),
       },
+      jsx: "automatic",
+      jsxImportSource: jsxConfig.jsxLib.package,
       plugins: [
         globalExternals({
           ...globals,
@@ -210,14 +212,14 @@ async function bundleMDX({
             varName: jsxConfig.jsxLib.varName,
             type: 'cjs',
           },
-          [jsxConfig.jsxDom.package]: {
-            varName: jsxConfig.jsxDom.varName,
-            type: 'cjs',
-          },
           [jsxConfig.jsxRuntime.package]: {
             varName: jsxConfig.jsxRuntime.varName,
             type: 'cjs',
           },
+          ...(jsxConfig.jsxDom ? {[jsxConfig.jsxDom.package]: {
+            varName: jsxConfig.jsxDom.varName,
+            type: 'cjs',
+          }} : {})
         }),
         // eslint-disable-next-line new-cap
         NodeResolvePlugin({

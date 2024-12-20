@@ -229,7 +229,7 @@ export type JsxConfig = {
     /** @default 'react' */
     package: string;
   }
-  jsxDom: {
+  jsxDom?: {
     /** @default 'ReactDOM' */
     varName: string;
     /** @default 'react-dom' */
@@ -250,6 +250,15 @@ type MDXExport<
   default: React.FunctionComponent<MDXContentProps>
   frontmatter: Frontmatter
 } & ExportObject
+
+type MDXJsxExportFunction<
+  ExportedObject extends {},
+  Frontmatter extends Record<string, unknown>,
+> = (
+  code: string,
+  jsxGlobals: Record<string, unknown>,
+  globals?: Record<string, unknown>,
+) => ReturnType<MDXExport<ExportedObject, Frontmatter>>
 
 type MDXExportFunction<
   ExportedObject extends {},

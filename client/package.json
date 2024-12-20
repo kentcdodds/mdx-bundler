@@ -1,5 +1,7 @@
 {
   "type": "commonjs",
   "main": "./index.js",
+  "react": "./react.js",
+  "jsx": "./jsx.js",
   "types": "./index.d.ts"
 }
