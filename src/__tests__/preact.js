@@ -2,13 +2,13 @@ import './setup-tests.js'
 import * as Preact from "preact";
 import * as PreactDOM from "preact/compat";
 import * as _jsx_runtime from 'preact/jsx-runtime';
-import {test} from 'uvu'
+import {suite} from 'uvu'
 import * as assert from 'uvu/assert'
 import { render } from '@testing-library/preact'
 import {bundleMDX} from '../index.js'
 import {getMDXComponent} from '../client/jsx.js'
 
-
+const test = suite("preact");
 
 const jsxBundlerConfig = {
   jsxLib: {

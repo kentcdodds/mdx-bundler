@@ -3,12 +3,12 @@ import { Hono } from "hono";
 import * as HonoJSX from "hono/jsx";
 import * as HonoDOM from "hono/jsx/dom";
 import * as _jsx_runtime from "hono/jsx/jsx-runtime";
-import {test} from 'uvu'
+import {suite} from 'uvu'
 import * as assert from 'uvu/assert'
 import {bundleMDX} from '../index.js'
 import {getMDXComponent} from '../client/jsx.js'
 
-
+const test = suite("hono");
 
 const jsxBundlerConfig = {
   jsxLib: {
