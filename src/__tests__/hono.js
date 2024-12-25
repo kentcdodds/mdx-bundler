@@ -1,8 +1,13 @@
 import './setup-tests.js'
 import { Hono } from "hono";
+/* eslint-disable import/no-unresolved --
+ * imports paths are there in node_modules/hono/package.json
+ * but it doesn't get resolved
+ */
 import * as HonoJSX from "hono/jsx";
 import * as HonoDOM from "hono/jsx/dom";
 import * as _jsx_runtime from "hono/jsx/jsx-runtime";
+/* eslint-enable import/no-unresolved */
 import {suite} from 'uvu'
 import * as assert from 'uvu/assert'
 import {bundleMDX} from '../index.js'
@@ -57,6 +62,7 @@ test('smoke test for hono', async () => {
     }
   });
 
+  /** @param {HonoJSX.DOMAttributes} props */
   const SpanBold = ({ children }) => {
     return HonoJSX.createElement('span', { className: "strong" }, children)
   }
