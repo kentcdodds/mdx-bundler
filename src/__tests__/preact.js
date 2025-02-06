@@ -57,9 +57,12 @@ test('smoke test for preact', async () => {
     }
   });
 
+  /** 
+   * @type {import('preact').FunctionComponent<{ components?: Record<string, any> }>}
+   */
   const Component = getMDXComponent(result.code, jsxComponentConfig)
 
-  /** @param {Preact.JSX.HTMLAttributes<HTMLSpanElement>} props */
+  /** @type {Preact.FunctionComponent<{ children:Preact.ComponentChildren }>} props */
   const SpanBold = ({children}) => {
     return Preact.createElement('span', { className: "strong" }, children)
   }

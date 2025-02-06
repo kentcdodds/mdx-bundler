@@ -52,6 +52,9 @@ test('smoke test for vue', async () => {
       './demo.tsx': demoTsx
     }
   });
+  /**
+   * @type {Vue.FunctionalComponent<{ components?: Record<string, any> }>}
+   */
   const Component = getMDXComponent(result.code, jsxComponentConfig)
 
 
@@ -70,7 +73,7 @@ test('smoke test for vue', async () => {
   const WrappedComponent = Vue.defineComponent({
     setup() {
       return () => Vue.h(Component, {
-        'components': { strong: Sp anBold }
+        'components': { strong: SpanBold }
       })
     }
   })
