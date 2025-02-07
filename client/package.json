@@ -1,7 +1,9 @@
 {
   "type": "commonjs",
   "main": "./index.js",
-  "react": "./react.js",
-  "jsx": "./jsx.js",
-  "types": "./index.d.ts"
+  "types": "./index.d.ts",
+  "exports": {
+    "react": "./react.js",
+    "jsx": "./jsx.js"
+  }
 }
