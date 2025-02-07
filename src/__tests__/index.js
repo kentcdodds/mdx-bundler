@@ -1,6 +1,6 @@
 import './setup-tests.js'
 import path from 'path'
-import {test} from 'uvu'
+import {suite} from 'uvu'
 import * as assert from 'uvu/assert'
 import React from 'react'
 import rtl from '@testing-library/react'
@@ -8,8 +8,9 @@ import leftPad from 'left-pad'
 import remarkMdxImages from 'remark-mdx-images'
 import {VFile} from 'vfile'
 import {bundleMDX} from '../index.js'
-import {getMDXComponent, getMDXExport} from '../client.js'
+import {getMDXComponent, getMDXExport} from '../client/react.js'
 
+const test = suite("react");
 const {render} = rtl
 
 test('smoke test', async () => {

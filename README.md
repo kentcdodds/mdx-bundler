@@ -44,7 +44,7 @@ everything for you.
   </summary>
 
 [MDX](https://mdxjs.com/) enables you to combine terse markdown syntax for your
-content with the power of React components. For content-heavy sites, writing the
+content with the power of JSX components. For content-heavy sites, writing the
 content with straight-up HTML can be annoyingly verbose. Often people solve this
 using a WSYWIG editor, but too often those fall short in mapping the writer's
 intent to HTML. Many people prefer using markdown to express their content
@@ -56,8 +56,8 @@ to insert an element that JavaScript targets (which is annoyingly indirect), or
 you can use an `iframe` or something.
 
 As previously stated, [MDX](https://mdxjs.com/) enables you to combine terse
-markdown syntax for your content with the power of React components. So you can
-import a React component and render it within the markdown itself. It's the best
+markdown syntax for your content with the power of JSX components. So you can
+import a JSX component and render it within the markdown itself. It's the best
 of both worlds.
 
 </details>
@@ -139,6 +139,16 @@ You might decide to go with a built-time approach (for Gatsby/CRA), but as
 mentioned, the true power of `mdx-bundler` comes in the form of on-demand
 bundling. So it's best suited for SSR frameworks like Remix/Next.
 
+</details>
+
+<details>
+  <summary>
+    <strong>
+      "Can I use this other JSX libraries other than React?"
+    </strong>
+  </summary>
+
+Yes! If JSX runtime you want to use is mentioned here - https://mdxjs.com/docs/getting-started/#jsx, it's guaranteed to work. Libraries, such as `hono` which has `react` compatible API also works. Check to [Other JSX runtimes](#other-jsx-runtimes) to get started.
 </details>
 
 <details>
@@ -770,9 +780,84 @@ export const MDXComponent: React.FC<{
 
 ### Known Issues
 
+### Other JSX runtimes
+JSX runtimes mentioned [here](https://mdxjs.com/docs/getting-started/#jsx) are guaranteed to be supported, however any JSX runtime should work without problem, as long as they export their own jsx runtime. For example, `hono` is not mentioned here, but as it has `react` compatible API, it can be used without any issues.
+
+To do so, you will have to pass a configuration object and use JSX Component factory.
+```tsx
+const getMDX = (source) => {
+  return bundleMDX({
+    source,
+    jsxConfig: {
+      jsxLib: {
+        varName: 'HonoJSX',
+        package: 'hono/jsx',
+      },
+      jsxDom: {
+        varName: 'HonoDOM',
+        package: 'hono/jsx/dom',
+      },
+      jsxRuntime: {
+        varName: '_jsx_runtime',
+        package: 'hono/jsx/jsx-runtime',
+      },
+    }
+  });
+}
+
+// ...
+
+import { getMDXComponent } from "mdx-bundler/client/jsx";
+
+import * as HonoJSX from "hono/jsx";
+import * as HonoDOM from "hono/jsx/dom";
+import * as _jsx_runtime from "hono/jsx/jsx-runtime";
+const jsxConfig = {
+  HonoJSX,
+  HonoDOM,
+  _jsx_runtime
+};
+
+export const MDXComponent: React.FC<{
+  code: string;
+}> = ({ code }) => {
+  const Component = useMemo(
+    () => getMDXComponent(code, jsxConfig),
+    [code],
+  );
+
+  return (
+    <Component components={{ Text: ({ children }) => <p>{children}</p> }} />
+  );
+};
+```
+
+To use it with others, adjust `jsxConfig` passed to bundler.
+```ts
+const jsxConfig = {
+  jsxLib: {
+    varName: 'HonoJSX',
+    package: 'hono/jsx',
+  },
+  jsxDom: {
+    varName: 'HonoDOM',
+    package: 'hono/jsx/dom',
+  },
+  jsxRuntime: {
+    varName: '_jsx_runtime',
+    package: 'hono/jsx/jsx-runtime',
+  },
+}
+```
+and to `getMDXComponent`
+```ts
+const jsxConfig = { HonoJSX, HonoDOM, _jsx_runtime };
+```
+
+
 #### Cloudflare Workers
 
-We'd _love_ for this to work in cloudflare workers. Unfortunately cloudflares
+We'd _love_ for this to work in cloudflare workers. Unfortunately cloudflare workers
 have two limitations that prevent `mdx-bundler` from working in that
 environment:
 

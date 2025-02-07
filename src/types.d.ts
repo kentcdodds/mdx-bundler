@@ -195,6 +195,52 @@ type BundleMDXOptions<Frontmatter> = {
    * @see bundleDirectory
    */
   bundlePath?: string
+  /**
+   * Allows this to output code other than react.
+   * Follow https://mdxjs.com/docs/getting-started/#jsx and JSX library's documentation to use
+   * 
+   * @example
+   * ```
+   * bundleMDX({
+   *   jsxConfig: {
+   *     jsxLib: {
+   *       varName: 'HonoJSX',
+   *       package: 'hono/jsx',
+   *     },
+   *     jsxDom: {
+   *       varName: 'HonoDOM',
+   *       package: 'hono/jsx/dom',
+   *     },
+   *     jsxRuntime: {
+   *       varName: '_jsx_runtime',
+   *       package: 'hono/jsx/jsx-runtime',
+   *     },
+   *   }
+   * })
+   * ```
+   */
+  jsxConfig?: JsxConfig;
+};
+
+export type JsxConfig = {
+  jsxLib: {
+    /** @default 'React' */
+    varName: string;
+    /** @default 'react' */
+    package: string;
+  }
+  jsxDom?: {
+    /** @default 'ReactDOM' */
+    varName: string;
+    /** @default 'react-dom' */
+    package: string;
+  }
+  jsxRuntime: {
+    /** @default '_jsx_runtime' */
+    varName: string;
+    /** @default 'react/jsx-runtime' */
+    package: string;
+  }
 }
 
 type MDXExport<
@@ -204,6 +250,15 @@ type MDXExport<
   default: React.FunctionComponent<MDXContentProps>
   frontmatter: Frontmatter
 } & ExportObject
+
+type MDXJsxExportFunction<
+  ExportedObject extends {},
+  Frontmatter extends Record<string, unknown>,
+> = (
+  code: string,
+  jsxGlobals: Record<string, unknown>,
+  globals?: Record<string, unknown>,
+) => ReturnType<MDXExport<ExportedObject, Frontmatter>>
 
 type MDXExportFunction<
   ExportedObject extends {},
