@@ -247,7 +247,7 @@ type MDXExport<
   ExportObject extends {},
   Frontmatter = {[key: string]: unknown},
 > = {
-  default: React.FunctionComponent<MDXContentProps>
+  default: (props: MDXContentProps) => JSX.Element,
   frontmatter: Frontmatter
 } & ExportObject
 
