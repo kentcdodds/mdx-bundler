@@ -1,4 +1,6 @@
 import jsdomPkg from 'jsdom'
+import jsdomGlobal from 'jsdom-global';
+jsdomGlobal();
 process.env.NODE_ENV = 'test'
 
 const {JSDOM} = jsdomPkg
@@ -15,16 +17,6 @@ function copyProps(src, target) {
     ...Object.getOwnPropertyDescriptors(target),
   })
 }
-
-// @ts-expect-error TS2322 🤷‍♂️
-global.window = window
-global.document = window.document
-
-Object.defineProperty(global, 'navigator', {
-  value: {userAgent: 'node.js'},
-  writable: true,
-  configurable: true
-})
 
 global.requestAnimationFrame = callback => setTimeout(callback, 0)
 global.cancelAnimationFrame = id => clearTimeout(id)

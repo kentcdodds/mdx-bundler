@@ -2,17 +2,12 @@
 /* eslint-disable react/react-in-jsx-scope */
 /** @jsxImportSource @builder.io/qwik */
 
-import jsdomPkg from "jsdom";
 import * as Qwik from "@builder.io/qwik";
 import {suite} from 'uvu'
 import * as assert from 'uvu/assert'
 import { render } from '@noma.to/qwik-testing-library'
 import {bundleMDX} from '../index.js'
 import {getMDXComponent} from '../client/jsx.js';
-
-const { JSDOM } = jsdomPkg;
-const jsdom = new JSDOM("<!doctype html><html><body></body></html>");
-const { window } = jsdom;
 
 const test = suite("qwik");
 
@@ -76,8 +71,7 @@ test('smoke test for qwik', async () => {
   })
 
   const {container} = await render(
-    Qwik.jsx(Component, { components: { strong: SpanBold } }),
-    { baseElement: window.document.body }
+    Qwik.jsx(Component, { components: { strong: SpanBold } })
   )
 
   assert.equal(
