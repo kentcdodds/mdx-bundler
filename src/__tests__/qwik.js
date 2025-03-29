@@ -4,7 +4,6 @@
 
 import './setup-tests.js'
 import * as Qwik from "@builder.io/qwik";
-import { jsx as _jsx_runtime } from '@builder.io/qwik';
 import {suite} from 'uvu'
 import * as assert from 'uvu/assert'
 import { render } from '@noma.to/qwik-testing-library'
@@ -23,7 +22,7 @@ const jsxBundlerConfig = {
     package: '@builder.io/qwik',
   },
 }
-const jsxComponentConfig = { Qwik, _jsx_runtime }
+const jsxComponentConfig = { Qwik, _jsx_runtime: Qwik.jsx }
 
 const mdxSource = `
 ---
