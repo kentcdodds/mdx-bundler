@@ -21,7 +21,15 @@ const jsxBundlerConfig = {
     package: '@builder.io/qwik/jsx-runtime',
   },
 }
-const jsxComponentConfig = { Qwik, _jsx_runtime: Qwik.jsx }
+
+const jsxComponentConfig = { 
+  Qwik,
+  _jsx_runtime: {
+    jsx: Qwik.jsx,
+    jsxs: Qwik.jsx,
+    Fragment: Qwik.Fragment
+  }
+}
 
 const mdxSource = `
 ---
