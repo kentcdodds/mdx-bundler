@@ -19,7 +19,7 @@ const jsxBundlerConfig = {
   },
   jsxRuntime: {
     varName: '_jsx_runtime',
-    package: '@builder.io/qwik',
+    package: '@builder.io/qwik/jsx-runtime',
   },
 }
 const jsxComponentConfig = { Qwik, _jsx_runtime: Qwik.jsx }
