@@ -1,3 +1,5 @@
+/* eslint-disable react/no-unknown-property */
+/* eslint-disable react/react-in-jsx-scope */
 /** @jsxImportSource @builder.io/qwik */
 
 import './setup-tests.js'
@@ -53,7 +55,7 @@ test('smoke test for qwik', async () => {
   });
 
   /** 
-   * @type {import('@builder.io/qwik').Component<{ components?: Record<string, any> }>}
+   * @type {any}
    */
   const Component = getMDXComponent(result.code, jsxComponentConfig)
 
@@ -68,7 +70,7 @@ test('smoke test for qwik', async () => {
     description: 'This is some meta-data',
   })
 
-  const {container} = render(
+  const {container} = await render(
     <Component components={{strong: SpanBold}} />
   )
 
