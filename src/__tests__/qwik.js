@@ -30,7 +30,7 @@ title: Example Post
 published: 2021-02-13
 description: This is some meta-data
 ---
-import Demo from './demo'
+import { Demo } from './demo'
 
 # This is the title
 
@@ -41,7 +41,7 @@ Here's a **neat** demo:
 const demoTsx = `
 import { component$ } from '@builder.io/qwik'
 
-export default component$(() => {
+export const Demo = component$(() => {
   return <div>mdx-bundler with Qwik's runtime!</div>
 })
 `.trim();
