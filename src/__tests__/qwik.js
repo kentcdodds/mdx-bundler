@@ -61,7 +61,7 @@ test('smoke test for qwik', async () => {
 
   /** @type {Qwik.Component<{}>} */
   const SpanBold = Qwik.component$(() => {
-    return <span class="strong">neat</span>
+    return Qwik.h('span', { class: "strong" }, "neat")
   })
 
   assert.equal(result.frontmatter, {
@@ -71,7 +71,7 @@ test('smoke test for qwik', async () => {
   })
 
   const {container} = await render(
-    <Component components={{strong: SpanBold}} />
+    Qwik.h(Component, { components: { strong: SpanBold } })
   )
 
   assert.equal(
