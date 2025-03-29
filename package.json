@@ -59,6 +59,7 @@
     "@testing-library/react": "^14.1.0",
     "@testing-library/vue": "8.1.0",
     "@types/jsdom": "^21.1.5",
+    "@types/jsdom-global": "^3.0.7",
     "@types/mdx": "^2.0.10",
     "@types/react": "^18.2.37",
     "@types/react-dom": "^18.2.15",
