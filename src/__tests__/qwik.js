@@ -85,8 +85,8 @@ test('smoke test for qwik', async () => {
   assert.equal(
     container.innerHTML,
     `<h1>This is the title</h1>
-    <p>Here's a <span class="strong">neat</span> demo:</p>
-    <div>mdx-bundler with Qwik's runtime!</div>`,
+<p>Here's a <!--qv --><span class="strong"><!--qv q:key q:sref=0 q:s-->neat<!--/qv--></span><!--/qv--> demo:</p>
+<!--qv --><div>mdx-bundler with Qwik's runtime!</div><!--/qv-->`
   )
 })
 
