@@ -9,6 +9,12 @@ import { render } from '@noma.to/qwik-testing-library'
 import {bundleMDX} from '../index.js'
 import {getMDXComponent} from '../client/jsx.js';
 
+/**
+ * NOTE: Qwik v2 will change the package name from '@builder.io/qwik' to '@qwik.dev/core'.
+ * 
+ * It's the Qwik team's responsibility to update the package name in the test once v2 has released. (Jack, a core team member has made the initial PR to this package, and will update this test once v2 has released.)
+*/
+
 const test = suite("qwik");
 
 const jsxBundlerConfig = {
