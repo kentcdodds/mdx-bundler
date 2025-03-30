@@ -88,6 +88,13 @@ test('smoke test for qwik', async () => {
     Qwik.jsx(Component, { components: { strong: SpanBold } })
   )
 
+  /**
+   * Qwik v1 uses HTML comments as markers in its output for component boundaries and resumability.
+   * When Qwik v2 is released, the expected output will change to be more similar to other frameworks,
+   * but with distinctive dynamic and constant attributes (denoted by the ':' character).
+   * This test will need to be updated accordingly when migrating to v2.
+   */
+  
   assert.equal(
     container.innerHTML,
     `<h1>This is the title</h1>
