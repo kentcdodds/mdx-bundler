@@ -69,7 +69,7 @@ test('smoke test for qwik', async () => {
 
   /** @type {Qwik.Component<{}>} */
   const SpanBold = Qwik.component$(() => {
-    return Qwik.jsx('span', { class: "strong" }, "neat")
+    return Qwik.jsx('span', { class: "strong", children: Qwik.jsx(Qwik.Slot, { name: "" }) })
   })
 
   assert.equal(result.frontmatter, {
@@ -85,8 +85,8 @@ test('smoke test for qwik', async () => {
   assert.equal(
     container.innerHTML,
     `<h1>This is the title</h1>
-<p>Here's a <span class="strong">neat</span> demo:</p>
-<div>mdx-bundler with Qwik's runtime!</div>`,
+    <p>Here's a <span class="strong">neat</span> demo:</p>
+    <div>mdx-bundler with Qwik's runtime!</div>`,
   )
 })
 
