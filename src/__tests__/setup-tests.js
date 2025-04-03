@@ -1,4 +1,6 @@
 import jsdomPkg from 'jsdom'
+import jsdomGlobal from 'jsdom-global';
+jsdomGlobal();
 process.env.NODE_ENV = 'test'
 
 const {JSDOM} = jsdomPkg
@@ -16,11 +18,6 @@ function copyProps(src, target) {
   })
 }
 
-// @ts-expect-error TS2322 🤷‍♂️
-global.window = window
-global.document = window.document
-// @ts-expect-error TS2740 🤷‍♂️
-global.navigator = {userAgent: 'node.js'}
 global.requestAnimationFrame = callback => setTimeout(callback, 0)
 global.cancelAnimationFrame = id => clearTimeout(id)
 copyProps(window, global)
