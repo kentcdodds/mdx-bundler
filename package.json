@@ -5,7 +5,12 @@
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
   "type": "module",
-  "keywords": ["mdx", "bundler", "mdx-bundler", "esbuild"],
+  "keywords": [
+    "mdx",
+    "bundler",
+    "mdx-bundler",
+    "esbuild"
+  ],
   "author": "Kent C. Dodds <me@kentcdodds.com> (https://kentcdodds.com)",
   "license": "MIT",
   "engines": {
@@ -20,7 +25,10 @@
     "url": "https://github.com/kentcdodds/mdx-bundler/issues"
   },
   "homepage": "https://github.com/kentcdodds/mdx-bundler#readme",
-  "files": ["dist", "client"],
+  "files": [
+    "dist",
+    "client"
+  ],
   "scripts": {
     "build": "kcd-scripts build",
     "postbuild": "node ./other/cjs-ify.js",
@@ -87,5 +95,10 @@
       "max-lines-per-function": "off"
     }
   },
-  "eslintIgnore": ["node_modules", "coverage", "dist", "*.d.ts"]
+  "eslintIgnore": [
+    "node_modules",
+    "coverage",
+    "dist",
+    "*.d.ts"
+  ]
 }
