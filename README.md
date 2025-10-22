@@ -1002,7 +1002,7 @@ MIT
 <!-- prettier-ignore-start -->
 [npm]: https://www.npmjs.com
 [node]: https://nodejs.org
-[build-badge]: https://img.shields.io/github/workflow/status/kentcdodds/mdx-bundler/validate?logo=github&style=flat-square
+[build-badge]: https://img.shields.io/github/actions/workflow/status/kentcdodds/mdx-bundler/validate.yml?logo=github&style=flat-square
 [build]: https://github.com/kentcdodds/mdx-bundler/actions?query=workflow%3Avalidate
 [coverage-badge]: https://img.shields.io/codecov/c/github/kentcdodds/mdx-bundler.svg?style=flat-square
 [coverage]: https://codecov.io/github/kentcdodds/mdx-bundler
