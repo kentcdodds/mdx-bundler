@@ -8,6 +8,10 @@
     "checkJs": true,
     "lib": [
       "ES2021.String"
-    ]
-  }
+    ],
+    "skipLibCheck": true
+  },
+  "exclude": [
+    "node_modules"
+  ]
 }
