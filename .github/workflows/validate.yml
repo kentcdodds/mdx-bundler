@@ -11,6 +11,9 @@ on:
       - '!all-contributors/**'
   pull_request:
 
+permissions:
+  contents: read
+
 concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}
   cancel-in-progress: true
@@ -25,15 +28,15 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: ⬇️ Checkout repo
-        uses: actions/checkout@v5
+        uses: actions/checkout@93cb6efe18208431cddfb8368fd83d5badbf9bfd # v5
 
       - name: ⎔ Setup node
-        uses: actions/setup-node@v6
+        uses: actions/setup-node@48b55a011bda9f5d6aeb4c2d9c7362e8dae4041e # v6
         with:
           node-version: ${{ matrix.node }}
 
       - name: 📥 Download deps
-        uses: bahmutov/npm-install@v1
+        uses: bahmutov/npm-install@20216767ca67f0f7b4d095dc5859c5700a6581cb # v1
         with:
           useLockFile: false
         env:
@@ -43,41 +46,68 @@ jobs:
         run: npm run validate
 
       - name: ⬆️ Upload coverage report
-        uses: codecov/codecov-action@v1
+        uses: codecov/codecov-action@29386c70ef20e286228c72b668a06fd0e8399192 # v1
 
-  release:
+  build-release-artifact:
     needs: main
     runs-on: ubuntu-latest
-    if:
-      ${{ github.repository == 'kentcdodds/mdx-bundler' &&
-      contains('refs/heads/main,refs/heads/beta,refs/heads/next,refs/heads/alpha',
-      github.ref) && github.event_name == 'push' }}
     permissions:
-      contents: write # to be able to publish a GitHub release
-      id-token: write # to enable use of OIDC for npm provenance
-      issues: write # to be able to comment on released issues
-      pull-requests: write # to be able to comment on released pull requests
+      contents: read
+    if: ${{ github.repository == 'kentcdodds/mdx-bundler' && github.event_name == 'push' }}
     steps:
       - name: ⬇️ Checkout repo
-        uses: actions/checkout@v5
+        uses: actions/checkout@93cb6efe18208431cddfb8368fd83d5badbf9bfd # v5
 
       - name: ⎔ Setup node
-        uses: actions/setup-node@v6
+        uses: actions/setup-node@48b55a011bda9f5d6aeb4c2d9c7362e8dae4041e # v6
         with:
           node-version: lts/*
+          package-manager-cache: false
 
-      - name: 📥 Download deps
-        uses: bahmutov/npm-install@v1
-        with:
-          useLockFile: false
+      - name: Install deps
+        run: npm install --ignore-scripts
         env:
           HUSKY_SKIP_INSTALL: true
 
       - name: 🏗 Run build script
         run: npm run build
 
+      - name: Upload package artifact
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4
+        with:
+          name: npm-package-dist
+          path: dist
+          if-no-files-found: error
+          retention-days: 7
+
+  release:
+    needs: build-release-artifact
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write # to be able to publish a GitHub release
+      id-token: write # to enable use of OIDC for npm provenance
+      issues: write # to be able to comment on released issues
+      pull-requests: write # to be able to comment on released pull requests
+    if: ${{ github.repository == 'kentcdodds/mdx-bundler' && github.event_name == 'push' }}
+    steps:
+      - name: ⬇️ Checkout repo
+        uses: actions/checkout@93cb6efe18208431cddfb8368fd83d5badbf9bfd # v5
+
+      - name: ⎔ Setup node
+        uses: actions/setup-node@48b55a011bda9f5d6aeb4c2d9c7362e8dae4041e # v6
+        with:
+          node-version: lts/*
+          registry-url: https://registry.npmjs.org
+          package-manager-cache: false
+
+      - name: Download package artifact
+        uses: actions/download-artifact@d3f86a106a0bac45b974a628896c90dbdf5c8093 # v4
+        with:
+          name: npm-package-dist
+          path: dist
+
       - name: 🚀 Release
-        uses: cycjimmy/semantic-release-action@v5.0.2
+        uses: cycjimmy/semantic-release-action@ba330626c4750c19d8299de843f05c7aa5574f62 # v5.0.2
         with:
           semantic_version: 25
           branches: |
